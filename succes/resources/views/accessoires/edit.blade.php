@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layout.addmorealiments')
 @section('title')
 <title>Accessoires</title>
 @stop
@@ -8,6 +8,9 @@
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
 	{{ method_field('PUT')}}
+	<input type="text" name="campagne_id" placeholder="Entrez ID" value="{{ old('campagne_id')?? $accessoires->campagne_id}}">
+	{!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
+  <br>
 	<input type="text" name="campagne" placeholder="Entrez votre titre" value="{{ old('campagne')?? $accessoires->campagne}}">
 	{!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
   <br>
@@ -28,4 +31,7 @@
 @stop
 @section('retour')
 <p><a href="{{route('accessoires.index')}}">Accueil</a></p>
+@stop
+@section('footer')
+@include('layout.partials.footer')
 @stop

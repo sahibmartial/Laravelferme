@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Str;
+use DB;
 use Illuminate\Http\Request;
 use App\Model\Aliment;
-
+use App\Http\Controllers\CampagneController;
 class AlimentController extends Controller
 {
     /**
@@ -15,7 +16,13 @@ class AlimentController extends Controller
     public function index()
     {
          //dd('here');
-         $aliments=Aliment::all();
+         //$aliments=Aliment::all();
+         $aliments= DB::table('campagnes')
+        ->join('aliments', function ($join) {
+            $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+        })
+        ->SimplePaginate(10);
+
          return view('aliments.index',compact('aliments'));
     }
 
@@ -27,7 +34,8 @@ class AlimentController extends Controller
     public function create()
     {
         //dd('here');
-        return view('aliments.create');
+       // return view('aliments.create');
+         return view('aliments.addMore');
 
     }
 
@@ -39,7 +47,12 @@ class AlimentController extends Controller
      */
     public function store(Request $request)
     {
+        $campagne_id=0;
+        $cam= new CampagneController();
+       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne);
+
          $rules=[
+        //'campagne_id'=>'bail|required',   
          'campagne'=>'bail|required|min:9',
          'libelle'=>'bail|required|min:3',
          'quantite'=>'bail|required',
@@ -49,7 +62,9 @@ class AlimentController extends Controller
          ];
         $this->validate($request,$rules);
 
-           Aliment::create(['campagne'=>$request->campagne,
+           Aliment::create([
+            'campagne_id'=>$campagne_id,
+            'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
             'priceUnitaire'=>$request->priceUnitaire,
@@ -96,6 +111,7 @@ class AlimentController extends Controller
         $aliments=Aliment::findOrFail($id);
 
          $rules=[
+         'campagne_id'=>'bail|required',   
          'campagne'=>'bail|required|min:9',
          'libelle'=>'bail|required|min:3',
          'quantite'=>'bail|required',
@@ -105,7 +121,9 @@ class AlimentController extends Controller
      ];
         $this->validate($request,$rules);
 
-           $aliments->update(['campagne'=>$request->campagne,
+           $aliments->update([
+            'campagne_id'=>$request->campagne_id,
+            'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
             'priceUnitaire'=>$request->priceUnitaire,
@@ -128,4 +146,45 @@ class AlimentController extends Controller
         Aliment::destroy($id);
         return redirect()->route('aliments.index');
     }
+
+
+   /**
+   *
+   */
+   public function selectAllAlimentforthisCampagne($id){
+       $result=array(); 
+       $collections=DB::table('aliments')->whereCampagneId($id)->get();
+
+        $result=$collections->toArray();
+       // $result = json_decode($result, true);
+         //dd($result);
+       return  $result;
+
+   }
+
+    /**
+     *
+     *
+     */
+
+     public function calculateDepenseAlimentofthiscampagne($id){
+        $som=0;
+
+        $result=$this->selectAllAlimentforthisCampagne($id);
+
+        for ($i=0; $i <count($result); $i++) { 
+
+            $som+=$result[$i]->quantite*$result[$i]->priceUnitaire;
+            //dd($som);
+           // $som++;
+     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
+     }
+    // dd($som);
+     return $som;
+
+     }
+
+
+
+
 }

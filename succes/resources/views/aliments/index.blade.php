@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layout.addmorealiments')
 @section('title')
 <title>Aliments</title>
 @stop
@@ -10,16 +10,22 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('aliments.show',
-		$aliment)}}">{{ $aliment->campagne}}-{{ $aliment->libelle}}</a></li>
+		$aliment->id)}}">{{ $aliment->campagne}}-{{ $aliment->libelle}}</a></li>
 	@endforeach
+	</ul>
+	<div>
+		{{$aliments->links()}}
+	</div>
 	@else
 	<p>Aucun Achat Aliments Enregistres pour une campagne !!! </p>
 	@endif
-</ul>
+
 <br>
 <p><a href="{{route('aliments.create')}}">Enregister un Achat Aliment </a></p>
 @stop
-
 @section('retour')
 <p><a href="/achats"> Menu Achats</a></p>
 @endsection
+@section('footer')
+@include('layout.partials.footer')
+@stop

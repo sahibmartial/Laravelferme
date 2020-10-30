@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCampagneIdToAlimentsTable extends Migration
+class CreateEmployesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,13 @@ class AddCampagneIdToAlimentsTable extends Migration
      */
     public function up()
     {
-        Schema::table('aliments', function (Blueprint $table) {
-            $table->string('campagne_id')->after('id')->nullable();
+        Schema::create('employes', function (Blueprint $table) {
+            $table->id();
+       
+           $table->string('name');
+           $table->string('email');
+       
+            $table->timestamps();
         });
     }
 
@@ -25,8 +30,6 @@ class AddCampagneIdToAlimentsTable extends Migration
      */
     public function down()
     {
-        Schema::table('aliments', function (Blueprint $table) {
-        $table->dropColumn('campagne_id');
-        });
+        Schema::dropIfExists('employes');
     }
 }

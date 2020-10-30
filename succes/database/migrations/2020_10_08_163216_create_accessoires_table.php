@@ -15,6 +15,8 @@ class CreateAccessoiresTable extends Migration
     {
         Schema::create('accessoires', function (Blueprint $table) {
             $table->id();
+             $table->unsignedBigInteger('campagne_id');
+             $table->foreign('campagne_id')->references('id')->on('campagnes') ->onDelete('cascade');
             $table->string('campagne');
             $table->string('libelle');
             $table->integer('quantite');

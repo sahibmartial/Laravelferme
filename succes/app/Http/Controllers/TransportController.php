@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Str;
+use DB;
 use Illuminate\Http\Request;
 use App\Model\Transport;
+use App\Http\Controllers\CampagneController;
 class TransportController extends Controller
 {
     /**
@@ -13,7 +15,15 @@ class TransportController extends Controller
      */
     public function index()
     {
-        $transports=Transport::all();
+       // $transports=Transport::all();
+
+         $transports= DB::table('campagnes')
+        ->join('transports', function ($join) {
+            $join->on('transports.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+        })
+        ->SimplePaginate(10);
+
+      //  dd($transports);
 
         return view('transports.index',compact('transports'));
     }
@@ -36,6 +46,10 @@ class TransportController extends Controller
      */
     public function store(Request $request)
     {
+
+        $campagne_id=0;
+        $cam= new CampagneController();
+       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
          $rules=[
          'campagne_id'=>'bail|required',
          'campagne'=>'bail|required|min:9',
@@ -48,8 +62,8 @@ class TransportController extends Controller
         $this->validate($request,$rules);
 
            Transport::create([
-            'campagne_id'=>$request->campagne_id,
-            'campagne'=>$request->campagne,
+            'campagne_id'=>$campagne_id,
+            'campagne'=>Str::lower($request->campagne),
            //'libelle'=>$request->libelle,
             'montant'=>$request->montant,
           //  'priceUnitaire'=>$request->priceUnitaire,
@@ -108,7 +122,7 @@ class TransportController extends Controller
 
           $transports->update([
             'campagne_id'=>$request->campagne_id,
-            'campagne'=>$request->campagne,
+            'campagne'=>Str::lower($request->campagne),
          //  'libelle'=>$request->libelle,
             'montant'=>$request->montant,
           //  'priceUnitaire'=>$request->priceUnitaire,
@@ -131,4 +145,41 @@ class TransportController extends Controller
         Transport::destroy($id);
         return redirect()->route('transports.index');
     }
+    
+
+    /**
+    *
+    */
+
+   public function selectAllFraisTrasnportForOneCampagne($id){
+
+   $result=array(); 
+       $collections=DB::table('transports')->whereCampagneId($id)->get();
+
+        $result=$collections->toArray();
+       // $result = json_decode($result, true);
+        // dd($result);
+       return  $result;
+    }
+
+    /**
+     *
+    */
+
+    public function calculateFraisTotalOfCampagne($id){
+        $som=0;
+
+        $result=$this->selectAllFraisTrasnportForOneCampagne($id);
+
+        for ($i=0; $i <count($result); $i++) { 
+
+            $som+=$result[$i]->montant;
+            //dd($som);
+           // $som++;
+     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
+     }
+    // dd($som);
+     return $som;
+ }
+
 }

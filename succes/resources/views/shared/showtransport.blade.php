@@ -1,8 +1,8 @@
 <table style="width:100%">
   <caption>Detail Frais Transport</caption>
   <tr>
-    <th>IdCampagne</th>
-    <th>Intitule</th>
+    <th>Id</th>
+    <th>Campagne</th>
    {{-- <th>Libelle</th>--}}
     <th>Montant</th>
     {{-- <th>PrixUnitaire</th>--}}

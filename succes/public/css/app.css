@@ -8,7 +8,9 @@
                 text-align: center;
 
             }
-            
+            caption{
+              text-align: center;
+            }
             .full-height {
                 height: 100vh;
             }
@@ -34,7 +36,7 @@
             }
 
             .title {
-                font-size: 84px;
+                font-size: 50px;
             }
 
             .links > a {
@@ -91,4 +93,20 @@ th, td {
   background-color: #4CAF50;
   color: white;
 }
+
+ footer {
+      display: flex;
+     justify-content: center;
+     padding: 1px;
+     background-color: #45a1ff;
+     color: #fff;
+    }
+    a[href^="mailto"]::before {
+     content: "📧 ";
+    }
+
+    a[href^="tel"]::before {
+     content: "📞 ";
+    }
+
 

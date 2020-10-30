@@ -1,6 +1,9 @@
 <h1>Achat Aliments</h1>
 <form action="{{route('aliments.store')}}" method="POST">
 	{{ csrf_field() }}
+	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
+     {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
+    <br>--}}
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
     <br>

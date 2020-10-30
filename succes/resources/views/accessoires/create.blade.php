@@ -1,6 +1,18 @@
-@extends('layout.app')
+@extends('layout.addmorealiments')
 <?php 
 use App\Campagne;
+use App\Http\Controllers\CampagneController;
+  $result = array();
+//echo "string";
+$cam= new CampagneController();
+ $id=$cam->getCampagneenCours();
+  //$var= $id->toJson();
+ // dump($id);
+ for ($i=0; $i <$id->count(); $i++) { 
+ 	//dump($id[$i]->id);
+ 	 $result[]=$id[$i]->intitule;
+ }
+
 //echo "string";
 $cam= new Campagne();
  $id=$cam::all();
@@ -13,6 +25,9 @@ $cam= new Campagne();
 <h1>Achat Accessoires</h1>
 <form action="{{route('accessoires.store')}}" method="POST">
 	{{ csrf_field() }}
+	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
+     {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
+    <br>--}}
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
     <br>
@@ -35,3 +50,7 @@ $cam= new Campagne();
 @section('retour')
 <p><a href="/achats"> Retour Achats</a></p>
 @endsection
+
+@section('footer')
+@include('layout.partials.footer')
+@stop

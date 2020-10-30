@@ -15,6 +15,8 @@ class CreateAlimentsTable extends Migration
     {
         Schema::create('aliments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('campagne_id');
+             $table->foreign('campagne_id')->references('id')->on('campagnes') ->onDelete('cascade')->after('id');
             $table->string('campagne');
             $table->string('libelle');
             $table->integer('quantite');

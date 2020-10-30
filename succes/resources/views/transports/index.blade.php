@@ -1,4 +1,9 @@
-@extends('layout.app')
+<?php
+/*use App\Http\Controllers\TransportController;
+$vente= new TransportController();
+$result=$vente->calculateFraisTotalOfCampagne(1);*/
+?>
+@extends('layout.addmorealiments')
 @section('title')
 <title>TRANSPORT</title>
 @stop
@@ -9,16 +14,23 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('transports.show',
-		$transport)}}">{{ $transport->campagne}}-{{ $transport->obs}}</a></li>
+		$transport->id)}}">{{ $transport->campagne}}-{{ $transport->obs}}</a></li>
 	@endforeach
+	</ul>
+	<div>
+		{{$transports->links()}}
+	</div>
 	@else
 	<p>Aucun  frais de transport  Enregistres pour une campagne !!! </p>
 	@endif
-</ul>
+
 <br>
 <p><a href="{{route('transports.create')}}">Enregister un frais de transport</a></p>
 @stop
 
 @section('retour')
 <p><a href="/achats"> Retour Achats</a></p>
+@stop
+@section('footer')
+@include('layout.partials.footer')
 @stop

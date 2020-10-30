@@ -1,6 +1,7 @@
 <table style="width:100%">
   <caption>Detail Achat Aliment</caption>
   <tr>
+    <th>ID</th>
     <th>Campagne</th>
     <th>Libelle</th>
     <th>Quantite</th>
@@ -9,6 +10,7 @@
     <th>Observations</th>
   </tr>
   <tr>
+     <td>{{ $aliments->campagne_id}}</td>
     <td>{{ $aliments->campagne}}</td>
     <td>{{ $aliments->libelle}}</td>
     <td>{{ $aliments->quantite}}</td>
