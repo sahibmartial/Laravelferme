@@ -90,30 +90,3 @@ Route::resource('employes', 'EmployeController');
 
 
 
-Route::post('getdata', function()
-{
-    $term = \Request::get('term');
-
-    $d = \DB::table('employes')
-    ->select('id','name')
-    ->where('name','LIKE','%'.$term.'%')
-    ->get();
-    $data = array(
-    );
-   
-    /*$return_array = array();
-    foreach ($data as $k => $v) {
-        if (strpos(($v), $term) !== FALSE) {
-            $return_array[] = array('value' => $v, 'id' =>$k);
-        }
-    }*/
-
-    $response = array();
-      foreach($d as $employee){
-         $response[] = array("value"=>$employee->id,"label"=>$employee->name);
-      }
-
-    //dd($response);
-
-    return \Response::json($response);
-});

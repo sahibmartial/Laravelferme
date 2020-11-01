@@ -9,9 +9,9 @@ class EmployeController extends Controller
 
 
     public function index(){
-      dd('here');
+    //  dd('here');
       //return view('employes.index');
-        dd($employes=Employe::all());
+        $employes=Employe::all();
 
         return view('employes.index',compact('employes'));
    }
@@ -37,9 +37,9 @@ class EmployeController extends Controller
 
     $rules=[
          'name'=>'bail|required',   
-         'email'=>'bail|required|email'
-         //'mean_masse'=>'bail|required',
-         //'priceUnitaire'=>'bail|required',
+         'email'=>'bail|required|email',
+         'contact'=>'bail|required',
+         'genre'=>'bail|required'
          //'fournisseur'=>'required|min:4',
         // 'obs'=>'required|min:3'
      ];
@@ -48,9 +48,9 @@ class EmployeController extends Controller
 
         Employe::create([
             'name'=>$request->name,
-            'email'=>$request->email
-            //'mean_masse'=>$request->mean_masse,
-            //'priceUnitaire'=>$request->priceUnitaire,
+            'email'=>$request->email,
+            'contact'=>$request->contact,
+            'genre'=>$request->genre
             //'fournisseur'=>$request->fournisseur,
             //'obs'=>$request->obs
         ]);
@@ -95,9 +95,9 @@ class EmployeController extends Controller
        $employes=Employe::findOrFail($id);
          $rules=[
          'name'=>'bail|required',  
-         'email'=>'bail|required|email'
-         //'quantite'=>'bail|required',
-         //'priceUnitaire'=>'bail|required',
+         'email'=>'bail|required|email',
+         'contact'=>'bail|required',
+         'genre'=>'bail|required'
          //'acheteur'=>'required|min:4',
          //'events'=>'required|min:4',
          //'obs'=>'required|min:3'
@@ -108,9 +108,9 @@ class EmployeController extends Controller
        $employes->update([
 
             'name'=>$request->name,
-            'email'=>$request->email
-          //  'quantite'=>$request->quantite,
-          //  'priceUnitaire'=>$request->priceUnitaire,
+            'email'=>$request->email,
+            'contact'=>$request->contact,
+            'genre'=>$request->genre
           //  'acheteur'=>$request->acheteur,
           //  'contact'=>$request->contact,
          //   'events'=>$request->events,
