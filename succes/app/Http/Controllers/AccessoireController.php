@@ -49,7 +49,7 @@ class AccessoireController extends Controller
 
         $campagne_id=0;
         $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne);
+       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
        //dd($campagne_id);
     /*    for ($i=0; $i <$id->count(); $i++) { 

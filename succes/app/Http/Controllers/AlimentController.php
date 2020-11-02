@@ -49,7 +49,7 @@ class AlimentController extends Controller
     {
         $campagne_id=0;
         $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne);
+       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
          $rules=[
         //'campagne_id'=>'bail|required',   
