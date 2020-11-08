@@ -25,10 +25,13 @@ $result=$vente->calculateFraisTotalOfCampagne(1);*/
 	@endif
 
 <br>
-<p><a href="{{route('transports.create')}}">Enregister un frais de transport</a></p>
-@stop
+<div><a href="{{route('transports.create')}}">Enregister un frais de transport</a>
+/ <a href="{{route('get_all_transports')}}">AllFrais_For_this campagne</a>
 
+</div>
+@stop
 @section('retour')
+<br>
 <p><a href="/achats"> Retour Achats</a></p>
 @stop
 @section('footer')

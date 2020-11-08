@@ -14,5 +14,5 @@ class Aliment extends Model
 'quantite',
 'priceUnitaire',
 'fournisseur',
-'obs'];
+'obs','date_achat'];
 }

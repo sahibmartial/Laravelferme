@@ -14,7 +14,18 @@ $duredevie=0;
 <h2>Declarer une Perte</h2>
 <form action="{{route('pertes.store')}}" method="POST">
 	{{ csrf_field() }}
-
+      <div>
+  {{ Form::label('Date', 'Date:') }}
+                            <br>
+                           <input type="date" name="date_die" placeholder=""
+                           @error('date_die') is-invalid @enderror" name="date_die" value="{{ old('date_die') }}" required autocomplete="date_die" autofocus>
+                           @error('date_die')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            
+                        </div>
 	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
     <br>--}}

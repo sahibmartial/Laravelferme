@@ -38,34 +38,51 @@ Route::get('/StatCamapgne', function () {
     return view('stats.index');
 });
 
+//accessoires
+Route::get("get_all_accesoires","AccessoireController@allAccessoires")->name('get_all_accesoires');
+Route::post("show_all_accesoires","AccessoireController@showallaccesoires")->name('show_all_accesoires');
+
+Route::get("get_all_transports","TransportController@allTransports")->name('get_all_transports');
+Route::post("show_all_frais","TransportController@showallTransports")->name('show_all_frais');
+
 Route::get("addmoreaccessoire","AccessoireController@addMore")->name('addmoreaccessoires');
 Route::post("addmoreaccessoire","AccessoireController@addMorePost")->name('addmorePostaccess');
+Route::get('/listingaccessoireonecampagne', function () {
+    return view('shared.accessoiresonecampagne');
+});
+Route::get('caccessoires', 'AccessoireController@index')->name('caccessoires');
+
+//aliments
+Route::get("getallAliments","AlimentController@getAllAliments")->name('getallAliments');
+Route::post("show_all_Aliments","AlimentController@showallAliments")->name('show_all_Aliments');
 
 Route::get("addmore","AlimentAddMoreController@addMore")->name('addmorealiments');
 Route::post("addmore","AlimentAddMoreController@addMorePost")->name('addmorePost');
 
-Route::get('home', 'CampagneController@index')->name('home');
-Route::get('/cloturer', 'CampagneController@cloturerCampagne')->name('cloturer');
-Route::get('/bilan', 'BilanController@index')->name('bilan');
-
-Route::get('/listingaccessoireonecampagne', function () {
-    return view('shared.accessoiresonecampagne');
-});
 Route::get('/listerallaliments', function () {
     return view('aliments.allalimentforthiscampagne');
 });
 
+Route::get('campaliments', 'AlimentController@index')->name('campaliments');
+
+//Transports
+
 Route::get('/listerallfrais', function () {
     return view('transports.allfraisforthiscampagne');
 });
-
-
+Route::get('transport', 'TransportController@index')->name('transport');
 //Route::post('cloturecampagne', 'CampagneController@clotureCampagne')->name('cloturecampagne');
 
+//Poussins
 Route::get('head', 'PoussinController@index')->name('head');
-Route::get('caccessoires', 'AccessoireController@index')->name('caccessoires');
-Route::get('campaliments', 'AlimentController@index')->name('campaliments');
-Route::get('transport', 'TransportController@index')->name('transport');
+
+//campagne
+Route::get('home', 'CampagneController@index')->name('home');
+Route::get('/cloturer', 'CampagneController@cloturerCampagne')->name('cloturer');
+
+Route::get('/bilan', 'BilanController@index')->name('bilan');
+
+
 Route::get('/mean_masse', 'MasseController@index')->name('mean_masse');
 
  Route::get('/createcomplete','FonctionController@create');

@@ -22,6 +22,7 @@
 
 <br>
 <p><a href="{{route('accessoires.create')}}">Enregister un accessoire</a>
+	/ <a href="{{route('get_all_accesoires')}}">All_Accesoires for_this_campagne</a>
 </p>
 @stop
 

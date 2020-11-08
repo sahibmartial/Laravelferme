@@ -2,6 +2,7 @@
   <caption>Detail Transport</caption>
   <tr>
     <th>ID</th>
+    <th>Date</th>
     <th>Campagne</th>
    {{--<th>Libelle</th>
     <th>Quantite</th>
@@ -14,6 +15,7 @@
   ?>
   <tr>
      <td>{{ $results[$i]->campagne_id}}</td>
+     <td>{{ $results[$i]->date_achat}}</td>
     <td>{{ $results[$i]->campagne}}</td>
     {{--<td>{{ $results[$i]->libelle}}</td>
     <td>{{ $results[$i]->quantite}}</td>

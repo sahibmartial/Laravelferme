@@ -7,20 +7,20 @@ $index=$transports->campagne_id;
 @stop
 @section('contenu')
 @include('shared.showtransport')
-
+<br>
 <p><a href="{{ route('transports.edit', $transports)}}">Modifier  Frais</a>
 /
 <a href="/listerallfrais?id=<?php echo $index ?>">All Frais for this campagne</a>
 </p>
 
-<form action="{{route('transports.destroy',$transports)}}" method="POST">
+<form action="{{route('transports.destroy',$transports)}}" method="POST" onsubmit="return confirm('Etes vous sure?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
 	<input type="submit" value="supprimer">
 	
 </form>
 @stop
-
+<br>
 @section('retour')
 <p><a href="{{route('transport')}}">retour liste Frais</a></p>
 @stop

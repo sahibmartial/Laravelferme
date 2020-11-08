@@ -10,7 +10,7 @@ $index=$aliments->campagne_id;
 
 <p><a href="{{ route('aliments.edit', $aliments)}}">Modifier  Achat Aliment</a>
 	/
-<a href="/listerallaliments?id=<?php echo $index ?>">All foods for this campagne</a>
+<a href="/listerallaliments?id=<?php echo $index ?>">All_foods_for_this_campagne</a>
 
 </p>
 

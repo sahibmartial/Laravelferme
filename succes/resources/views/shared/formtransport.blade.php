@@ -5,6 +5,18 @@
 	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
   <br>--}}
+<div>
+  {{ Form::label('Date', 'Date:') }}
+                            <br>
+                           <input type="date" name="date_achat" placeholder=""
+                           @error('date_achat') is-invalid @enderror" name="date_achat" value="{{ old('date_achat') }}" required autocomplete="date_achat" autofocus>
+                           @error('date_achat')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            
+                        </div>
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
   <br>
@@ -16,4 +28,7 @@
 	<br>
 	<input type="submit" value="Enregister frais transport">
 </form>
-<p><a href="{{route('transports.index')}}">Lister Frais</a></p>
+<br>
+<br>
+<div><a href="{{route('transports.index')}}">Lister Frais</a></div>
+<br>

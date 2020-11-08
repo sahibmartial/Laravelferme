@@ -109,6 +109,7 @@ class PoussinController extends Controller
 
         Poussin::create([
             'campagne_id'=>$campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
             'quantite'=>$request->quantite,
             'priceUnitaire'=>$request->priceUnitaire,
@@ -168,11 +169,12 @@ class PoussinController extends Controller
         
         $poussin->update([
             'campagne_id'=>$request->campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
             'quantite'=>$request->quantite,
-            'priceUnitaire'=>$request->priceUnitaire
-       //     'fournisseur'=>$request->fournisseur,
-        //    'obs'=>$request->obs
+            'priceUnitaire'=>$request->priceUnitaire,
+           'fournisseur'=>$request->fournisseur,
+            'obs'=>$request->obs
     ]);
 
       

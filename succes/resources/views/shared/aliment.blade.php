@@ -2,6 +2,7 @@
   <caption>Detail Achat Aliment</caption>
   <tr>
     <th>ID</th>
+    <th>Date</th>
     <th>Campagne</th>
     <th>Libelle</th>
     <th>Quantite</th>
@@ -11,6 +12,7 @@
   </tr>
   <tr>
      <td>{{ $aliments->campagne_id}}</td>
+      <td>{{ $aliments->date_achat}}</td>
     <td>{{ $aliments->campagne}}</td>
     <td>{{ $aliments->libelle}}</td>
     <td>{{ $aliments->quantite}}</td>

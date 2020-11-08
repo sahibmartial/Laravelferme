@@ -4,6 +4,9 @@
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
 	{{ method_field('PUT')}}
+	<input type="date" name="date_achat" placeholder="" value="{{ old('date_achat')?? $transports->date_achat}}">
+	{!! $errors->first('date_achat','<span class="error-msg">:message</span>') !!}
+   <br>
 	<input type="text" name="campagne_id" placeholder="Entrez ID" value="{{ old('campagne_id')?? $transports->campagne_id}}">
 	{!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
    <br>
@@ -18,3 +21,4 @@
 	<br>
 	<input type="submit" value="Editer Frais">
 </form>
+<br>

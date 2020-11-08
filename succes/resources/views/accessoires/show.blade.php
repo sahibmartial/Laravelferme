@@ -13,20 +13,19 @@ $index=$accessoires->campagne_id;
 {{--<p>{{ $accessoires->quantite}}</p>--}}
 {{--<p>{{ $accessoires->priceUnitaire}}</p>--}}
 {{--<p>{{ $accessoires->obs}}</p>--}}
+<br>
 <p><a href="{{ route('accessoires.edit', $accessoires)}}">Modifier  Achat Accessoire</a>
 /
 <a href="/listingaccessoireonecampagne?id=<?php echo $index ?>">All Accssoires for this campagne</a>	
 </p>
-<br>
 <form action="{{route('accessoires.destroy',$accessoires)}}" method="POST"
 onsubmit="return confirm('Etes-vous sure ?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
-	<input type="submit" value="supprimer">
-	
+	<input type="submit" value="supprimer">	
 </form>
-
 @stop
+<br>
 @section('retour')
 <p><a href="{{route('caccessoires')}}">retour achats Accessoires</a></p>
 {{--<p><a href="/achats">Retour Achats</a></p>--}}

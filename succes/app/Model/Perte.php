@@ -13,7 +13,9 @@ class Perte extends Model
     'cause',
     'obs',
     'duredevie',
-    'year'
+    'year',
+    'date_die'
+
 ];
 
      

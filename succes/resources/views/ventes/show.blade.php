@@ -7,7 +7,7 @@
 <br>
 <p><a href="{{ route('ventes.edit', $ventes)}}">Modifier Vente</a></p>
 
-<form action="{{route('ventes.destroy',$ventes)}}" method="POST">
+<form action="{{route('ventes.destroy',$ventes)}}" method="POST"onsubmit="return confirm('Etes vous sure?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
 	<input type="submit" value="supprimer">

@@ -82,6 +82,7 @@ class AlimentAddMoreController extends Controller
      // $tab['campagne_id'] = $campagne_id;
 
         $request->validate([
+          'addmore.*.date_achat' => 'bail|required',
 
             'addmore.*.campagne' => 'bail|required',
 

@@ -12,5 +12,5 @@ class Accessoire extends Model
    	'libelle',
    	'quantite',
    'priceUnitaire',
-    'obs'];
+    'obs','date_achat'];
 }

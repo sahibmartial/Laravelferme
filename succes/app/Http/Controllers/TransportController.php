@@ -46,12 +46,13 @@ class TransportController extends Controller
      */
     public function store(Request $request)
     {
+       // dump($request);
 
         $campagne_id=0;
         $cam= new CampagneController();
        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+        //dd($campagne_id);
          $rules=[
-         'campagne_id'=>'bail|required',
          'campagne'=>'bail|required|min:9',
          //'libelle'=>'bail|required|min:3',
          'montant'=>'bail|required',
@@ -63,6 +64,7 @@ class TransportController extends Controller
 
            Transport::create([
             'campagne_id'=>$campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
            //'libelle'=>$request->libelle,
             'montant'=>$request->montant,
@@ -122,6 +124,7 @@ class TransportController extends Controller
 
           $transports->update([
             'campagne_id'=>$request->campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
          //  'libelle'=>$request->libelle,
             'montant'=>$request->montant,
@@ -181,5 +184,26 @@ class TransportController extends Controller
     // dd($som);
      return $som;
  }
+
+  /*
+    * form to get all accessoires of this campagne 
+    */
+
+    public function allTransports(){
+
+        return view("transports.allTransports_of_one_campagne");
+
+    }
+    /*
+    *show all accessoires of this campagne select 
+    */
+    
+    public function showallTransports(){
+
+        //dd('here');
+    
+       return view("transports.showallTransports_of_one_campagne");
+
+    }
 
 }

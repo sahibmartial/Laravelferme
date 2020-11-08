@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Exception;
 use Illuminate\Support\Str;
 use DB;
 use Illuminate\Http\Request;
@@ -337,7 +338,7 @@ class CampagneController extends Controller
         return $campagne_id;
      }else{
         //dd('not found');
-      throw new Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
+      throw new \Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
      }
        
      } catch (Exception $e) {

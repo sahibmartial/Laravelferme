@@ -16,12 +16,13 @@ class AccessoireController extends Controller
      */
     public function index()
     {
+        //dd($this->calculateDepenseAccessoireofthiscampagne(2));
        // $accessoires=Accessoire::paginate(2);
         $accessoires= DB::table('campagnes')
         ->join('accessoires', function ($join) {
             $join->on('accessoires.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
-        ->SimplePaginate(2);
+        ->SimplePaginate(5);
 
        //dd($accessoires);
         return view('accessoires.index', compact('accessoires'));
@@ -79,6 +80,7 @@ class AccessoireController extends Controller
 
            Accessoire::create([
             'campagne_id'=>$campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
@@ -139,6 +141,7 @@ class AccessoireController extends Controller
 
            $accessoire->update([
             'campagne_id'=>$request->campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
@@ -276,6 +279,26 @@ class AccessoireController extends Controller
            Accessoire::create($value);
         }
         return back()->with('success', 'Record Created Successfully.');
+
+    }
+    /*
+    * form to get all accessoires of this campagne 
+    */
+
+    public function allAccessoires(){
+
+        return view("accessoires.allAccessoires");
+
+    }
+    /*
+    *show all accessoires of this campagne select 
+    */
+    
+    public function showallaccesoires(){
+
+        //dd('here');
+    
+       return view("accessoires.showall");
 
     }
 

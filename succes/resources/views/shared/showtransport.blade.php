@@ -2,6 +2,7 @@
   <caption>Detail Frais Transport</caption>
   <tr>
     <th>Id</th>
+     <th>Date</th>
     <th>Campagne</th>
    {{-- <th>Libelle</th>--}}
     <th>Montant</th>
@@ -11,6 +12,7 @@
   </tr>
   <tr>
     <td>{{ $transports->campagne_id}}</td>
+    <td>{{ $transports->date_achat}}</td>
     <td>{{ $transports->campagne}}</td>
   {{--  <td>{{ $transports->libelle}}</td>--}}
     <td>{{$transports->montant}}</td>

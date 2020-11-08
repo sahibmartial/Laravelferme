@@ -70,20 +70,22 @@ class PerteController extends Controller
      //dd($collections);
     foreach ($collections as $collection) {
    $date=$collection->start;
-}
+     }
     $date1=strtotime(date("Y-m-d"));
    // dd($date1);
+    $date_die=strtotime($request->date_die);
   
     $date2 = strtotime($collection->start);
    // dd($date2);
      $year=$perte->selectYearcreate($campagne_id);
     //dump($year);
-    $duredevie=$perte->calculeDureVie($date1,$date2);
+    $duredevie=$perte->calculeDureVie($date_die,$date2);
    //dd($duredevie) ;
 //appel de ma fonction pour calculer le dure devie
 
      Perte::create([
             'campagne_id'=>$campagne_id,
+            'date_die'=>$request->date_die,
             'campagne'=>Str::lower($request->campagne),
             'quantite'=>$request->quantite,
             'cause'=>$request->cause,
@@ -133,6 +135,10 @@ class PerteController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $cam= new CampagneController();
+       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+
        $pertes=Perte::findOrFail($id);
 
         $rules=[
@@ -144,13 +150,24 @@ class PerteController extends Controller
        //  'obs'=>'required|min:3'
      ];
         $this->validate($request,$rules);
+$collections=$cam->selectDateStartCampagne($campagne_id);
+     //dd($collections);
+    foreach ($collections as $collection) {
+   $date=$collection->start;
+     }
 
-        
+     $date_die=strtotime($request->date_die);
+  
+    $date2 = strtotime($collection->start);
+     $duredevie=$cam->calculeDureVie($date_die,$date2);
+        //dd($duredevie);
+
        $pertes->update([
             'campagne_id'=>$request->campagne_id,
+            'date_die'=>$request->date_die,
             'campagne'=>Str::lower($request->campagne),
-            'quantite'=>$request->quantite
-        //    'priceUnitaire'=>$request->priceUnitaire,
+            'quantite'=>$request->quantite,
+            'duredevie'=>$duredevie,
        //     'fournisseur'=>$request->fournisseur,
         //    'obs'=>$request->obs
     ]);

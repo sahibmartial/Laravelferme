@@ -64,6 +64,7 @@ class AlimentController extends Controller
 
            Aliment::create([
             'campagne_id'=>$campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
@@ -123,6 +124,7 @@ class AlimentController extends Controller
 
            $aliments->update([
             'campagne_id'=>$request->campagne_id,
+            'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
            'libelle'=>$request->libelle,
             'quantite'=>$request->quantite,
@@ -183,6 +185,27 @@ class AlimentController extends Controller
      return $som;
 
      }
+
+      /*
+    * form to get form to select all aliments  of this campagne 
+    */
+
+    public function getAllAliments(){
+
+        return view("aliments.allAliments_of_one_campagne");
+
+    }
+    /*
+    *show all aliments  of this campagne 
+    */
+    
+    public function showallAliments(){
+
+        //dd('here');
+    
+       return view("aliments.showallAliments_of_one_campagne");
+
+    }
 
 
 

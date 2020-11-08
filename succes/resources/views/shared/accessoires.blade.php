@@ -3,6 +3,7 @@
   <caption>Detail Accesssoires</caption>
   <tr>
     <th>ID</th>
+    <th>Date</th>
     <th>Campagne</th>
     <th>Libelle</th>
     <th>Quantite</th>
@@ -11,6 +12,7 @@
   </tr>
   <tr>
     <td>{{ $accessoires->campagne_id}}</td>
+    <td>{{ $accessoires->date_achat}}</td>
     <td>{{ $accessoires->campagne}}</td>
     <td>{{ $accessoires->libelle}}</td>
     <td>{{ $accessoires->quantite}}</td>

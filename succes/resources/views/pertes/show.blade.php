@@ -12,7 +12,8 @@
 <br>
 <p><a href="{{ route('pertes.edit', $lists)}}">Modifier Perte</a></p>
 
-<form action="{{route('pertes.destroy',$lists)}}" method="POST">
+<form action="{{route('pertes.destroy',$lists)}}" method="POST"
+onsubmit="return confirm('Etes vous sure?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
 	<input type="submit" value="supprimer">

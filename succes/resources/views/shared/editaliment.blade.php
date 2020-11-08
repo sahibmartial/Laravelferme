@@ -4,7 +4,20 @@
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
 	{{ method_field('PUT')}}
-
+	<br>   
+	<div>
+   {{ Form::label('Date', 'Date:') }}
+                            <br>
+                           <input type="date" name="date_achat" placeholder=""
+                           @error('date_achat') is-invalid @enderror" name="date_achat" value="{{ old('date_achat') }}" required autocomplete="date_achat" autofocus>
+                           @error('date_achat')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            
+                        </div>
+                                         
 	<input type="text" name="campagne_id" placeholder="Entrez ID" value="{{ old('campagne_id')?? $aliments->campagne_id}}">
 	{!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
    <br>

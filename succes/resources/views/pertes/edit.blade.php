@@ -5,6 +5,18 @@
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
 	{{ method_field('PUT')}}
+	<div>
+   {{ Form::label('Date', 'Date:') }}
+                            <br>
+                           <input type="date" name="date_die" placeholder=""
+                           @error('date_die') is-invalid @enderror" name="date_die" value="{{ old('date_die') }}" required autocomplete="date_die" autofocus>
+                           @error('date_die')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            
+                        </div>
 	<input type="text" name="campagne_id" placeholder="Entrez ID" value="{{ old('campagne_id')?? $pertes->campagne_id}}">
 
 	{!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}

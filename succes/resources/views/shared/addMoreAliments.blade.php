@@ -34,6 +34,7 @@
         <table class="table table-bordered" id="dynamicTable">  
 
             <tr>
+                <th>Date</th>
                 <th>Campagne</th>
 
                 <th>Libelle</th>
@@ -51,7 +52,8 @@
             </tr>
 
             <tr>  
-                <td><input type="text" name="addmore[0][campagne]" placeholder="Enter campaign" class="form-control" /></td>  
+                 <td><input type="date" name="addmore[0][date_achat]" placeholder="" class="form-control" /></td>  
+                <td><input type="text" name="addmore[0][campagne]" placeholder="Enter Name" class="form-control" /></td>  
                 <td><input type="text" name="addmore[0][libelle]" placeholder="Enter Libelle" class="form-control" /></td>  
                 <td><input type="text" name="addmore[0][quantite]" placeholder="Enter Qty" class="form-control" /></td>
                 <td><input type="text" name="addmore[0][priceUnitaire]" placeholder="Enter Price" class="form-control" /></td> 
@@ -70,7 +72,7 @@
     var i = 0;
     $("#add").click(function(){
         ++i;
-        $("#dynamicTable").append('<tr><td><input type="text" name="addmore['+i+'][campagne]" placeholder=" Enter campaign" class="form-control" /></td><td><input type="text" name="addmore['+i+'][libelle]" placeholder="Enter libelle" class="form-control" /></td><td><input type="text" name="addmore['+i+'][quantite]" placeholder="Enter  Qty" class="form-control" /></td><td><input type="text" name="addmore['+i+'][priceUnitaire]" placeholder="Enter Price" class="form-control"/></td><td><input type="text" name="addmore['+i+'][fournisseur]" placeholder="Enter fournisseur" class="form-control"/></td><td><textarea  name="addmore['+i+'][obs]" placeholder="Enter Obs" class="form-control"/></td><td><button type="button" class="btn btn-danger remove-tr">Remove</button></td></tr>');
+        $("#dynamicTable").append('<tr><td><input type="date" name="addmore['+i+'][date_achat]" placeholder="" class="form-control" /></td><td><input type="text" name="addmore['+i+'][campagne]" placeholder=" Enter Name" class="form-control" /></td><td><input type="text" name="addmore['+i+'][libelle]" placeholder="Enter libelle" class="form-control" /></td><td><input type="text" name="addmore['+i+'][quantite]" placeholder="Enter  Qty" class="form-control" /></td><td><input type="text" name="addmore['+i+'][priceUnitaire]" placeholder="Enter Price" class="form-control"/></td><td><input type="text" name="addmore['+i+'][fournisseur]" placeholder="Enter fournisseur" class="form-control"/></td><td><textarea  name="addmore['+i+'][obs]" placeholder="Enter Obs" class="form-control"/></td><td><button type="button" class="btn btn-danger remove-tr">Remove</button></td></tr>');
 
     });   
     $(document).on('click', '.remove-tr', function(){  

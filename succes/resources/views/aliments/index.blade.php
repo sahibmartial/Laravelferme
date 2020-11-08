@@ -21,7 +21,9 @@
 	@endif
 
 <br>
-<p><a href="{{route('aliments.create')}}">Enregister un Achat Aliment </a></p>
+<p><a href="{{route('aliments.create')}}">Enregister un Achat Aliment </a>
+/  <a href="{{route('getallAliments')}}">All_Aliments_of_one_camapgne </a>
+</p>
 @stop
 @section('retour')
 <p><a href="/achats"> Menu Achats</a></p>
