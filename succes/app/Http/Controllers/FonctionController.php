@@ -92,7 +92,8 @@ class FonctionController extends Controller
           "libelle" => $collection[$i]['libelle'],
           "quantite" =>$collection[$i]['quantite'],
            "priceUnitaire" =>$collection[$i]['priceUnitaire'],
-         "fournisseur" => $collection[$i]['fournisseur']
+         "fournisseur" => $collection[$i]['fournisseur'],
+         "obs" => $collection[$i]['obs']
          );
         }
 

@@ -10,7 +10,7 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('aliments.show',
-		$aliment->id)}}">{{ $aliment->campagne}}-{{ $aliment->libelle}}</a></li>
+		$aliment->id)}}">{{ $aliment->campagne}}-{{ $aliment->libelle}}-{{$aliment->obs}}</a></li>
 	@endforeach
 	</ul>
 	<div>

@@ -50,6 +50,8 @@ class AlimentAddMoreController extends Controller
      // dump($request->addmore);
       $collection=$request->addmore;
       $result=$aliment->addmorealiments($collection,$arrayName);
+
+     // dd($result);
    
       	//$result = array_merge($arrayName,$collection);
       	//$collection[0][0]=$arrayName['campagne_id'];
@@ -93,6 +95,7 @@ class AlimentAddMoreController extends Controller
             'addmore.*.priceUnitaire' => 'bail|required',
 
             'addmore.*.fournisseur' => 'bail|required',
+            'addmore.*.obs' => 'bail|required',
             
         ]); 
 

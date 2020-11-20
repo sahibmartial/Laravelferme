@@ -49,7 +49,7 @@ $cam= new Campagne();
     <th>Quantite</th>
      <th>Montant</th>
     <th>Observations</th>
-     <th>Depenses</th>
+     <th>DepensesT</th>
      </tr>
   <?php
   for ($i=0; $i <count($results) ; $i++) { 
@@ -63,6 +63,7 @@ $cam= new Campagne();
     <td>{{ $results[$i]->quantite}}</td>
     <td>{{ $results[$i]->priceUnitaire}}</td>
      <td>{{ $results[$i]->obs}}</td>
+    <td><?php echo($results[$i]->quantite*$results[$i]->priceUnitaire); ?></td>
   </tr>
   <?php
   }

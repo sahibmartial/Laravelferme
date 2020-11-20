@@ -10,7 +10,7 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('accessoires.show',
-		$accessoire->id)}}">{{ $accessoire->campagne}}-{{ $accessoire->libelle}}</a></li>
+		$accessoire->id)}}">{{ $accessoire->campagne}}-{{ $accessoire->libelle}}-{{$accessoire->obs}}</a></li>
 	@endforeach
 	</ul>
 	<div>
