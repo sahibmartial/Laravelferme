@@ -241,11 +241,11 @@ class AccessoireController extends Controller
         $campagne_id=0;
         $campagne="";
         
-  //dd($request->addmore);
+//  dump($request->addmore);
         
 
         $cam= new CampagneController();
-        $aliment= new FonctionController();
+        $accessoire= new FonctionController();
         foreach ($request->addmore as $key => $value) {
              
              $campagne=$value['campagne'];
@@ -254,12 +254,12 @@ class AccessoireController extends Controller
        $campagne_id=$cam->getIntituleCampagneenCours($campagne);
        $arrayName =array('campagne_id'=> $campagne_id);
      // dump($arrayName);
-    //  dd($request->addmore);
+      //dump($request->addmore);
       $collection=$request->addmore;
-
-      $result=$aliment->addmoreaccessoires($collection,$arrayName);
    
-
+      $result=$accessoire->addmoreaccessoires($collection,$arrayName);
+   
+//dd($result);
         $request->validate([
 
             'addmore.*.campagne' => 'bail|required',

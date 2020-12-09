@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Exception;
 use Illuminate\Support\Str;
 use DB;
 use Illuminate\Http\Request;
@@ -233,15 +234,33 @@ class PoussinController extends Controller
     *
     */
 
-   public function selectqteheadForOneCampagne($id){
+   public function selectheadForOneCampagne($id){
 
-  // $result=array(); 
+       $quantity=0; 
        $collections=DB::table('poussins')->whereCampagneId($id)->get('quantite');
 
-        //$result=$collections->toArray();
-       // $result = json_decode($result, true);
-        // dd($result);
-       return  $collections;
+       try {
+        if ($collections->isNotEmpty()) {
+
+            foreach ($collections as $key => $value) {
+           $quantity =$value->quantite;
+       }
+
+       return  $quantity;
+
+        } else {
+            
+              throw new \Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
+        }
+        
+           
+       } catch (Exception $e) {
+
+        echo $e->getMessage();
+           
+       }
+       
+       
     }
 
 }

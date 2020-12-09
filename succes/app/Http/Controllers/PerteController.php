@@ -229,6 +229,28 @@ $collections=$cam->selectDateStartCampagne($campagne_id);
 
      }
 
+ 
+    /**
+     *get form to select all losing of this campaign
+     *
+     */
+    public function getAll_losing(){
+
+        return view("pertes.getAll_losing");
+
+    }
+
+
+   /**
+     *show  all losing of this campaign
+     *
+     */
+    public function showAll_losing(){
+
+         // dd('show losing !!!!');
+         return view("pertes.showAll_losing");
+        
+    }
 
 
 }

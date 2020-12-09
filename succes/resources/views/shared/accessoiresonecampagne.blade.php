@@ -28,8 +28,8 @@ $total=$acc->calculateDepenseAccessoireofthiscampagne($id);
   for ($i=0; $i <count($results) ; $i++) { 
   ?>
   <tr>
-    <td>{{ $results[$i]->date_achat}}</td>
     <td>{{ $results[$i]->campagne_id}}</td>
+    <td>{{$results[$i]->date_achat }}</td>
     <td>{{ $results[$i]->campagne}}</td>
     <td>{{ $results[$i]->libelle}}</td>
     <td>{{ $results[$i]->quantite}}</td>

@@ -20,7 +20,9 @@
 	@endif
 
 <br>
-<p><a href="{{route('pertes.create')}}">Declarez une perte</a></p>
+<p><a href="{{route('pertes.create')}}">Declarez une perte</a>
+/ <a href="{{route('getallAll_losing')}}">Total_Pertes </a>
+</p>
 @stop
 @section('retour')
 <p><a href="/ferme">Menu Principal</a></p>

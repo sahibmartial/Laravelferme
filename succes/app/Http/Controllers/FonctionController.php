@@ -104,6 +104,7 @@ class FonctionController extends Controller
     public function addmoreaccessoires($collection,$arrayName){
 
       $arrayName2= array('campagne_id' => $arrayName['campagne_id'], "campagne" => "campagne2",
+        "date_achat"=>"2020-11-11",
           "libelle" => "aliments croissance",
           "quantite" => "3",
            "priceUnitaire" => "5000",
@@ -112,6 +113,7 @@ class FonctionController extends Controller
 
       for ($i=0; $i <count($collection); $i++) { 
         $results[]=$arrayName2= array('campagne_id' => $arrayName['campagne_id'],
+          "date_achat"=>$collection[$i]['date_achat'],
          "campagne" => $collection[$i]['campagne'],
           "libelle" => $collection[$i]['libelle'],
           "quantite" =>$collection[$i]['quantite'],
@@ -153,6 +155,8 @@ class FonctionController extends Controller
     die();
    }
 
+
+  
  
    
 }

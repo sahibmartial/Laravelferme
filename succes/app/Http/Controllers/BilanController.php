@@ -102,4 +102,19 @@ class BilanController extends Controller
     {
         //
     }
+
+    public function bilan_achats_campagne_en_cours(){
+
+   
+       return view('bilans.bilan_achats_encours');
+    
+  }
+
+   public function getBilan_achats_campagne_en_cours(Request $request){
+
+      $var=$request;
+       return view('bilans.getDetailAchatsBilan',compact('var'));
+    
+  }
+
 }

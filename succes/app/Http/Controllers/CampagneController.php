@@ -310,7 +310,7 @@ class CampagneController extends Controller
 
     public function getCampagneenCours()
     {
-         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->get(['id','intitule']);
+         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->get(['id','intitule','status','start']);
          //$campagnes=(array)$campagnes;
          return $campagnes;
     }
@@ -344,13 +344,39 @@ class CampagneController extends Controller
      } catch (Exception $e) {
        echo $e->getMessage();
      }
-      
-
          
     }
 
 
-    
+    public function getInfosOneCampagneEnCours($campagne)
+    {
+     //$resultcampagne = array('id'=>'','intitule'=>'','status'=>'','date-creation'=>'');
+
+     $resultcampagne_encours=$this->getCampagneenCours();
+
+     foreach ($resultcampagne_encours as $key => $value) {
+
+       try {
+        if (in_array($campagne,  $value->toArray())) {
+          $resultcampagne_encours=$value->toArray();
+        //  dd( $result);
+         return  $resultcampagne_encours;
+       
+        }else{
+        //dd('not found');
+          throw new \Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
+        }
+
+      } catch (Exception $e) {
+       echo $e->getMessage();
+     }
+
+
+   }
+
+
+       //  
+ }    
 
 
 

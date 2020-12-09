@@ -75,13 +75,29 @@ Route::get('transport', 'TransportController@index')->name('transport');
 
 //Poussins
 Route::get('head', 'PoussinController@index')->name('head');
+/*
+*campagne
+*/
 
-//campagne
 Route::get('home', 'CampagneController@index')->name('home');
 Route::get('/cloturer', 'CampagneController@cloturerCampagne')->name('cloturer');
+/*
+*pertes
+*/
 
+Route::get("getallAll_losing","PerteController@getAll_losing")->name('getallAll_losing');
+Route::post("show_all_losing","PerteController@showAll_losing")->name('show_all_losing');
+ /*
+ *Bilan
+ */
 Route::get('/bilan', 'BilanController@index')->name('bilan');
+Route::get('/bilan_achats', 'BilanController@bilan_achats_campagne_en_cours')->name('bilan_achats');
+Route::post('get_billan_achats_enCours','BilanController@getBilan_achats_campagne_en_cours')->name('get_billan_achats_enCours');
 
+
+/*
+*Masse
+*/
 
 Route::get('/mean_masse', 'MasseController@index')->name('mean_masse');
 

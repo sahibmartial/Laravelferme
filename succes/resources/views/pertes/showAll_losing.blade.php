@@ -2,74 +2,71 @@
 <?php 
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
-use App\Http\Controllers\AccessoireController;
-  $result = array();
+use App\Http\Controllers\PerteController;
+//  $result = array();
 //echo "string";
-$cam= new CampagneController();
+/*$cam= new CampagneController();
  $id=$cam->getCampagneenCours();
   //$var= $id->toJson();
  // dump($id);
  for ($i=0; $i <$id->count(); $i++) { 
- 	//dump($id[$i]->id);
- 	 $result[]=$id[$i]->intitule;
+  //dump($id[$i]->id);
+   $result[]=$id[$i]->intitule;
  }
 
 //echo "string";
 $cam= new Campagne();
  $id=$cam::all();
-  $var= $id->toJson();
+  $var= $id->toJson();*/
+
    $campagne =$_POST['campagne'];
 
  // $campagne="campagne5";
         $campagne_id=0;
         $cam= new CampagneController();
-        $acess= new AccessoireController();
+        $lost= new PerteController();
        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($campagne));
-       $results=$acess->selectAllAccessoireforthisCampagne($campagne_id);
+       $results=$lost->selectAllLossOfThisCampagne($campagne_id);
 
-       $total=$acess->calculateDepenseAccessoireofthiscampagne($campagne_id);
+       $total=$lost->calculateTotalLossofthiscampagne($campagne_id);
 
-      // dump($results);
-    //   dd($total);
-
+    // dump($results);
+     //  dd($total);
 
   ?>
+
 @extends('layout.addmorealiments')
 @section('title')
-<title>ACHATS-ACCESSOIRES</title>
+<title>ACHATS-FraisTransport</title>
 @endsection
 @section('contenu')
 <table style="width:100%">
-  <caption>All Accesssoires For this campagne</caption>
+  <caption>All Loss of this campaign</caption>
   <tr>
     <th>ID</th>
     <th>Date</th>
     <th>Campagne</th>
-    <th>Libelle</th>
     <th>Quantite</th>
-     <th>PrixUnitaire</th>
-    <th>Observations</th>
-     <th>DepensesT</th>
-
+     <th>causes</th>
+    {{--<th>Observations</th>--}}
+     <th>TLoss</th>
      </tr>
   <?php
   for ($i=0; $i <count($results) ; $i++) { 
   ?>
   <tr>
+     
     <td>{{ $results[$i]->campagne_id}}</td>
-    <td>{{ $results[$i]->date_achat}}</td>
+    <td>{{ $results[$i]->date_die}}</td>
     <td>{{ $results[$i]->campagne}}</td>
-    <td>{{ $results[$i]->libelle}}</td>
     <td>{{ $results[$i]->quantite}}</td>
-    <td>{{ $results[$i]->priceUnitaire}}</td>
-     <td>{{ $results[$i]->obs}}</td>
-    <td><?php echo($results[$i]->quantite*$results[$i]->priceUnitaire); ?></td>
-  </tr>
+    <td>{{ $results[$i]->cause}}</td>
+    {{--<td>{{ $results[$i]->obs}}</td>--}}
   </tr>
   <?php
   }
     ?>
-    <tr><th colspan="7">Total :</th> 
+    <tr><th colspan="5">Total :</th> 
       <td>{{$total}}</td>
     </tr>
 </table> 
