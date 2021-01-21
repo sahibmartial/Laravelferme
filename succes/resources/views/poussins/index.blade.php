@@ -1,9 +1,16 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>ACHATS-POUSSINS</title>
 @endsection
-@section('contenu')
-<ul>
+@section('content')
+<p class="flaot-left mt-4 mb_4"><a href="/achats"> Retour Menu Achats </a></p>
+<div class="text-center mt-4">
+		@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
+	<ul>
 	@if(count($poussins)>0)
 
 	@foreach($poussins as $key => $campagne)
@@ -18,13 +25,12 @@
 	<p>Aucune quantite de poussins Enregistres pour une campagne !!! </p>
 	@endif
 
-<br>
-<p><a href="{{route('poussins.create')}}">Enregister une quantite de poussins</a></p>
+	<p><a href="{{route('poussins.create')}}">Enregister une quantite de poussins</a></p>
+</div>
+
+
+
 @stop
 
-@section('retour')
-<p><a href="/achats"> Retour Menu Achats </a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

@@ -1,6 +1,6 @@
-<nav>	
+<nav class="text-center">	
 	<fieldset>
-		<legend>Menu: </legend>
+		<!--<small><legend>Board: </legend></small> -->
 		<input type="button" onclick="window.location.href = '/campagnes';" target="_blink" value="Campagnes"/>
 		<input type="button" onclick="window.location.href = '/achats';" target="_blink" value="Achats"/>
 		<input type="button" onclick="window.location.href = '/perte';" target="_blink" value="Pertes "/>

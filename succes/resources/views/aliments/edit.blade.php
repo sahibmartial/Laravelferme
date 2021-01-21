@@ -1,15 +1,13 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>ALIMENTS</title>
 @stop
 
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
+	
 @include('shared.editaliment')
-@stop
-<br>
-@section('retour')
-<p><a href="{{route('aliments.index')}}">Listing Aliments</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+<p class="mt-2"><a href="{{route('aliments.index')}}">Listing Aliments</a></p>
+</div>
+
 @stop

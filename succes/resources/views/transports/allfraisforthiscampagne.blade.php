@@ -6,13 +6,26 @@ $results=$frais->selectAllFraisTrasnportForOneCampagne($id);
 //$index=$campagnes->id;
 //dd($results);
 ?>
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>Transport</title>
 @stop
-@section('contenu')
+
+@section('content')
+<h3 class="text-center">Detail-Frais-Campagne</h3>
+@php
+//dd($results);
+if(count($results)>0){
+@endphp
+	<div class="text-center mt-4">
 @include('shared.fraisforthiscampagne')
-@stop
-@section('retour')
+@php
+}
+else{
+"Aucun frais declaré pour cette campagne";
+}
+@endphp
+<hr>
 <p><a href="/achats">Achats</a></p>
-@endsection
+</div>
+@stop

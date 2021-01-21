@@ -100,6 +100,8 @@ th, td {
      padding: 1px;
      background-color: #45a1ff;
      color: #fff;
+     margin-top: 25px
+     margin-bottom: 5px;
     }
     a[href^="mailto"]::before {
      content: "📧 ";
@@ -109,4 +111,15 @@ th, td {
      content: "📞 ";
     }
 
+.table-detail{
+  margin-top: 10px;
+  margin-bottom: 150px;
+}
+.retour{
+  margin-top: 70px;
+  margin-bottom: 10px;
+}
 
+.float-sm-right{
+  margin-top: 10px;
+}

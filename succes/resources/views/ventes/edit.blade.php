@@ -1,15 +1,14 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>VENTE</title>
 @stop
 
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
 @include('shared.vente_edit')
+<hr>
+<p><a href="{{route('vente')}}">Listing Vente</a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="{{route('vente')}}">Listing Vente</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+

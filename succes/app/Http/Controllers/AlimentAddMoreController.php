@@ -103,7 +103,8 @@ class AlimentAddMoreController extends Controller
         	//dd($value[0]);
            Aliment::create($value);
         }
-        return back()->with('success', 'Record Created Successfully.');
+        
+        return back()->with('success', 'Aliment enregistrée avec  Success.');
 
     }
 }

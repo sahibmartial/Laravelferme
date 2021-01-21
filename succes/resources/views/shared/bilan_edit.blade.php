@@ -1,4 +1,6 @@
-<h2>Editer Bilan #{{ $bilans->id}}</h2>
+<div class="text-center mt-4">
+	
+<h2>Editer Bilan #{{ $bilans->campagne}}</h2>
 <form action="{{route('bilans.update',$bilans)}}" method="POST">
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
@@ -15,3 +17,5 @@
 	<br>
 	<input type="submit" value="Editer  Bilan">
 </form>
+	
+</div>

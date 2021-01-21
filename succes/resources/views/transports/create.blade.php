@@ -1,15 +1,13 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>TRANSPORT</title>
 @stop
 
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
 @include('shared.formtransport')
+<hr>
+<p><a href="/achats"> Retour Achats</a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="/achats"> Retour Achats</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop

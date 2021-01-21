@@ -1,10 +1,11 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>Accessoires</title>
 @stop
 
-@section('contenu')
-<ul>
+@section('content')
+<div class="text-center mt-4 mb-4">
+	<ul>
 	@if($accessoires->count()>0)
 	@foreach($accessoires as $accessoire)
 	<!--utilisation des routes -->
@@ -13,9 +14,10 @@
 		$accessoire->id)}}">{{ $accessoire->campagne}}-{{ $accessoire->libelle}}-{{$accessoire->obs}}</a></li>
 	@endforeach
 	</ul>
-	<div>
+	<div class="text-center">
 		{{$accessoires->links()}}
 	</div>
+			
 	@else
 	<p>Aucun Accessoires Enregistres pour une campagne !!! </p>
 	@endif
@@ -24,11 +26,15 @@
 <p><a href="{{route('accessoires.create')}}">Enregister un accessoire</a>
 	/ <a href="{{route('get_all_accesoires')}}">All_Accesoires for_this_campagne</a>
 </p>
+
+<hr>
+<p><a href="/achats">Retour Achats</a></p>
+	
+
+</div>
+
+
 @stop
 
-@section('retour')
-<p><a href="/achats">Retour Achats</a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

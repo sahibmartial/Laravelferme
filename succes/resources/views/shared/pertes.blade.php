@@ -1,5 +1,4 @@
 <table style="width:100%">
-  <caption>Detail  Pertes</caption>
   <tr>
     <th>ID</th>
     <th>Date</th>

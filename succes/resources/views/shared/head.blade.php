@@ -1,6 +1,6 @@
 
 <table style="width:100%">
-  <caption>Detail Achat poussins</caption>
+  
   <tr>
     <th>ID</th>
     <th>Date</th>

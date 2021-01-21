@@ -18,13 +18,17 @@ $total=$alim->calculateDepenseAlimentofthiscampagne($id);
 //dd($total);
 
 ?>
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>Aliments</title>
 @stop
-@section('contenu')
-@include('shared.alimentsforthiscampagne')
-@stop
-@section('retour')
+@section('content')
+<div class="text-center mt-4">
+	@include('shared.alimentsforthiscampagne')
 <p><a href="/achats">Achats</a></p>
-@endsection
+</div>
+
+@stop
+
+
+

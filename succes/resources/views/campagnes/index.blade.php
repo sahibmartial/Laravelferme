@@ -1,10 +1,22 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>CAMPAGNES</title>
 @stop
-@section('contenu')
-<h2>{{$campagnes->count() }} Campagne(s) </h2>
+@section('content')
+
+<div class="col-lg-0 mt-2">
+<a href="/ferme">Retour Menu Principale</a>	
+</div>
+<div class="text-center">
+
+	<h2>{{$campagnes->count() }} Campagne(s) </h2>
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <ul>
+
 	@if($campagnes->count()>0)
 	@foreach($campagnes as $campagne)
 	<!--utilisation des routes -->
@@ -21,10 +33,7 @@
 	@endif
 <p><a href="{{route('campagnes.create')}}">creer une campagne</a>
 </p>
-@stop
-@section('retour')
-<a href="/ferme">Retour Menu Principale</a>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+
+</div>
+
 @stop

@@ -1,5 +1,6 @@
+
 <table style="width:100%">
-  <caption>Detail Vente</caption>
+  
   <tr>
     <th>ID</th>
     <th>Intitule</th>

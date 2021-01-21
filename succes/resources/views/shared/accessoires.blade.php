@@ -1,6 +1,6 @@
  
  <table style="width:100%">
-  <caption>Detail Accesssoires</caption>
+  
   <tr>
     <th>ID</th>
     <th>Date</th>

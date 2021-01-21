@@ -73,7 +73,8 @@ class TransportController extends Controller
             'obs'=>$request->obs]);
 
       
-        return redirect()->route('transport');  
+        //return redirect()->route('transport');  
+         return redirect()->route('transports.index')->with('success', 'Masse has been successfully added');
     }
 
     /**
@@ -205,5 +206,21 @@ class TransportController extends Controller
        return view("transports.showallTransports_of_one_campagne");
 
     }
+
+
+
+    /**
+* generation du pdf frais de transport d'une campagne
+*/
+    
+ public function downloadRecapFrais($data)
+ {
+    $transport= new Transport();
+    $results=$transport->downloadRecapFrais($data);
+    return $results;
+    
+ }
+
+ 
 
 }

@@ -97,7 +97,8 @@ class PerteController extends Controller
         ]);
 
       
-        return redirect()->route('perte');   
+       //return redirect()->route('perte');   
+         return redirect()->route('pertes.index')->with('success', 'Perte has been successfully added');
     }
 
     /**
@@ -251,6 +252,34 @@ $collections=$cam->selectDateStartCampagne($campagne_id);
          return view("pertes.showAll_losing");
         
     }
+
+
+
+    /**
+     *calcule total pertes of this campagne
+     *
+     */
+    public function pertesOfthisCampagne($value)
+    {
+        $perte=new Perte();
+        $result =$perte->pertesOfthisCampagne($value);
+
+         return $result;
+        
+    }
+/**
+* generation du pdf des pertes d'une campagne
+*/
+    
+ public function downloadRecapPerte($data)
+ {
+    $pertes= new Perte();
+    $results=$pertes->downloadRecapPerte($data);
+    return $results;
+ }
+
+
+ 
 
 
 }

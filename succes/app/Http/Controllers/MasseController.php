@@ -68,7 +68,8 @@ class MasseController extends Controller
             'annee'=>$year,
             'obs'=>$request->obs]);
 
-        return redirect()->route('masses.index'); 
+        //return redirect()->route('masses.index'); 
+         return redirect()->route('masses.index')->with('success', 'Masse has been successfully added');
 
     }
 

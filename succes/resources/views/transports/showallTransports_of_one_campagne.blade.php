@@ -18,7 +18,7 @@ $cam= new CampagneController();
 $cam= new Campagne();
  $id=$cam::all();
   $var= $id->toJson();
-   $campagne =$_POST['campagne'];
+   $campagne =Str::lower($_POST['campagne']);
 
  // $campagne="campagne5";
         $campagne_id=0;
@@ -29,55 +29,60 @@ $cam= new Campagne();
 
        $total=$frais->calculateFraisTotalOfCampagne($campagne_id);
 
-      //dump($results);
+     // dd($results);
       // dd($total);
+
+    
 
 
   ?>
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>ACHATS-FraisTransport</title>
 @endsection
-@section('contenu')
-<table style="width:100%">
-  <caption>All frais de trasports For this campagne</caption>
-  <tr>
-    <th>ID</th>
-    <th>Date</th>
-    <th>Campagne</th>
-    {{--<th>Libelle</th>--}}
-    {{--<th>Quantite</th>--}}
-     <th>Montant</th>
-    <th>Observations</th>
-     <th>Depenses</th>
-     </tr>
-  <?php
-  for ($i=0; $i <count($results) ; $i++) { 
-  ?>
-  <tr>
-     
-    <td>{{ $results[$i]->campagne_id}}</td>
-    <td>{{ $results[$i]->date_achat}}</td>
-    <td>{{ $results[$i]->campagne}}</td>
-    {{--<td>{{ $results[$i]->libelle}}</td>--}}
-    {{--<td>{{ $results[$i]->quantite}}</td>--}}
-    <td>{{ $results[$i]->montant}}</td>
-     <td>{{ $results[$i]->obs}}</td>
-  </tr>
-  <?php
-  }
-    ?>
-    <tr><th colspan="5">Total :</th> 
-      <td>{{$total}}</td>
+@section('content')
+@if (count($results) > 0)
+<div class="text-left"><a href="{{route('pdf_transport',['data'=>$campagne])}}">download</a></div>
+<div class="text-center mt-2">
+  <b>{{'Recap Frais transport de la '}}{{$results[0]->campagne}}</b> 
+</div>
+<table class="table mt-5">
+  <thead >
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Campagne</th>    
+      <th scope="col">Montant</th>
+       <th scope="col">Observations</th>
+      <th scope="col">DepensesT</th>
+      
     </tr>
-</table> 
+  </thead>
+  <tbody>
+    @for ($i = 0; $i < count($results); $i++)
+       {{--<option value="{{ $i }}">{{ $i }}</option>--}}
+    
+    <tr>
+       <td>{{ $results[$i]->date_achat}}</td>
+      <th scope="row">{{$results[$i]->campagne}}</th>
+       
+      <td>{{$results[$i]->montant}} FCFA </td>
+       <td>{{ $results[$i]->obs}}</td>
+        <td>{{ $results[$i]->montant}} FCFA</td>
+    </tr> 
+    
+    @endfor
+  </tbody>
+  <tr>
+    <th colspan="4">Total:</th>
+      <td><b>{{$total}}</b> FCFA</td>
+    </tr>  
+</table>
+@else
+Aucun Transport enregistré pour la campagne !!
+@endif
+<hr>
+<p class="text-center"><a href="/achats"> Retour Achats</a></p>
+
 @stop
 
-@section('retour')
-<br>
-<p><a href="/achats"> Retour Achats</a></p>
-@endsection
 
-@section('footer')
-@include('layout.partials.footer')
-@stop

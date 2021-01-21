@@ -1,9 +1,11 @@
 
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>MASSE</title>
 @stop
-@section('contenu')
+@section('content')
+<p class="text-center mt-2 mb-2">Detail masse </p>
+<div class="text-center mt-4">
 @include('shared.show_masses')
 
 <p><a href="{{ route('masses.edit', $masses)}}">Modifier Masse</a>
@@ -15,8 +17,7 @@
 	<input type="submit" value="supprimer">
 	
 </form>
-@stop
-
-@section('retour')
+<hr>
 <p><a href="{{route('masses.index')}}">retour</a></p>
+</div>
 @stop

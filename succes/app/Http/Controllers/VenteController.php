@@ -50,14 +50,14 @@ class VenteController extends Controller
     {
           Str::lower($request->campagne);
           //dump($request->acheteur);
-          // dd($request->events);
+          // dd($request);
 
 
         $cam= new CampagneController();
        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
         $rules=[
-         //'campagne_id'=>'bail|required',  
+        // 'date'=>'bail|required',  
          'campagne'=>'bail|required|min:9',
          'quantite'=>'bail|required',
          'priceUnitaire'=>'bail|required',
@@ -71,6 +71,7 @@ class VenteController extends Controller
        Vente::create([
 
             'campagne_id'=>$campagne_id,
+            //'date'=>$request->date,
             'campagne'=>Str::lower($request->campagne),
             'quantite'=>$request->quantite,
             'priceUnitaire'=>$request->priceUnitaire,
@@ -81,7 +82,8 @@ class VenteController extends Controller
     ]);
 
       
-        return redirect()->route('vente'); 
+       // return redirect()->route('vente'); 
+         return redirect()->route('ventes.index')->with('success', 'vente has been successfully added');
 
 
         
@@ -211,5 +213,56 @@ class VenteController extends Controller
 
     //$this->info("Source chosen is $source");
 }
+
+public function getRecap()
+{
+    $recap = new Vente();
+    
+
+    return view('ventes.recap');
+    
+}
+
+public function getRecapShow(Request $request)
+{
+    $campagne=$request->campagne;
+    $recap = new Vente();
+   $result= $recap->getRecapShow($request->campagne);
+   if (!empty($result)) {
+  //  dd($result);
+     return view('ventes.recapShow',compact('result','campagne'));
+      
+   }else{
+   
+    $result=[];
+    return view('ventes.recap',compact('result'));
+    //return redirect()->route('recap_vente')->with('Result', 'Not found for this campagne');
+   }    
+    
+}
+
+public function calculRecapvente($request)
+{
+     $recap = new Vente();
+     $result= $recap->calculRecapvente($request);
+
+     return  $result;
+}
+
+
+/**
+* generation du pdf du detail des ventes d'une vcampagne
+*/
+    
+ public function downloadRecapVente($data)
+ {
+    $vente= new Vente();
+    $results=$vente->downloadRecapVente($data);
+    return $results;
+    
+ }
+ 
+
+
  
 }

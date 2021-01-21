@@ -2,13 +2,14 @@
 $tarted=date("Y-m-d ");
 //dd($tarted);
 ?>
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>Employer</title>
 @stop
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
 @include('shared.formeployer')
-@stop
-@section('retour')
+<hr>
 <p><a href="{{route('home')}}">Accueil</a></p>
+</div>
 @stop

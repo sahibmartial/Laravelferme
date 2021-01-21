@@ -6,16 +6,21 @@ use App\Http\Controllers\CampagneController;
 $duredevie=0;
   ?>
 
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>VENTES</title>
 @endsection
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
 <h2>Declarer une Vente</h2>
 <form action="{{route('ventes.store')}}" method="POST">
 	{{ csrf_field() }}
 	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
+    <br>--}}
+
+    {{--<input type="date" name="date" placeholder="" value={{ old('date') }}>
+     {!! $errors->first('date','<span class="error-msg">:message</span>') !!}
     <br>--}}
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
@@ -43,17 +48,14 @@ $duredevie=0;
 	<textarea name="obs" placeholder="Observations" ></textarea>
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	<br>
-	<input type="submit" value="Enregister vente">
+	<input type="submit" value="Enregister vente" class="btn btn-success">
 </form>
 <br>
 
 <p><a href="{{route('ventes.index')}}">Liste ventes</a></p>
+<hr>
+<p><a href="/vente"> Retour menu principal </a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="/vente"> Retour menu principal </a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop
 

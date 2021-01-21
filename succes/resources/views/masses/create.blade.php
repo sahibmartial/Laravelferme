@@ -12,17 +12,16 @@ $cam= new CampagneController();
  }
 //dump( $result);
   ?>
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>MASSE</title>
 @endsection
-@section('contenu') 
+@section('content') 
+<div class="text-center mt-4">
+
 @include('shared.masse_form')
+<hr>
+<p><a href="/mean_masse"> Retour Masse</a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="/mean_masse"> Retour Masse</a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop

@@ -1,14 +1,13 @@
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>FERME-MAYA</title>
 @endsection
-@section('contenu')
-<h1>Menu Achats :</h1>
+@section('content')
+<div class="text-center mt-4">
+	<h3 class="mb-4">Menu Achats :</h3>
 @include('layout.partials.navachats')
-@endsection
-@section('retour')
 <a href="/ferme">Retour Menu Ferme</a>
+
+</div>
+
 @endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop

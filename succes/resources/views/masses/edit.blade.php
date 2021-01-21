@@ -1,5 +1,6 @@
-@extends('layout.addmorealiments')
-@section('contenu')
+@extends('base')
+@section('content')
+<div class="text-center mt-4">
 <h1>Editer Masse #{{ $masses->id}}</h1>
 <form action="{{route('masses.update',$masses)}}" method="POST">
 	{{ csrf_field() }}
@@ -16,12 +17,9 @@
 	<input type="text" name="mean_masse" cols="20" rows="10" placeholder="quantite" value=" {{old('mean_masse')?? $masses->mean_masse}}">
 	{!! $errors->first('mean_masse','<span class="error-msg">:message</span>') !!}
 	<br>
-	<input type="submit" value="Editer  Masse campagne">
+	<input type="submit" value="Editer  Masse campagne" class="btn btn-success">
 </form>
-<br>
+<hr>
 <p><a href="{{route('masses.index')}}">Accueil</a></p>
-@stop
-
-@section('footer')
-@include('layout.partials.footer')
+</div>
 @stop

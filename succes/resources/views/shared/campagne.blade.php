@@ -1,5 +1,5 @@
 <table style="width:100%">
-  <caption>Detail Campagne</caption>
+  
   <tr>
     <th>ID</th>
     <th>Intitule</th>

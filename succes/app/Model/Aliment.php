@@ -15,4 +15,15 @@ class Aliment extends Model
 'priceUnitaire',
 'fournisseur',
 'obs','date_achat'];
+
+
+  public function downloadRecapAliments($data)
+   {
+    $aliments=Aliment::whereCampagne(['campagne'=>$data])->get(['campagne','quantite','priceUnitaire','obs','date_achat','libelle']);
+    
+    return  $aliments;
+   }
+
+ 
+
 }

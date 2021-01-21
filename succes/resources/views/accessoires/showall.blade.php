@@ -31,16 +31,20 @@ $cam= new Campagne();
 
       // dump($results);
     //   dd($total);
-
-
-  ?>
-@extends('layout.addmorealiments')
+?>
+@extends('base')
 @section('title')
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
-@section('contenu')
-<table style="width:100%">
-  <caption>All Accesssoires For this campagne</caption>
+@section('content')
+<div class="float-sm-left mt-3">
+  <p><a href="{{route('pdf_accesoires',['data'=>$campagne])}}" class="btn btn-primary">Download</a></p>
+</div>
+<div class="float-sm-right mt-3">
+  <p><a href="/achats" class="retour">Retour_Achats</a></p>
+</div>
+
+  <table style="width:100%">
   <tr>
     <th>ID</th>
     <th>Date</th>
@@ -63,23 +67,18 @@ $cam= new Campagne();
     <td>{{ $results[$i]->quantite}}</td>
     <td>{{ $results[$i]->priceUnitaire}}</td>
      <td>{{ $results[$i]->obs}}</td>
-    <td><?php echo($results[$i]->quantite*$results[$i]->priceUnitaire); ?></td>
-  </tr>
+    <td><?php echo($results[$i]->quantite*$results[$i]->priceUnitaire); ?> FCFA</td>
   </tr>
   <?php
   }
     ?>
     <tr><th colspan="7">Total :</th> 
-      <td>{{$total}}</td>
+      <td><b>{{$total}}</b> FCFA</td>
     </tr>
 </table> 
+
+
+
 @stop
 
-@section('retour')
-<br>
-<p><a href="/achats"> Retour Achats</a></p>
-@endsection
 
-@section('footer')
-@include('layout.partials.footer')
-@stop

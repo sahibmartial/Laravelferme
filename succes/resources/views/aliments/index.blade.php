@@ -1,10 +1,12 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>Aliments</title>
 @stop
 
-@section('contenu')
-<ul>
+@section('content')
+<div class="text-center mt-4">
+	
+	<ul>
 	@if($aliments->count()>0)
 	@foreach($aliments as $aliment)
 	<!--utilisation des routes -->
@@ -24,10 +26,8 @@
 <p><a href="{{route('aliments.create')}}">Enregister un Achat Aliment </a>
 /  <a href="{{route('getallAliments')}}">All_Aliments_of_one_camapgne </a>
 </p>
-@stop
-@section('retour')
 <p><a href="/achats"> Menu Achats</a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
+</div>
+
 @stop
+

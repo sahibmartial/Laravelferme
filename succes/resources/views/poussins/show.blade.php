@@ -1,5 +1,5 @@
-@extends('layout.addmorealiments')
-@section('contenu')
+@extends('base')
+@section('content')
 {{--
 <h1>Info Achat Poussins Campagne</h1>
 <p>{{ $lists->campagne}}</p>
@@ -8,22 +8,24 @@
 <p>{{ $lists->fournisseur}}</p>
 <p>{{ $lists->obs}}</p>
 --}}
-@include('shared.head')
-<br>
-<p><a href="{{ route('poussins.edit', $lists)}}">Modifier  Achat Poussins</a></p>
 
-<form action="{{route('poussins.destroy',$lists)}}" method="POST" 
+<div class="text-center mt-4 mb-4">
+	<h3>Detail Achat poussins</h3>
+	@include('shared.head')
+	<hr>
+	<p><a href="{{ route('poussins.edit', $lists)}}">Modifier  Achat Poussins</a> / <a href="{{route('pdf_poussins',['data'=>$lists->campagne])}}">download</a></p>
+	<form action="{{route('poussins.destroy',$lists)}}" method="POST" 
 onsubmit="return confirm('Etes vous sure?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
 	<input type="submit" value="supprimer">
 	
 </form>
-<br>
-@stop
-@section('retour')
+<hr>
 <p><a href="{{route('head')}}">retour achats poussins</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+	
+</div>
+
+
+
 @stop

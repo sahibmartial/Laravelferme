@@ -202,9 +202,25 @@ class AlimentController extends Controller
     public function showallAliments(){
 
         //dd('here');
+
     
        return view("aliments.showallAliments_of_one_campagne");
 
+    }
+
+    /*
+    *generation pdf of this campagne
+    */
+
+    public function downloadRecapAliments($data)
+    {
+       
+        $aliments= new Aliment();
+       $results= $aliments->downloadRecapAliments($data);
+    //dd($results);
+
+    return $results;
+       
     }
 
 

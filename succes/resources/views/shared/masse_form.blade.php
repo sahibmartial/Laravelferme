@@ -13,7 +13,7 @@
 	<textarea name="obs" placeholder="RAS"></textarea>
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	<br>
-	<input type="submit" value="Enregister masse">
+	<input type="submit" value="Enregister masse" class="btn btn-success">
 </form>
 <br>
 <p><a href="{{route('masses.index')}}">Lister masse campagne</a></p>

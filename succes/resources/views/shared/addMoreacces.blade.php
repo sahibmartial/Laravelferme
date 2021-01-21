@@ -63,7 +63,8 @@
                 <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
             </tr>  
         </table> 
-        <button type="submit" class="btn btn-success">Save</button>
+        <div class="text-center "><button type="submit" class="btn btn-success">Save</button></div>
+        
     </form>
   
 <script type="text/javascript">

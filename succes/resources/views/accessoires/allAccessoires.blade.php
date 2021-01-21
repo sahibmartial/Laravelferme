@@ -1,4 +1,4 @@
-@extends('layout.addmorealiments')
+@extends('base')
 <?php 
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
@@ -21,10 +21,11 @@ $cam= new Campagne();
 @section('title')
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
-@section('contenu')
-<h2> Get All Accessoires</h2>
+@section('content')
+<div class="text-center mt-4 mb-4">
+  <h2> Get All Accessoires</h2>
 <form action=" {{route('show_all_accesoires')}}" method="POST">
-	{{ csrf_field() }}
+  {{ csrf_field() }}
    <div>
                             {{ Form::label('campagne', 'Name Campagne:') }}
                             <br>
@@ -37,18 +38,15 @@ $cam= new Campagne();
                                 @enderror
                             
                         </div>
-	<br>
-	<input type="submit" value="Get All">
+  <br>
+  <input type="submit" value="Get All">
 </form>
 {{--$request->campagne--}}
 
 {{--<p><a href="{{route('accessoires.index')}}">Lister Accessoires</a></p>--}}
-@stop
-<br>
-@section('retour')
+<hr>
 <p><a href="/achats"> Retour Achats</a></p>
-@endsection
+  
+</div>
 
-@section('footer')
-@include('layout.partials.footer')
 @stop

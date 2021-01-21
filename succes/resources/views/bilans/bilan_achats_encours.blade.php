@@ -1,4 +1,4 @@
-@extends('layout.addmorealiments')
+@extends('base')
 <?php 
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
@@ -21,15 +21,15 @@ $cam= new Campagne();
 @section('title')
 <title>ACHATS-Bilan En Cours</title>
 @endsection
-@section('contenu')
-<h2> Bilan campagne en cours </h2>
+@section('content')
+<div class="col-lg-0 mt-2">
+	<p><a href="/ferme"> Retour Menu</a></p>
+</div>
+<div class="text-center mt-2">
+	<h3> Bilan campagne en cours </h3>
 @include('shared.infos_one_campagne_form')
+</div>
 @stop
-<br>
-@section('retour')
-<p><a href="/ferme"> Retour Menu</a></p>
-@endsection
 
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

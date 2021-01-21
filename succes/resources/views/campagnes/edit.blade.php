@@ -2,20 +2,18 @@
 $tarted=date("Y-m-d ");
 //dd($tarted);
 ?>
-@extends('layout.addmorealiments')
+@extends('base')
+
 @section('title')
 <title>CAMPAGNE</title>
 @stop
-@section('contenu')
-@include('shared.campagne_edit')
+	
+@section('content')
+
+<div class="text-center mt-5 mb-3">
+	@include('shared.campagne_edit')
+</div>
+<p class="btn btn-info mb-5 float-right"><a href="{{route('home')}}">Accueil</a></p>
 @stop
-<br>
-@section('retour')
-<p><a href="{{route('home')}}">Accueil</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

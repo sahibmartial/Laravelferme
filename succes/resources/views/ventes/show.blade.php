@@ -1,10 +1,12 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>VENTE</title>
 @stop
-@section('contenu')
+@section('content')
+<h2 class="text-center mt-2">Detail Vente</h2>
+<div class="text-center mt-4">
 @include('shared.showvente')
-<br>
+<hr>
 <p><a href="{{ route('ventes.edit', $ventes)}}">Modifier Vente</a></p>
 
 <form action="{{route('ventes.destroy',$ventes)}}" method="POST"onsubmit="return confirm('Etes vous sure?');">
@@ -13,11 +15,7 @@
 	<input type="submit" value="supprimer">
 	
 </form>
-@stop
-<br>
-@section('retour')
+<hr>
 <p><a href="{{route('vente')}}">Retour Vente</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+</div>
 @stop

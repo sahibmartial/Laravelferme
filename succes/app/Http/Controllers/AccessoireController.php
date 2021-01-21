@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Model\Accessoire;
  use App\Http\Controllers\CampagneController;
+ 
 
 class AccessoireController extends Controller
 {
@@ -296,9 +297,25 @@ class AccessoireController extends Controller
     
     public function showallaccesoires(){
 
-        //dd('here');
+        $accessoire= new Accessoire();
+         //$accessoire->
+       // $campagne="";
     
        return view("accessoires.showall");
+
+    }
+   /**
+    * generation de pdf accessoires
+    * 
+    */ 
+
+    public function downloadRecapAccessoires($data)
+    {
+        $accessoires= new Accessoire();
+       $results=$accessoires->downloadRecapAccessoires($data);
+    //dd($results);
+
+    return $results;
 
     }
 

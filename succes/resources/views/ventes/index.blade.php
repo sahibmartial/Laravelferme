@@ -4,11 +4,17 @@ $vente= new VenteController();
 $result=$vente->calculateVenteOfCampagne(1);*/
  //  echo $result;
 ?>
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>Vente</title>
 @stop
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <ul>
 	@if($ventes->count()>0)
 	@foreach($ventes as $vente)
@@ -27,12 +33,14 @@ $result=$vente->calculateVenteOfCampagne(1);*/
 	@endif
 
 <br>
-<p><a href="{{route('ventes.create')}}">Enregister une Vente</a></p>
+<p class="text-center"><a href="{{route('ventes.create')}}">Enregister une Vente</a>
+	 |
+	<a href="{{route('recap_vente')}}">Recap Vente</a>
+
+</p>
+<p><a href="/ferme">Menu Principal</a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="/ferme">Menu Principal</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

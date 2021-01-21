@@ -3,11 +3,17 @@
 $vente= new TransportController();
 $result=$vente->calculateFraisTotalOfCampagne(1);*/
 ?>
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>TRANSPORT</title>
 @stop
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <ul>
 	@if($transports->count()>0)
 	@foreach($transports as $transport)
@@ -29,11 +35,8 @@ $result=$vente->calculateFraisTotalOfCampagne(1);*/
 / <a href="{{route('get_all_transports')}}">AllFrais_For_this campagne</a>
 
 </div>
-@stop
-@section('retour')
-<br>
+
+<hr>
 <p><a href="/achats"> Retour Achats</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+</div>
 @stop

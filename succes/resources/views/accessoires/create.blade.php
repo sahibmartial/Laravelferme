@@ -1,4 +1,4 @@
-@extends('layout.addmorealiments')
+@extends('base')
 <?php 
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
@@ -21,36 +21,40 @@ $cam= new Campagne();
 @section('title')
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
-@section('contenu')
-<h1>Achat Accessoires</h1>
+@section('content')
+<div class="text-center mt-4 mb-4">
+  <h3>Achat Accessoires</h3>
 <form action="{{route('accessoires.store')}}" method="POST">
-	{{ csrf_field() }}
-	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
+  {{ csrf_field() }}
+  {{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
     <br>--}}
-	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
+  <input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
     <br>
-	<input type="text" name="libelle" placeholder="Entrez libelle " value={{ old('libelle') }}>
-	{!! $errors->first('libelle','<span class="error-msg">:message</span>') !!}
-	<br>
+  <input type="text" name="libelle" placeholder="Entrez libelle " value={{ old('libelle') }}>
+  {!! $errors->first('libelle','<span class="error-msg">:message</span>') !!}
+  <br>
   <input type="number" name="quantite" placeholder="Quantite " value={{ old('quantite') }}>
-	{!! $errors->first('quantite','<span class="error-msg">:message</span>') !!}
+  {!! $errors->first('quantite','<span class="error-msg">:message</span>') !!}
   <br>
   <input type="number" name="priceUnitaire" placeholder="Prix Unitaire " value={{ old('priceUnitaire') }}>
-	{!! $errors->first('priceUnitaire','<span class="error-msg">:message</span>') !!}
+  {!! $errors->first('priceUnitaire','<span class="error-msg">:message</span>') !!}
   <br>
-  	<textarea name="obs" placeholder="RAS"></textarea>
-	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
-	<br>
-	<input type="submit" value="Enregister accessoires">
+    <textarea name="obs" placeholder="RAS"></textarea>
+  {!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
+  <br>
+  <input type="submit" value="Enregister accessoires">
 </form>
 <p><a href="{{route('accessoires.index')}}">Lister Accessoires</a></p>
-@stop
-@section('retour')
-<p><a href="/achats"> Retour Achats</a></p>
-@endsection
 
-@section('footer')
-@include('layout.partials.footer')
+<hr>
+<p><a href="/achats"> Retour Achats</a></p>
+
+</div>
+
 @stop
+
+
+
+

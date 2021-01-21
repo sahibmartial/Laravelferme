@@ -7,8 +7,5 @@
 @stop
 <br>
 @section('retour')
-<p><a href="/achats"> Retour Achats</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+<p class="text-center"><a href="/achats"> Retour Achats</a></p>
 @stop

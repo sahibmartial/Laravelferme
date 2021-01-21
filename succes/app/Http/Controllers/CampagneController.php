@@ -64,7 +64,8 @@ class CampagneController extends Controller
             'obs'=>$request->obs
         ]);
       
-        return redirect()->route('home');   
+     //   return redirect()->route('home');   
+        return redirect()->route('campagnes.index')->with('success', 'Campagne has been successfully added');
 
     }
 
@@ -138,7 +139,7 @@ class CampagneController extends Controller
         
         Campagne::destroy($id);
 
-        return back()->with('info', 'La campagne a bien été supprimée dans la base de données.');
+        return back()->with('success', 'La campagne a bien été supprimée dans la base de données.');
         //return redirect()->route('home');
     }
     
@@ -342,7 +343,7 @@ class CampagneController extends Controller
      }
        
      } catch (Exception $e) {
-       echo $e->getMessage();
+       //echo $e->getMessage();
      }
          
     }
@@ -368,7 +369,7 @@ class CampagneController extends Controller
         }
 
       } catch (Exception $e) {
-       echo $e->getMessage();
+       //echo $e->getMessage();
      }
 
 

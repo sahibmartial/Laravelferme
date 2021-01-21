@@ -4,7 +4,7 @@
    @yield('title')
  
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
- <link rel="stylesheet" type="text/css" href="/css/app.css">
+  
  
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
@@ -26,12 +26,15 @@
 
           <div class="links">
             @yield('contenu')
-             @yield('retour')
+            
          </div>
 
        </div>
         </div>
-     @yield('footer')
+    
 </body>
+ @yield('retour')
+
+ @yield('footer')
 </html>
 

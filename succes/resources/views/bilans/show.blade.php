@@ -1,11 +1,12 @@
 <?php
 //$index=$campagnes->id;
 ?>
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>BILAN</title>
 @stop
-@section('contenu')
+@section('content')
+
 @include('shared.bilanshow')
 <p><a href="{{ route('bilans.edit', $bilans)}}">Modifier Bilan</a>
 </p>

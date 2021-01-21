@@ -1,6 +1,8 @@
-@extends('layout.addmorealiments')
-@section('contenu')
-<h1>Editer  Achat Poussins #{{ $poussin->id}}</h1>
+@extends('base')
+@section('content')
+
+<div class="text-center mt-4 mb-4">
+	<h3>Editer  Achat Poussins #{{ $poussin->id}}</h3>
 <form action="{{route('poussins.update',$poussin)}}" method="POST">
 	{{ csrf_field() }}
 	<!--<input type="hidden" name="method" value="PUT">-->
@@ -39,11 +41,8 @@
 	<br>
 	<input type="submit" value="Editer Achat Poussin">
 </form>
-<br>
-@stop
-@section('retour')
+<hr>
 <p><a href="{{route('head')}}">Accueil Poussins</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
+</div>
+
 @stop

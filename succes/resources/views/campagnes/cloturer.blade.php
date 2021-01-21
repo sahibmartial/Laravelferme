@@ -1,13 +1,13 @@
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>CAMPAGNE</title>
 @stop
-@section('contenu')
-@include('shared.cloture_campagne')
-@stop
-@section('retour')
+@section('content')
+<div class="text-center mt-2 mb-5">
+	@include('shared.cloture_campagne')
+</div>
 <p><a href="{{route('home')}}">Accueil</a></p>
 @stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+
+

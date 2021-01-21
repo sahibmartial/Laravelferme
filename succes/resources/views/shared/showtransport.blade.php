@@ -1,5 +1,4 @@
-<table style="width:100%">
-  <caption>Detail Frais Transport</caption>
+<table  style="width:100%">
   <tr>
     <th>Id</th>
      <th>Date</th>

@@ -1,5 +1,4 @@
 <table style="width:100%">
-  <caption>Detail Transport</caption>
   <tr>
     <th>ID</th>
     <th>Date</th>

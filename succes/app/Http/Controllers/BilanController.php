@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Model\Bilan;
+use App\Http\Controllers\GeneratePdfController;
+use Illuminate\Support\Str;
+use PDF;
 
 class BilanController extends Controller
 {
@@ -111,10 +114,71 @@ class BilanController extends Controller
   }
 
    public function getBilan_achats_campagne_en_cours(Request $request){
-
-      $var=$request;
-       return view('bilans.getDetailAchatsBilan',compact('var'));
+       $notification=null;
+      $campagne=$request->campagne;
+      //dd($request->campagne);
+      $notification=" La ".$campagne." est Cloturée ou introuvable.";
+       return view('bilans.getDetailAchatsBilan',compact('campagne','notification'));
     
   }
+
+
+  /**
+   * 
+   */
+   public function getBilan_detaille()
+   {
+     return view('bilans.bilanCompletCampagne');
+
+   }
+   /**
+   * 
+   */
+   public function downloadBilan_detaille(Request $request)
+   {
+    // dd($request->campagne);
+   
+      $pdf=new GeneratePdfController();
+     $results=$pdf->downloadRecapDetailCampagne(Str::lower($request->campagne));
+
+   
+    // dd($results['Poussin']);
+    /* foreach ( $results as $key => $value) {
+        if ($key=='Poussin' && empty($value)) {
+        echo "Campagne terminé";
+        return;
+        }else{
+            if ($key=='Aliment') {
+                if (empty($value['Data'])) {
+                    echo "Empty";
+                }else{
+                  for ($i=0; $i <count($value['Data']); $i++) { 
+                    if(count($value['Data'])==1){
+                        dump($value['Data'][0]);
+                    }else{
+                       dump($value['Data'][$i]);
+                    }
+                    
+                 }  
+                }
+                          
+            }
+         
+        }
+     }
+     dd($results);*/
+
+
+      $pdf = PDF::loadView('bilans.pdf_bilan',['results'=>$results,'campagne'=>Str::lower($request->campagne)]);
+     //dd($data);
+
+     $reference=date('d/m/Y')."-"."Recap"."-".Str::lower($request->campagne)."-".uniqid();
+     return $pdf->download($reference.'.pdf'); 
+
+
+
+
+   }
+    
 
 }

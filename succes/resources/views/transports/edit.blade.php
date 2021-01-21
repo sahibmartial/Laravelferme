@@ -1,15 +1,15 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>TRANSPORT</title>
 @stop
 
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
 @include('shared.transportedit')
+<hr>
+<p><a href="{{route('transports.index')}}">Listing Frais</a></p>
+</div>
 @stop
 
-@section('retour')
-<p><a href="{{route('transports.index')}}">Listing Frais</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+
+

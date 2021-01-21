@@ -1,11 +1,18 @@
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>Masse</title>
 @stop
 
-@section('contenu')
+@section('content')
+<div class="text-center mt-4">
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <ul>
 	@if($masses->count()>0)
+
 	@foreach($masses as $masse)
 	<!--utilisation des routes -->
 	<li><a href="{{ 
@@ -18,11 +25,7 @@
 </ul>
 <br>
 <p><a href="{{route('masses.create')}}">Enregister une masse pour une campagne </a></p>
-@stop
-
-@section('retour')
+<hr>
 <p><a href="/ferme"> Menu principal</a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
+</div>
 @stop

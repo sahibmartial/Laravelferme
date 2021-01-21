@@ -2,16 +2,14 @@
 $tarted=date("Y-m-d ");
 //dd($tarted);
 ?>
-@extends('layout.app')
+@extends('base')
 @section('title')
 <title>CAMPAGNE</title>
 @stop
-@section('contenu')
+@section('content')
+<div >
+	<p><a href="{{route('home')}}">Accueil</a></p>
+</div>
 @include('shared.formcampagne')
 @stop
-@section('retour')
-<p><a href="{{route('home')}}">Accueil</a></p>
-@stop
-@section('footer')
-@include('layout.partials.footer')
-@stop
+

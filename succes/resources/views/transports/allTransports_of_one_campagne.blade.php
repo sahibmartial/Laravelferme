@@ -1,4 +1,4 @@
-@extends('layout.addmorealiments')
+@extends('base')
 <?php 
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
@@ -21,12 +21,13 @@ $cam= new Campagne();
 @section('title')
 <title>ACHATS-Transports</title>
 @endsection
-@section('contenu')
-<h2> Get All Frais</h2>
+@section('content')
+<div class="text-center mt-4">
+<h2> Frais-de-Transport</h2>
 <form action=" {{route('show_all_frais')}}" method="POST">
 	{{ csrf_field() }}
    <div>
-                            {{ Form::label('campagne', 'Name Campagne:') }}
+                            {{ Form::label('campagne', 'Nom Campagne:') }}
                             <br>
                            <input type="text" name="campagne" placeholder="campagne1"
                            @error('campagne') is-invalid @enderror" name="campagne" value="{{ old('campagne') }}" required autocomplete="campagne" autofocus>
@@ -38,17 +39,13 @@ $cam= new Campagne();
                             
                         </div>
 	<br>
-	<input type="submit" value="Get All Frais">
+	<input type="submit" value="Soumettre">
 </form>
 {{--$request->campagne--}}
 
 {{--<p><a href="{{route('transports.index')}}">Listing Transport</a></p>--}}
+<hr>
+<a href="/achats"> Retour Achats</a>
+</div>
 @stop
-@section('retour')
-<br>
-<div><a href="/achats"> Retour Achats</a></div>
-@endsection
 
-@section('footer')
-@include('layout.partials.footer')
-@stop
