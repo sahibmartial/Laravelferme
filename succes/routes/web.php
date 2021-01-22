@@ -37,6 +37,9 @@ Route::get('/StatCamapgne', function () {
     return view('stats.index');
 });
 //compte
+Route::get('modifpasswd','PasswordController@getFormModifierPassword')->name('modifpasswd');
+Route::post('updatepasswd','PasswordController@modifier_password')->name('updatepasswd');
+
 
 //sendmail
 Route::get('sendbasicemail','MailController@basic_email');

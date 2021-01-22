@@ -61,7 +61,7 @@
                                 @endphp
                                 @if($json  === "admin")
                                 - <a href="/ferme"> Aller au Board</a><br>
-                                - <a href="">Modifier Mot de passe</a>
+                                - <a href="{{route('modifpasswd')}}">Modifier Mot de passe</a>
                                 @else
                                 <a href="{{ route('quinsommes') }}">Team Maya</a>
 

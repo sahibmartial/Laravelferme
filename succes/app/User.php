@@ -60,5 +60,7 @@ class User extends Authenticatable
   {
     return User::whereRoles()->get();
   }
+
+  
    
 }
