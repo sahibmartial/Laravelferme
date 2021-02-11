@@ -63,16 +63,9 @@ class PasswordController extends Controller
           	}else{
 
                 return back()->with('success', ' nouveau password  et confirmpassord ne sont pas identiques.');
-          	}
-
-          
-
-
-      
+          	}      
 
         }
- 
-      
 
     }
     /**
