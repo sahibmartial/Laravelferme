@@ -29,7 +29,7 @@
 	{{ $campagnes->links() }}
     </div>
 	@else
-	<p>Aucune Campagne Enregistree !!! </p>
+	<p>Aucune Campagne en Cours  Enregistrée !!! </p>
 	@endif
 <p><a href="{{route('campagnes.create')}}">creer une campagne</a>
 </p>

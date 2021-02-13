@@ -39,6 +39,8 @@ Route::get('/StatCamapgne', function () {
 //compte
 Route::get('modifpasswd','PasswordController@getFormModifierPassword')->name('modifpasswd');
 Route::post('updatepasswd','PasswordController@modifier_password')->name('updatepasswd');
+Route::post('passwdoublie','PasswordController@motdePasseOublie')->name('passwdoublie');
+
 
 
 //sendmail
@@ -143,7 +145,7 @@ Route::post('sendcontact', 'ContactController@sendmessage')->name('sendcontact')
 /**
  *MailChimp
  */
-Route::get('/send-mail-using-mailchimp', [MailChimpController::class, 'index'])->name('send.mail.using.mailchimp.index');
+//Route::get('/send-mail-using-mailchimp', [MailChimpController::class, 'index'])->name('send.mail.using.mailchimp.index');
 
 
  Route::get('/createcomplete','FonctionController@create');

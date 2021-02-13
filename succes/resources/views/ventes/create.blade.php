@@ -13,15 +13,20 @@ $duredevie=0;
 @section('content')
 <div class="text-center mt-4">
 <h2>Declarer une Vente</h2>
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <form action="{{route('ventes.store')}}" method="POST">
 	{{ csrf_field() }}
 	{{--<input type="text" name="campagne_id" placeholder="Entrez ID " value={{ old('campagne_id') }}>
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
     <br>--}}
 
-    {{--<input type="date" name="date" placeholder="" value={{ old('date') }}>
+    <input type="date" name="date" placeholder="" value={{ old('date') }}>
      {!! $errors->first('date','<span class="error-msg">:message</span>') !!}
-    <br>--}}
+    <br>
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
     <br>

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use DB;
 use Illuminate\Http\Request;
 use App\Campagne;
+
 use App\Http\Controllers\PoussinController;
 use App\Http\Controllers\AccessoireController;
 use App\Http\Controllers\AlimentController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\PerteController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\FonctionController;
 
+use Illuminate\Support\Facades\Auth;
 class CampagneController extends Controller
 {
     /**
@@ -48,24 +50,38 @@ class CampagneController extends Controller
      */
     public function store(Request $request)
     {  
-          $tarted=date("Y-m-d ");
+     
+      if (Auth::check()) {
 
-         $rules=[
-            'title'=>'required|min:9',
-           // 'start'=>'bail|required',
-         'status'=>'required|min:7'];
-         
-        $this->validate($request,$rules);
-       // dd('store');
-        Campagne::create([
-            'intitule'=>Str::lower($request->title),
-             'start'=>$tarted,
-            'status'=>$request->status,
-            'obs'=>$request->obs
-        ]);
-      
-     //   return redirect()->route('home');   
-        return redirect()->route('campagnes.index')->with('success', 'Campagne has been successfully added');
+        $tarted=date("Y-m-d ");
+
+        $rules=[
+           'title'=>'required|min:9',
+          // 'start'=>'bail|required',
+        'status'=>'required|min:7'];
+        
+       $this->validate($request,$rules);
+      // dd('store');
+       Campagne::create([
+           'intitule'=>Str::lower($request->title),
+            'start'=>$tarted,
+           'status'=>$request->status,
+           'obs'=>$request->obs
+       ]);
+
+        //notification email get current user
+        
+        $to_name= auth()->user()['name'];
+        $to_email=auth()->user()['email'];
+        $mail= new MailController;
+        $subject="Creation de la ".$request->title ;
+        $content="Votre campagne a été crée avec succes";
+       $mail->send($to_email,$to_name,$subject,$content);
+       return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
+    }
+             
+      //  return redirect()->route('/');   
+       
 
     }
 

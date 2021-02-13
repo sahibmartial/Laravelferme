@@ -11,7 +11,7 @@ $result=$vente->calculateVenteOfCampagne(1);*/
 @section('content')
 <div class="text-center mt-4">
 	@if ($message = Session::get('success'))
-<div class="alert alert-success">
+ <div class="alert alert-success">
     <p>{{ $message }}</p>
 </div>
 @endif

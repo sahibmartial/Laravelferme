@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Auth;
+
 use Illuminate\Support\Facades\Hash;
 use  DB;
 use App\User;
@@ -80,6 +80,28 @@ class PasswordController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    } 
+
+    public function motdePasseOublie(Request $request)
+    {
+        //dd($request);
+        $token=$request['_token']; 
+       // dd($token);
+      // dump('here pawd oublie');
+       $to_email= $request['email'];
+       $url="fermemaya.ngrok.io/password/reset/".$token;
+       //dd($url);
+      $mail= new MailController;
+      $subject="Réinitialisation de mot de passe";
+      $content="Bonjour vous avez demandé à réinitialiser votre mot de passe, merci de cliquer sur ce lien suivant 
+      <a href=".$url."> <b>mot de passe oublie</b></a>";
+
+     $mail->sendEmailPwd($to_email,$subject,$content);
+     
+      
+     echo "<font face='verdana' color='green'> vous allez un recevoir un mail vous indiquant la conduite à suivre pour réinitialiser votre mot de passe,merci.</font>";
+
+     //return view('auth.passwords.pwdoublie')->with('success','vous allez un recevoir un mail vous indiquant la conduite à suivre pour réinitialiser votre mot de passe,merci.');
     } 
 
 }

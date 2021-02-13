@@ -50,14 +50,21 @@ class VenteController extends Controller
     {
           Str::lower($request->campagne);
           //dump($request->acheteur);
-          // dd($request);
+          //dd($request);
 
 
         $cam= new CampagneController();
        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+       //dd($campagne_id);
+       if($campagne_id==null)
+       {
+           //dd('camapgne found '.$campagne_id);
+
+           return back()->with('success', $request->campagne.' introuvable, déclaration de la vente impossible');
+       }
 
         $rules=[
-        // 'date'=>'bail|required',  
+         'date'=>'bail|required',  
          'campagne'=>'bail|required|min:9',
          'quantite'=>'bail|required',
          'priceUnitaire'=>'bail|required',
@@ -71,7 +78,7 @@ class VenteController extends Controller
        Vente::create([
 
             'campagne_id'=>$campagne_id,
-            //'date'=>$request->date,
+            'date'=>$request->date,
             'campagne'=>Str::lower($request->campagne),
             'quantite'=>$request->quantite,
             'priceUnitaire'=>$request->priceUnitaire,
@@ -83,7 +90,7 @@ class VenteController extends Controller
 
       
        // return redirect()->route('vente'); 
-         return redirect()->route('ventes.index')->with('success', 'vente has been successfully added');
+         return redirect()->route('ventes.index')->with('success', 'vente a bien été ajoutée, merci ');
 
 
         
@@ -148,7 +155,7 @@ class VenteController extends Controller
     ]);
 
       
-        return redirect()->route('ventes.show',$id); 
+        return redirect()->route('ventes.show',$id)->with('succes','Modification ok'); 
 
     }
 
