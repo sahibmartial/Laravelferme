@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use DB;
 use Illuminate\Http\Request;
 use App\Campagne;
+use App\Model\Bilan;
 
 use App\Http\Controllers\PoussinController;
 use App\Http\Controllers\AccessoireController;
@@ -221,107 +222,130 @@ class CampagneController extends Controller
      * 
      */
     public function cloturerCampagne()
-    {
-       $id=($_GET["id"]);
+    {   
+       $id=($_GET["id"]);//id campagne
+         
+      
+      // dd($bilans);
+     //  dump($bilans[0]['campagne']);
+      // dd($bilans[0]['totalAchats']);
 
-       $charges_salaire=20000;
-       $reserve=10000;
-       $partenaire=0;
-       $created_at=date("Y-m-d H:i:s");
-       $updated_at=date("Y-m-d H:i:s");
+        
 
-         $ended=date("Y-m-d ");
-         $statut="TERMINE";
-        $cloture=DB::table('campagnes')->whereId($_GET["id"])
-         ->update(['end'=>$ended,
-            'status'=>$statut
-     ]);
+    //   dd(auth()->user());
+     
+     
+     $charges_salaire=20000;
+     $reserve=10000;
+     $partenaire=0;
+     $created_at=date("Y-m-d H:i:s");
+     $updated_at=date("Y-m-d H:i:s");
+
+     $ended=date("Y-m-d ");
+     $statut="TERMINE";
+     $cloture=DB::table('campagnes')->whereId($_GET["id"])
+     ->update(['end'=>$ended,
+      'status'=>$statut
+    ]);
       //appel bilan 
-         $year = preg_split('/-/', $ended);
+     $year = preg_split('/-/', $ended);
         // dump("Annee : ".$year[0]);
-         $poussins=0;
-         $nomcampagne="";
-         $obs="";
-         $fonction=new FonctionController();
-          $head= new PoussinController();
-          $result=$head->selectAllheadForOneCampagne($id);
-          
-        for($i=0; $i <count($result); $i++) { 
+     $poussins=0;
+     $nomcampagne="";
+     $obs="";
+     $fonction=new FonctionController();
+     $head= new PoussinController();
+     $result=$head->selectAllheadForOneCampagne($id);
 
-            $poussins=$result[$i]->quantite;
-            $nomcampagne=$result[$i]->campagne;
-            
-          }
-          
+     for($i=0; $i <count($result); $i++) { 
+
+      $poussins=$result[$i]->quantite;
+      $nomcampagne=$result[$i]->campagne;
+
+    }
+
           //dump("qte poussins : ".$poussins);
           //dump("Nom campagne : ".$nomcampagne);
-          $achatshead=$head->calculateAchatHeadOfThisCampagne($id);
+    $achatshead=$head->calculateAchatHeadOfThisCampagne($id);
          // dump(" achat poussins :".$achatshead);
-          $access= new AccessoireController();
-          $achataccessoire=$access->calculateDepenseAccessoireofthiscampagne($id);
+    $access= new AccessoireController();
+    $achataccessoire=$access->calculateDepenseAccessoireofthiscampagne($id);
           //dump("accessoire :".$achataccessoire);
-          $aliment= new AlimentController();
-          $achataliment=$aliment->calculateDepenseAlimentofthiscampagne($id);
+    $aliment= new AlimentController();
+    $achataliment=$aliment->calculateDepenseAlimentofthiscampagne($id);
          // dump("Achat aliment : ".$achataliment);
-          $frais= new TransportController();
-          $transport=$frais->calculateFraisTotalOfCampagne($id);
+    $frais= new TransportController();
+    $transport=$frais->calculateFraisTotalOfCampagne($id);
          // dump(" Frais transport : ".$transport);
-          $perte= new PerteController();
-          $perdus=$perte->calculateTotalLossofthiscampagne($id);
+    $perte= new PerteController();
+    $perdus=$perte->calculateTotalLossofthiscampagne($id);
          // dump(" quantite perdus ".$perdus);
 
-          $vente=new VenteController();
-          $vendus= $vente->calculateVenteOfCampagne($id);
+    $vente=new VenteController();
+    $vendus= $vente->calculateVenteOfCampagne($id);
         //  dump(" Total vente : ".$vendus);
 
 
           //calacul des total achats
-          $totalachats=$achatshead+$achataliment+$achataccessoire+$transport+$charges_salaire;
-          $totalvente=$vendus;
+    $totalachats=$achatshead+$achataliment+$achataccessoire+$transport+$charges_salaire;
+    $totalvente=$vendus;
 
-          if ($totalvente < $totalachats) {
-            $obs= $nomcampagne." deficitaire";
-            $ben=$totalvente-$totalachats;
-            $charges_salaire=0;
+    if ($totalvente < $totalachats) {
+      $obs= $nomcampagne." deficitaire";
+      $ben=$totalvente-$totalachats;
+      $charges_salaire=0;
     //
-            DB::table('bilans')->insert([
-    'campagne_id' =>$id, 'campagne' =>$nomcampagne,
-    'totalAchats'=>$totalachats,
-    'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
-    'quantite_perdus'=>$perdus,'benefice'=>$ben,
-    'reserve'=>$reserve,'partenaire'=>$partenaire,
-    'charges_salariale'=>$charges_salaire,
-    'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
-    'updated_at'=>$updated_at
-  ]
+      DB::table('bilans')->insert([
+        'campagne_id' =>$id, 'campagne' =>$nomcampagne,
+        'totalAchats'=>$totalachats,
+        'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
+        'quantite_perdus'=>$perdus,'benefice'=>$ben,
+        'reserve'=>$reserve,'partenaire'=>$partenaire,
+        'charges_salariale'=>$charges_salaire,
+        'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
+        'updated_at'=>$updated_at
+      ]
     );
 
-          }else{
-            $ben=$totalvente-$totalachats;
-            $partenaire=$ben-$reserve;
+    }else{
+      $ben=$totalvente-$totalachats;
+      $partenaire=$ben-$reserve;
 
-            $obs=$fonction->generateObsBilan($ben,$nomcampagne);
+      $obs=$fonction->generateObsBilan($ben,$nomcampagne);
             //insertion table bilan
-             DB::table('bilans')->insert([
-    'campagne_id' =>$id, 'campagne' =>$nomcampagne,
-    'totalAchats'=>$totalachats,
-    'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
-    'quantite_perdus'=>$perdus,'benefice'=>$ben,
-    'reserve'=>$reserve,'partenaire'=>$partenaire,
-    'charges_salariale'=>$charges_salaire,
-    'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
-    'updated_at'=>$updated_at
-  ]
+      DB::table('bilans')->insert([
+        'campagne_id' =>$id, 'campagne' =>$nomcampagne,
+        'totalAchats'=>$totalachats,
+        'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
+        'quantite_perdus'=>$perdus,'benefice'=>$ben,
+        'reserve'=>$reserve,'partenaire'=>$partenaire,
+        'charges_salariale'=>$charges_salaire,
+        'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
+        'updated_at'=>$updated_at
+      ]
     );
-            
-          }
+
+    }
+    //send mail cloture campagne
+          $bilans=$this->recapBilan($id);//recup info campagne
+
+         $to_name= auth()->user()['name'];
+        $to_email=auth()->user()['email'];
+        $mail= new MailController;
+        $subject="Cloture de la ".$bilans[0]['campagne'] ;
+        $content="Votre campagne a été cloturée avec succes.<br>";
+        $content.="Le detail de la campagne ci-dessous.<br>";
+        $content.="Intitule : ".$bilans[0]['campagne']. ", Total_Achats: ". $bilans[0]['totalAchats']." FCFA, "."Total_Vente: ".$bilans[0]['totalVentes']." FCFA, "." QtePoussins: ".$bilans[0]['quantite_achetes']." PertePoussins: ".$bilans[0]['quantite_perdus']. " Recettte: ".$bilans[0]['benefice']." FCFA,    Reserve: ". $bilans[0]['reserve']." FCFA,  Partenaire: ".$bilans[0]['partenaire']." FCFA,  Chges Salariales: ".$bilans[0]['charges_salariale']." FCFA,  Obs: ".$bilans[0]['obs'].", Date_start: ".$bilans[0]['created_at']. ", Date_fin".$bilans[0]['updated_at']."<br>";
+
+        //dd($content);
+       $mail->send($to_email,$to_name,$subject,$content);
 
          // dump("observation: ".$obs);
- 
+
         //  dd("Total achat: ".$totalachats);
 
-  
-       return redirect()->route('bilans.index');
+
+    return redirect()->route('bilans.index')->with('success', 'Campagne a été cloturée avec sucess, vous recevrez un mail avec le detail de la campagne'); ;
         
     }
 
@@ -377,8 +401,8 @@ class CampagneController extends Controller
         if (in_array($campagne,  $value->toArray())) {
           $resultcampagne_encours=$value->toArray();
         //  dd( $result);
-         return  $resultcampagne_encours;
-       
+          return  $resultcampagne_encours;
+
         }else{
         //dd('not found');
           throw new \Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
@@ -386,14 +410,23 @@ class CampagneController extends Controller
 
       } catch (Exception $e) {
        //echo $e->getMessage();
-     }
+      }
 
 
-   }
+    }
 
 
        //  
- }    
+  }   
+
+   public function recapBilan($id)
+    {
+     // $id=2;
+      $bilan =new Bilan();
+      $infos=$bilan->recapBilan($id);
+      //dd($infos);
+      return $infos;
+    } 
 
 
 

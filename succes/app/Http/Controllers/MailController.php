@@ -15,7 +15,7 @@ class MailController extends Controller
 
     public function send($to_email,$to_name,$subject,$content)
       {
-         dump('sommes in send');
+        // dump('sommes in send');
 
           $mj = new Client($this->api_key,$this->api_secret,true,['version' => 'v3.1']);
          // dd($mj);

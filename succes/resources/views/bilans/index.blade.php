@@ -4,6 +4,11 @@
 @stop
 @section('content')
 <center>
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 <h2 class="mt-4 text-center">{{$bilans->count() }} Bilan(s) </h2>
 <ul>
 	@if($bilans->count()>0)
