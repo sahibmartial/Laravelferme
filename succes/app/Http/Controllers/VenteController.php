@@ -23,6 +23,7 @@ class VenteController extends Controller
         ->join('ventes', function ($join) {
             $join->on('ventes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
+        ->orderByDesc('ventes.id')
         ->SimplePaginate(10);
        // dd($this->handle());
 

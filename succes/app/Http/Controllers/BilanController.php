@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Model\Bilan;
+use App\Campagne;
 use App\Http\Controllers\GeneratePdfController;
 use Illuminate\Support\Str;
 use PDF;
@@ -114,11 +115,41 @@ class BilanController extends Controller
   }
 
    public function getBilan_achats_campagne_en_cours(Request $request){
+    $apportVente=$apportpersonel=$budget=null;
+   $bilan= new Bilan();
+   $cam= new Campagne();
+   $campagneInfos= $bilan->getInfosCampagne(Str::lower($request->campagne));
+  // dd($campagneInfos,$campagneInfos[0]['budget']);
+   //dd($campagneInfos->isNotEmpty());
+   if ($campagneInfos->isNotEmpty()) {
+     $budget=$campagneInfos[0]['budget'];
+     $campagne_id=$campagneInfos[0]['id'];
+     $apports=$cam->getApport($campagne_id);//recu  apport of campagne
+
+   if(!empty($apports)){
+    foreach ($apports as $key => $value) {
+     //dump($value['obs']);
+     if ($value['obs']=='Apport issu des Ventes') {
+       $apportVente+=$value['apport'];
+     }else{
+      $apportpersonel+=$value['apport'];
+     }
+    
+   }
+
+   }
+
+   }
+   
+  
+   
+   //dd($apportVente,$apportpersonel);
+   
        $notification=null;
       $campagne=$request->campagne;
-      //dd($request->campagne);
+     // dd($request->campagne);
       $notification=" La ".$campagne." est Cloturée ou introuvable.";
-       return view('bilans.getDetailAchatsBilan',compact('campagne','notification'));
+       return view('bilans.getDetailAchatsBilan',compact('campagne','notification','budget','apportVente','apportpersonel'));
     
   }
 
@@ -141,7 +172,7 @@ class BilanController extends Controller
       $pdf=new GeneratePdfController();
      $results=$pdf->downloadRecapDetailCampagne(Str::lower($request->campagne));
 
-   
+  // dd($results);
     // dd($results['Poussin']);
     /* foreach ( $results as $key => $value) {
         if ($key=='Poussin' && empty($value)) {
@@ -168,7 +199,7 @@ class BilanController extends Controller
      }
      dd($results);*/
 
-
+    //dd($results['Campagne']);
       $pdf = PDF::loadView('bilans.pdf_bilan',['results'=>$results,'campagne'=>Str::lower($request->campagne)]);
      //dd($data);
 

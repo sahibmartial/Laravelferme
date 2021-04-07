@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDateInToVentesTable extends Migration
+class AddCampagneToApportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddDateInToVentesTable extends Migration
      */
     public function up()
     {
-        Schema::table('ventes', function (Blueprint $table) {
-            $table->date('date')->nullable()->after('id');
-            
+        Schema::table('apports', function (Blueprint $table) {
+             $table->string('campagne')->after('campagne_id');
         });
     }
 
@@ -26,8 +25,8 @@ class AddDateInToVentesTable extends Migration
      */
     public function down()
     {
-        Schema::table('ventes', function (Blueprint $table) {
-            $table->dropColumn('date');
+        Schema::table('apports', function (Blueprint $table) {
+            $table->dropColumn('campagne');
         });
     }
 }

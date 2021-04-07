@@ -19,7 +19,7 @@ $cam= new Campagne();
   $var= $id->toJson();
   ?>
 @section('title')
-<title>ACHATS-Bilan En Cours</title>
+<title>ACHATS-Bilan</title>
 @endsection
 @section('content')
 <div class="col-lg-0 mt-2">

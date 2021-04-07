@@ -3,7 +3,10 @@
     <h2><b> <span style="color:orange">{{ 'Bilan partiel :'.ucfirst($campagne) }}</span> </b></h2> 
     <p>
         <b>{{'Infos Campagne:'}}</b><br>
-    	{{'Date start :'.$date}} / {{'Libelle campagne: '.$campagne}} / {{'Statut: '.$status}}<br>
+    	{{'Date start :'.$date}} / {{'Libelle campagne: '.$campagne}} / {{ 'Budget:'.$Budget}} FCFA / {{'Statut: '.$status}}<br>
+      <b>{{'Apports:'}}</b><br>
+      {{'Total Apport issu des ventes:'.$ApportVente}} FCFA<br>
+      {{'Total Apport Personnel:'.$ApportPersonnel}} FCFA <br>
        <b>{{'Achats/Depenses:'}}</b><br>
        {{'Qte: '.$QuantitePoussins}} / {{'PrixU_Achats: '.$PUAchatPoussins}}  FCFA<br>
        {{'Depenses_Achat_Poussins :'.$T_achatsPoussins}}  FCFA<br>
@@ -16,7 +19,8 @@
 
         <b>{{'Ventes:'}}</b><br>
         {{'QteVendu:'.$QteVendu}} / {{'MoyenPU_Vente:'.$MoyenPU_vente}} FCFA<br>
-        {{'Total_ventes:'.$T_vente}} FCFA<br>
+        {{'Recette:'.$T_vente}} FCFA<br>
+        {{'Solde:'.$Solde}} FCFA<br>
 
         @if($Qte_Restante==0)
           <b>{{'Statut : Campage terminée'}}</b><br>

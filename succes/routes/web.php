@@ -33,8 +33,13 @@ Route::get('/autocomplete', function () {
     return view('employes.index2');
 });
 
-Route::get('/StatCamapgne', function () {
+Route::get('/StatCampagne', function () {
     return view('stats.index');
+});
+
+Route::get('/capital
+    ', function () {
+    return view('campagnes.comptable');
 });
 //compte
 Route::get('modifpasswd','PasswordController@getFormModifierPassword')->name('modifpasswd');
@@ -89,7 +94,9 @@ Route::get('head', 'PoussinController@index')->name('head');
 *campagne
 */
 
-Route::get('home', 'CampagneController@index')->name('home');
+Route::get('/campagnes', 'CampagneController@index')->name('campagnes');
+Route::get('/formCapital', 'ApportController@create')->name('formCapital');
+Route::post('ajoutCapital', 'ApportController@store')->name('ajoutCapital');
 Route::get('/cloturer', 'CampagneController@cloturerCampagne')->name('cloturer');
 /*
 *pertes
@@ -120,6 +127,13 @@ Route::post('recap_vente_show', 'VenteController@getRecapShow')->name('recap_ven
 
 Route::get('/mean_masse', 'MasseController@index')->name('mean_masse');
 
+/*
+*Vaccin
+*/
+
+Route::get('vaccin', 'VaccinController@index')->name('vaccin');
+Route::get('vaccinform', 'VaccinController@create')->name('vaccinform');
+Route::post('vaccinformvalidation', 'VaccinController@store')->name('vaccinformvalidation');
 
 /**
  *PDF 
@@ -167,8 +181,8 @@ Route::resource('ventes', 'VenteController');
 Route::resource('bilans', 'BilanController');
 Route::resource('masses', 'MasseController');
 Route::resource('employes', 'EmployeController');
-
-
+Route::resource('apports', 'ApportController');
+Route::resource('vaccins', 'VaccinController');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

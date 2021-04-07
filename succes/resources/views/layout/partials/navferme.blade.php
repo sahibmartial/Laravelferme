@@ -7,7 +7,8 @@
 		<input type="button" onclick="window.location.href = '/mean_masse';" target="_blink" value="Masse "/>
 		<input type="button" onclick="window.location.href = '/ventes';" target="_blink" value="Vente "/>
 		<input type="button" onclick="window.location.href = 'bilan';" target="_blink" value="Bilan"/>
-		<input type="button" onclick="window.location.href = 'StatCamapgne';" target="_blink" value="Statistique"/>
+		<input type="button" onclick="window.location.href = 'vaccin';" target="_blink" value="SuiviVaccin"/>
+		<input type="button" onclick="window.location.href = 'StatCampagne';" target="_blink" value="Statistique"/>
 		
 	</fieldset>
 </nav>

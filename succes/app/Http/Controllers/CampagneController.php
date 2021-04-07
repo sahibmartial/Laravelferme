@@ -7,7 +7,7 @@ use DB;
 use Illuminate\Http\Request;
 use App\Campagne;
 use App\Model\Bilan;
-
+use App\Model\Apport;
 use App\Http\Controllers\PoussinController;
 use App\Http\Controllers\AccessoireController;
 use App\Http\Controllers\AlimentController;
@@ -26,11 +26,25 @@ class CampagneController extends Controller
      */
     public function index()
     {
-         
+       $cam = new Campagne();
+        $campagne_id=null;
+        
       //  dd('index');
       // $campagnes= Campagne::all();
         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->simplePaginate(2);
-        return view('campagnes.index',compact('campagnes'));
+
+        //recup id campagne 
+        foreach ( $campagnes as $key => $value) {
+          $campagne_id=$value['id'];
+        }
+        
+        //recup apports of this campagne and calculate
+        $som=$cam->sumApportsOfcampagne($campagne_id);
+
+       
+       // dd($campagne_id,$som);
+        //send for view 
+        return view('campagnes.index',compact(['campagnes','som']));
     }
 
     /**
@@ -57,14 +71,15 @@ class CampagneController extends Controller
         $tarted=date("Y-m-d ");
 
         $rules=[
-           'title'=>'required|min:9',
-          // 'start'=>'bail|required',
-        'status'=>'required|min:7'];
+          'title'=>'required|min:9',
+          'budget'=>'bail|required',
+          'status'=>'required|min:7'];
         
        $this->validate($request,$rules);
-      // dd('store');
+       dd($request);
        Campagne::create([
            'intitule'=>Str::lower($request->title),
+           'budget'=>$request->budget,
             'start'=>$tarted,
            'status'=>$request->status,
            'obs'=>$request->obs
@@ -94,10 +109,12 @@ class CampagneController extends Controller
      */
     public function show($id)
     {
-      //  dd('show');
+      //  dd('show'); 
+      $cam = new Campagne();
 
         $campagnes=Campagne::findOrFail($id);
-         return view('campagnes.show', compact('campagnes'));
+        $som=$cam->sumApportsOfcampagne($id);
+         return view('campagnes.show', compact(['campagnes','som']));
 
     }
 
@@ -127,16 +144,17 @@ class CampagneController extends Controller
         $ended=date("Y-m-d ");
         $status="TERMINE";
         $campagnes=Campagne::findOrFail($id);
+        //dd($request);
 
         $rules=[
             'title'=>'required|min:9',
-           // 'start'=>'bail|required',
+            'budget'=>'bail|required',
             'status'=>'required|min:7'];
         $this->validate($request,$rules);
       //  dd('store');
         $campagnes->update([
             'title'=>Str::lower($request->intitule),
-           // 'start'=>$tarted,
+            'budget'=>$request->budget,
             'status'=>$request->status,
             'obs'=>$request->obs
         ]);
@@ -224,17 +242,28 @@ class CampagneController extends Controller
     public function cloturerCampagne()
     {   
        $id=($_GET["id"]);//id campagne
-         
-      
+       $apportVente=$ApoortPersonnel=null;
+
+         $cam = new Campagne();
+         $apports=$cam->getApport($id);
+
+        if (!empty($apports)) {
+          foreach ($apports as $key => $apport) {
+            if ($apport['obs']=='Apport issu des Ventes') {
+              $apportVente+=$apport['apport'];
+            } else {
+              $ApoortPersonnel+=$apport['apport'];
+            }     
+          }
+        }
+
+        dd($apportVente,$ApoortPersonnel);
       // dd($bilans);
      //  dump($bilans[0]['campagne']);
-      // dd($bilans[0]['totalAchats']);
-
-        
+      // dd($bilans[0]['totalAchats']);   
 
     //   dd(auth()->user());
-     
-     
+       
      $charges_salaire=20000;
      $reserve=10000;
      $partenaire=0;
@@ -242,12 +271,16 @@ class CampagneController extends Controller
      $updated_at=date("Y-m-d H:i:s");
 
      $ended=date("Y-m-d ");
+    
+
+    // dd($year);
      $statut="TERMINE";
      $cloture=DB::table('campagnes')->whereId($_GET["id"])
      ->update(['end'=>$ended,
       'status'=>$statut
     ]);
       //appel bilan 
+    //  $year = date('Y', strtotime($ended));
      $year = preg_split('/-/', $ended);
         // dump("Annee : ".$year[0]);
      $poussins=0;
@@ -293,10 +326,13 @@ class CampagneController extends Controller
     if ($totalvente < $totalachats) {
       $obs= $nomcampagne." deficitaire";
       $ben=$totalvente-$totalachats;
-      $charges_salaire=0;
+      $charges_salaire=20000;
     //
       DB::table('bilans')->insert([
         'campagne_id' =>$id, 'campagne' =>$nomcampagne,
+        'budget'=>$budget,
+        'apportVente'=>$apportVente,
+        'apportPersonnel'=>$apportPersonnel,
         'totalAchats'=>$totalachats,
         'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
         'quantite_perdus'=>$perdus,'benefice'=>$ben,
@@ -304,6 +340,7 @@ class CampagneController extends Controller
         'charges_salariale'=>$charges_salaire,
         'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
         'updated_at'=>$updated_at
+        
       ]
     );
 
@@ -315,6 +352,9 @@ class CampagneController extends Controller
             //insertion table bilan
       DB::table('bilans')->insert([
         'campagne_id' =>$id, 'campagne' =>$nomcampagne,
+        'budget'=>$budget,
+        'apportVente'=>$apportVente,
+        'apportPersonnel'=>$apportPersonnel,
         'totalAchats'=>$totalachats,
         'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
         'quantite_perdus'=>$perdus,'benefice'=>$ben,
@@ -322,6 +362,7 @@ class CampagneController extends Controller
         'charges_salariale'=>$charges_salaire,
         'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
         'updated_at'=>$updated_at
+
       ]
     );
 
@@ -427,6 +468,22 @@ class CampagneController extends Controller
       //dd($infos);
       return $infos;
     } 
+
+
+ public function getCapital()
+    {
+   //  dd("form");
+     return view('campagnes.comptable');
+    } 
+
+    public function apports()
+    {
+       $camp = new Campagne();
+   $result= $camp->apports();
+   dd($result);
+     
+    } 
+
 
 
 

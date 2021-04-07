@@ -21,6 +21,7 @@ class TransportController extends Controller
         ->join('transports', function ($join) {
             $join->on('transports.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
+        ->orderByDesc('transports.id')
         ->SimplePaginate(10);
 
       //  dd($transports);

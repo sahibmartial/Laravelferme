@@ -23,6 +23,7 @@ class AccessoireController extends Controller
         ->join('accessoires', function ($join) {
             $join->on('accessoires.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
+        ->orderByDesc('accessoires.id')
         ->SimplePaginate(5);
 
        //dd($accessoires);

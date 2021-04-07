@@ -7,10 +7,14 @@
 	
 	{!! $errors->first('title','<span class="error-msg">:message</span>') !!}
   <br>
+  <input type="integer" name="budget" placeholder="Entrez votre budget" value="{{ old('budget')?? $campagnes->budget}}">
+	
+	{!! $errors->first('budget','<span class="error-msg">:message</span>') !!}
+  <br>
 	<input type="text" name="status" cols="20" rows="10" placeholder="Entre le statut" value=" {{old('status')?? $campagnes->status}}">
 	{!! $errors->first('status','<span class="error-msg">:message</span>') !!}
 	<br>
-  	<textarea name="obs" placeholder="RAS"></textarea>
+  	<textarea name="obs" placeholder="RAS" value=" {{old('obs')?? $campagnes->obs}}"></textarea>
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	<br>
 	<input type="submit" value="Editer la campagne">

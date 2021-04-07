@@ -34,7 +34,7 @@ class AlimentAddMoreController extends Controller
     	$campagne_id=0;
     	$campagne="";
     	
-  //dd($request->addmore);
+ // dd($request->addmore);
         
 
         $cam= new CampagneController();
@@ -46,12 +46,12 @@ class AlimentAddMoreController extends Controller
 
        $campagne_id=$cam->getIntituleCampagneenCours($campagne);
        $arrayName =array('campagne_id'=> $campagne_id);
-      //dd($arrayName);
-     // dump($request->addmore);
+    //  dd($arrayName);
+     //dump($request->addmore);
       $collection=$request->addmore;
       $result=$aliment->addmorealiments($collection,$arrayName);
 
-     // dd($result);
+   //   dd($result);
    
       	//$result = array_merge($arrayName,$collection);
       	//$collection[0][0]=$arrayName['campagne_id'];
@@ -71,14 +71,9 @@ class AlimentAddMoreController extends Controller
          "fournisseur" => $collection[$i]['fournisseur']
          );
       	}*/
-  
- 
 
-      	//dd($result);
-
-
-     
-        //
+      	//dd($result);     
+        
          //dd($request->addmore);
       
      // $tab['campagne_id'] = $campagne_id;
@@ -95,12 +90,13 @@ class AlimentAddMoreController extends Controller
             'addmore.*.priceUnitaire' => 'bail|required',
 
             'addmore.*.fournisseur' => 'bail|required',
+
             'addmore.*.obs' => 'bail|required',
             
         ]); 
 
         foreach ($result as $key => $value) {
-        	//dd($value[0]);
+        //	dd($value);
            Aliment::create($value);
         }
         

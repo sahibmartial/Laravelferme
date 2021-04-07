@@ -13,7 +13,7 @@ $tarted=date("Y-m-d ");
 <div class="text-center mt-5 mb-3">
 	@include('shared.campagne_edit')
 </div>
-<p class="btn btn-info mb-5 float-right"><a href="{{route('home')}}">Accueil</a></p>
+<p class="btn btn-info mb-5 float-right"><a href="{{route('campagnes.index')}}">Accueil</a></p>
 @stop
 
 

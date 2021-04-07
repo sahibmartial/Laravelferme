@@ -4,6 +4,9 @@
 	<input type="text" name="title" placeholder="Entrez nom campagne " value={{ old('title') }}>
 	{!! $errors->first('title','<span class="error-msg">:message</span>') !!}
   <br>
+   <input type="integer" name="budget" placeholder="Entrez le budget">
+	{!! $errors->first('budget','<span class="error-msg">:message</span>') !!}
+	<br>
   <input type="text" name="status" placeholder="" value="EN COURS">
 	{!! $errors->first('status','<span class="error-msg">:message</span>') !!}
 	<br>
@@ -11,4 +14,6 @@
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	<br>
 	<input type="submit" value="Creer">
+	
 </form>
+

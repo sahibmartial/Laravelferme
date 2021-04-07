@@ -6,16 +6,26 @@
     <p>     
      @foreach($results as $key => $result)
 
-     @if( $key=='Poussin' && empty($result))
+     @if( $key=='Poussin' && empty($result['Data']))
      <center>
      <span style="color:red"> {{'Impossible de generer pdf Campagne cloturée ou  non encore demarrée'}}  </span> 
      </center>  
      @else
-
+         @if($key=='Campagne')
+         <small>Budget: </small><b>{{$results['Campagne']['Budget']}}</b> FCFA<br>
+         <small>Observation: </small><b>{{$results['Campagne']['Obs']}}</b><br>
+         <hr>
+         @endif
+          @if($key=='Apports')
+         <b>{{'Detail Apports: '}}</b><br>
+         <small>Apport issu des Ventes: </small><b>{{$results['Apports']['AppVente']}}</b> FCFA<br>
+         <small>Apport Personnel: </small><b>{{$results['Apports']['AppPerso']}}</b> FCFA<br>
+         <hr>
+         @endif
         @if($key=='Poussin')
         <b>{{'Detail Achat Poussins:'}}</b><br>
 
-         {{'Date: '.$result['Data'][0]['date']}} {{'Quantite: '.$result['Data'][0]['Quantite']}} {{'PrixU: '.$result['Data'][0]['PUA']}} {{'Fournisseur: '.$result['Data'][0]['Fournisseur']}} {{'Total: '.$result['Data'][0]['T_achat']}} {{'Obs: '.$result['Data'][0]['obs']}}
+         {{'Date: '.$result['Data'][0]['date']}} {{'Quantite: '.$result['Data'][0]['Quantite']}} {{'PrixU: '.$result['Data'][0]['PUA']}} {{'Fournisseur: '.$result['Data'][0]['Fournisseur']}} {{'Total: '.$result['Data'][0]['T_achat']}} {{'Obs:'.$result['Data'][0]['obs']}}
          <br>
          <small>Qte Total Poussins achetés: </small> <b>{{$result['Data'][0]['Quantite']}}</b><br>
 
@@ -178,7 +188,8 @@
         <br>
 
            <small>Total qte poussins vendus: </small> <b>{{$result['qteT']}}</b><br>
-           <small>Total vente: </small> <b>{{$result['Total']}}</b> FCFA
+           <small>Total vente: </small> <b>{{$result['Total']}}</b> FCFA <br>
+           <small>Solde: </small> <b>{{($result['Total'] - $results['Apports']['AppVente']) }}</b> FCFA
         @endif
 
 

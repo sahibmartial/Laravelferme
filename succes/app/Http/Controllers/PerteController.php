@@ -23,6 +23,7 @@ class PerteController extends Controller
         ->join('pertes', function ($join) {
             $join->on('pertes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
+        ->orderByDesc('pertes.id')
         ->SimplePaginate(10);
 
 

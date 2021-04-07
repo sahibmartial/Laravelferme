@@ -21,6 +21,7 @@ class AlimentController extends Controller
         ->join('aliments', function ($join) {
             $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
+        ->orderByDesc('aliments.id')
         ->SimplePaginate(10);
 
          return view('aliments.index',compact('aliments'));

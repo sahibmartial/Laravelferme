@@ -22,7 +22,7 @@
 	<p>Aucun Bilan Enregistre !!! </p>
 	@endif
 </center>
-	<div class="text-center"><a href="{{route('get_billandetaille')}}">Obtenir-bilan-Detaille</a></div>
+	<div class="text-center"><a href="{{route('get_billandetaille')}}">Obtenir-bilan-Detaillé</a></div>
 	<hr>
 	<p class="text-center"><a href="/ferme">Retour Menu Principale</a></p>
 	

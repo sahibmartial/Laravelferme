@@ -12,6 +12,8 @@ use App\Model\Vente;
 use App\Model\Accessoire;
 use App\Model\Aliment;
 use App\Model\Transport;
+use Illuminate\Support\Str;
+use App\Model\Bilan;
 
 class GeneratePdfController extends Controller
 {
@@ -44,26 +46,46 @@ class GeneratePdfController extends Controller
        return $pdf->download($reference.'.pdf');
     }
 /**
- * generation pdf des achats, ventes , pertes et recettes
+ * pdf des achats, ventes , pertes et recettes
  *  
  */
 
     public function pdfDownloadBilan($data){
+      $cam= new Campagne();
     $status="";
+    $idCampagne=$apportVente=$apportPersonnel=$apports=$budget=null;
     $date=$moyPuVente=$reste=null;
     $quantity=$AchatsAliments=$fraisTransport=$T_Depenses=null;
     $pU=$T_Achats=$T_qtPoussins=$loss=$T_Vente=$qteVendu=$AchatsAccessoires=null;
     $campagnes=Campagne::whereIntitule(['intitule'=>$data])->get();
-    if($campagnes)
+    if($campagnes->isNotEmpty())
     {
         foreach ($campagnes as $key => $campagne) {
              //dd($campagne);
             $status=$campagne->status;
              $date=$campagne->start;
+             $idCampagne=$campagne->id;
+             $budget=$campagne->budget;
+        }
+
+        $apports=$cam->getApport($idCampagne);
+        if (!empty($apports)){
+          foreach ($apports as $key => $value) {
+     //dump($value['obs']);
+           if ($value['obs']=='Apport issu des Ventes') {
+             $apportVente+=$value['apport'];
+           }else{
+            $apportPersonnel+=$value['apport'];
+          }
+
+        }
+
+
         }
     
     }
-
+    
+ //   dd($idCampagne);
     $poussins=Poussin::whereCampagne(['campagne'=>$data])->get(['quantite','priceUnitaire']);
     if ($poussins) {
        foreach ($poussins as $key => $poussin) {
@@ -142,6 +164,7 @@ class GeneratePdfController extends Controller
      $data2 =  [
             'date' =>$date,
             'campagne'=>$data,
+            'Budget'=>$budget,
             'status'=>$status,
             'QuantitePoussins'=>$quantity,
             'PUAchatPoussins'=>$pU,
@@ -154,7 +177,10 @@ class GeneratePdfController extends Controller
             'T_Transport'=>$fraisTransport,
             'T_DepnsesAchats'=>$T_Depenses,
             'MoyenPU_vente'=>round($moyPuVente,2),
-            'Qte_Restante'=>$reste
+            'Qte_Restante'=>$reste,
+            'ApportVente'=>$apportVente,
+            'ApportPersonnel'=>$apportPersonnel,
+            'Solde'=>($T_Vente - $apportVente)
          ];
 
      $pdf = PDF::loadView('pdf.pdf_bilanPartiel',$data2);
@@ -328,8 +354,42 @@ class GeneratePdfController extends Controller
     
  public function downloadRecapDetailCampagne($data)
  {
+  $cam= new Campagne();
+  $bilan = new Bilan();
+  $apportVente=null;
+  $apportPersonnel=null;
   $arrayCampagne=[];
-  $results = array('Poussin' =>null,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+  $results = array('Campagne'=>null,'Apports'=>null,'Poussin' =>null,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+  $campagne=$bilan->getInfosCampagne(Str::lower($data));
+  //dump($campagne[0]['id']);
+  if($campagne->isNotEmpty())
+  {
+   $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Poussin' =>null,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );  
+
+   $apports=$cam->getApport($campagne[0]['id']);
+   //dd($apports);
+   if (!empty($apports)) {
+    foreach ($apports as $key => $value) {
+     //dump($value['obs']);
+     if ($value['obs']=='Apport issu des Ventes') {
+       $apportVente+=$value['apport'];
+
+      $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>null),'Poussin' =>null,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+     }else{
+      $apportPersonnel+=$value['apport'];
+
+      $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>null,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+     }
+    
+   }
+     
+   }
+
+  }
+
+//dd($cam->getApport($campagne[0]['id']));
+
+  
    $poussin= new PoussinController();
    $results= $poussin->downloadRecapPoussin($data);
   
@@ -337,7 +397,7 @@ class GeneratePdfController extends Controller
    $arrayCampagne[]=$arrayPoussin;
 
    if (!empty($arrayPoussin)) {
-       $results = array('Poussin' =>$arrayPoussin,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+       $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>null,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
      } else {
        
      }
@@ -349,7 +409,7 @@ class GeneratePdfController extends Controller
    $arrayCampagne[]=$arrayPerte;
 
    if (!empty($arrayPerte)) {
-     $results = array('Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+     $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>null,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
    } else {
      # code...
    }
@@ -361,7 +421,7 @@ class GeneratePdfController extends Controller
    $arrayFrais=$this->getData($results);
    $arrayCampagne[]=$arrayFrais;
    if (!empty($arrayFrais)) {
-     $results = array('Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
+     $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>null,'Accessoire'=>null,'Vente'=>null );
    }
 
    $aliments= new AlimentController();
@@ -370,7 +430,7 @@ class GeneratePdfController extends Controller
    $arrayAliment=$this->getData($results);
    $arrayCampagne[]=$arrayAliment;
    if (!empty($arrayAliment)) {
-     $results = array('Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>null,'Vente'=>null );
+     $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>null,'Vente'=>null );
    }
 
     $accessoires= new AccessoireController();
@@ -380,7 +440,7 @@ class GeneratePdfController extends Controller
    $arrayCampagne[]=$arrayAccessoire;
 
    if (!empty($arrayAccessoire)) {
-      $results = array('Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>$arrayAccessoire,'Vente'=>null );
+      $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>$arrayAccessoire,'Vente'=>null );
    }
 
    $ventes= new VenteController();
@@ -390,7 +450,7 @@ class GeneratePdfController extends Controller
     $arrayCampagne[]=$arrayVente;
 
      if (!empty($arrayVente)) {
-       $results = array('Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>$arrayAccessoire,'Vente'=>$arrayVente );
+       $results = array('Campagne'=>array('Budget' => $campagne[0]['budget'],'Obs'=>$campagne[0]['obs']),'Apports'=>array('AppVente'=>$apportVente,'AppPerso'=>$apportPersonnel),'Poussin' =>$arrayPoussin,'Perte'=>$arrayPerte,'Frais'=>$arrayFrais,'Aliment'=>$arrayAliment,'Accessoire'=>$arrayAccessoire,'Vente'=>$arrayVente );
      }
 
     

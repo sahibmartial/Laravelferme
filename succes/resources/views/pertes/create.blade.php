@@ -6,11 +6,11 @@ use App\Http\Controllers\CampagneController;
 $duredevie=0;
 
   ?>
-@extends('layout.addmorealiments')
+@extends('base')
 @section('title')
 <title>PERTES</title>
 @endsection
-@section('contenu')
+@section('content')
 <h2>Declarer une Perte</h2>
 <form action="{{route('pertes.store')}}" method="POST">
 	{{ csrf_field() }}
@@ -52,11 +52,8 @@ $duredevie=0;
 </form>
 <br>
 <p><a href="{{route('pertes.index')}}">Liste pertes</a></p>
+
+<hr>
+<p><a href="/perte"> Retour menu principal </a></p>
 @stop
 
-@section('retour')
-<p><a href="/perte"> Retour menu principal </a></p>
-@endsection
-@section('footer')
-@include('layout.partials.footer')
-@stop

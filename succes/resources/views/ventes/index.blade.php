@@ -21,7 +21,7 @@ $result=$vente->calculateVenteOfCampagne(1);*/
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('ventes.show',
-		$vente->id)}}">{{ $vente->campagne}}-{{ $vente->obs}}</a></li>
+		$vente->id)}}">{{ $vente->campagne}}-{{ $vente->date}}</a></li>
 		
 	@endforeach
 	</ul>

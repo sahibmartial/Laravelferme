@@ -1,6 +1,6 @@
 @extends('base')
 @section('title')
-<title>CAMPAGNES</title>
+<title>Apport-Campagne</title>
 @stop
 @section('content')
 
@@ -9,7 +9,7 @@
 </div>
 <div class="text-center">
 
-	<h2>{{$campagnes->count() }} Campagne(s) </h2>
+	<h2>{{$apports->count() }} Apport(s) </h2>
 	@if ($message = Session::get('success'))
 <div class="alert alert-success">
     <p>{{ $message }}</p>
@@ -17,23 +17,22 @@
 @endif
 <ul>
 
-	@if($campagnes->count()>0)
-	@foreach($campagnes as $campagne)
+	@if($apports->count()>0)
+	@foreach($apports as $campagne)
 	<!--utilisation des routes -->
 	<li><a href="{{ 
-		route('campagnes.show',
-		$campagne)}}">{{ $campagne->intitule}}-{{$campagne->obs}}</a></li>	
+		route('apports.show',
+		$campagne)}}">{{ $campagne->campagne}}-{{$campagne->apport}}-{{$campagne->obs}}</a></li>	
 	@endforeach
     </ul>
 	<div>
-	{{ $campagnes->links() }}
+	{{ $apports->links() }}
     </div>
 	@else
 	<p>Aucune Campagne en Cours  Enregistrée !!! </p>
 	@endif
 <p>
-	<a href="{{route('campagnes.create')}}">créer une campagne</a>
-	/  <a href="/formCapital">Ajout-Capital</a>
+	  <a href="/formCapital">Ajout-Capital</a>
 
 </p>
 </div>
