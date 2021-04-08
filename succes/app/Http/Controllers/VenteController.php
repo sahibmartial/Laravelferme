@@ -237,7 +237,7 @@ public function getRecapShow(Request $request)
     $recap = new Vente();
    $result= $recap->getRecapShow($request->campagne);
    if (!empty($result)) {
-  //  dd($result);
+   // dd($result);
      return view('ventes.recapShow',compact('result','campagne'));
       
    }else{

@@ -22,7 +22,7 @@
     @for($i=0;$i< count($vente['Data']); $i++)
     <tr>
       <td>{{$vente['Data'][$i]['date']}}</td>
-      <td>{{$vente['Data'][$i]['Quantite']}}</td>
+      <td><b>{{  $vente['Data'][$i]['Quantite']}}</b></td>
       <td>{{$vente['Data'][$i]['PUA']}}</td>
      
      

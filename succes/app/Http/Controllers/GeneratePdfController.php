@@ -204,10 +204,10 @@ class GeneratePdfController extends Controller
    // $arrayVente=[];
    $ventes= new VenteController();
    $results= $ventes->downloadRecapVente($data);
-    //dd($results);
+   // dump($results);
 
     $arrayVente=$this->getData($results);
-   //dd($arrayVente);
+  // dd($arrayVente);
 
    /*foreach ($results as $key => $vente ){
     //   dump($vente);
@@ -497,7 +497,7 @@ class GeneratePdfController extends Controller
        $Total+=$total;
        $qteT+=$result->quantite;
        $data =[
-            'date' =>$result->obs,
+            'date' =>$result->date,
             'campagne'=>$result->campagne,  
             'Quantite'=>$result->quantite,
             'PUA'=>$result->priceUnitaire,      
