@@ -1,6 +1,6 @@
 <nav>	
 				<fieldset>
-	  <legend>Campagne: </legend>
+	  <legend>OutilsCampagne: </legend>
 	        <input type="button" onclick="window.location.href = '/Campagnes/create';" target="_blink" value="Create"/>
 	      <input type="button" onclick="window.location.href = 'campagnes/modify';" target="_blink" value="Modifier "/>
 	      <input type="button" onclick="window.location.href = 'campagnes/search';" target="_blink" value="search"/>

@@ -29,7 +29,7 @@ class CampagneController extends Controller
        $cam = new Campagne();
         $campagne_id=null;
         
-      //  dd('index');
+        //dd('index');
       // $campagnes= Campagne::all();
         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->simplePaginate(2);
 
