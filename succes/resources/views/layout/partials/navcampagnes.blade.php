@@ -1,9 +1,26 @@
-<nav>	
-				<fieldset>
-	  <legend>OutilsCampagne: </legend>
-	        <input type="button" onclick="window.location.href = '/Campagnes/create';" target="_blink" value="Create"/>
-	      <input type="button" onclick="window.location.href = 'campagnes/modify';" target="_blink" value="Modifier "/>
-	      <input type="button" onclick="window.location.href = 'campagnes/search';" target="_blink" value="search"/>
-	      <input type="button" onclick="window.location.href = 'campagnes/lost';" target="_blink" value="Pertes"/>
-	       <input type="button" onclick="window.location.href = 'campagnes/remove';" target="_blink" value="Supprimer"/>
-	    </fieldset>
+@extends('base')
+@section('title')
+<title>FERME-MAYA</title>
+@endsection
+@section('content')
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
+<h3 class="text-center mt-2 mb-2">Board Campagne</h3>
+<nav class="text-center">	
+  <fieldset>
+	
+	  
+	      <input type="button" onclick="window.location.href = 'campagnes';" target="_blink" value="Campagne"/>
+	      <input type="button" onclick="window.location.href = 'vaccins';" target="_blink" value="Vaccin"/>
+	      <input type="button" onclick="window.location.href = 'pertes';" target="_blink" value="Pertes"/>
+	      <input type="button" onclick="window.location.href = 'ventes';" target="_blink" value="Vente"/>
+	       
+    </fieldset>
+</nav>
+@stop
+
+
+

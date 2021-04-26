@@ -18,6 +18,10 @@ Route::get('/', function () {
 Route::get('/ferme', function () {
     return view('shared.ferme');
 });
+
+Route::get('/OutilsCampagne', function () {
+    return view('layout.partials.navcampagnes');
+});
 Route::get('/achats', function () {
     return view('shared.achats');
 });

@@ -6,6 +6,11 @@ $index=$campagnes->id;
 <title>CAMPAGNE</title>
 @stop
 @section('content')
+@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
 {{--
 <h2>Info Campagne</h2>
 <p>{{ $campagnes->intitule}}</p>

@@ -22,7 +22,9 @@
 	{{$poussins->links()}}
     </div>
 	@else
+	<div class="alert alert-success">
 	<p>Aucune quantite de poussins Enregistres pour une campagne !!! </p>
+	</div>
 	@endif
 
 	<p><a href="{{route('poussins.create')}}">Enregister une quantite de poussins</a></p>

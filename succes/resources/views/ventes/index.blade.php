@@ -29,7 +29,9 @@ $result=$vente->calculateVenteOfCampagne(1);*/
 		{{$ventes->links()}}
 	</div>
 	@else
+	<div class="alert alert-success">
 	<p>Aucune Vente  Enregistree pour une campagne En cours !!! </p>
+	</div>
 	@endif
 
 <br>

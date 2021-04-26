@@ -41,7 +41,7 @@ class VaccinController extends Controller
         //preparez un array ou je parcours les select et jes ordonne dans une ligne unique pour insertion plus simple 
         
          $select=$request->intitulevaccin;
-        dump($select[0]);
+      //  dump($select[0]);
         
         if (count($select)>1) {
             for ($i=0; $i <count($select) ; $i++) { 

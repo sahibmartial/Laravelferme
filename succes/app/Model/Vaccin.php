@@ -26,4 +26,5 @@ class Vaccin extends Model
    {
    	 return Campagne::whereId($id)->get();
    }
+   
 }

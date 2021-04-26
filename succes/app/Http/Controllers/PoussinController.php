@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\CampagneController;
 
 use App\Model\Poussin;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -194,9 +194,9 @@ class PoussinController extends Controller {
 
 	public function selectAllheadForOneCampagne($id) {
 		$poussin= new Poussin();
-
+        dd($id);
 		$result=$poussin-> selectAllheadForOneCampagne($id);
-		
+		 dd($result);
 		return $result;
 	}
 
