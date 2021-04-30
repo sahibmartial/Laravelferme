@@ -1,5 +1,6 @@
 <div class="text-center">
-<form id="completion_form" action="{{route('travauxconstruction.store')}}" method="POST">
+<h2>Enregistrement Matériels: </h2>
+<form id="completion_form" action="{{route('travaux.store')}}" method="POST">
   {{ csrf_field() }}
     <div>
   {{ Form::label('Date', 'Date:') }}
@@ -37,5 +38,5 @@
   <input type="submit"  onclick="text()" value="Enregister" id="bouton_envoi">
 </form>
 <br>
-<p><a href="{{route('travauxconstruction.index')}}">Lister Materiels</a></p>
+<p><a href="{{route('travaux.index')}}">Lister Materiels</a></p>
 </div>

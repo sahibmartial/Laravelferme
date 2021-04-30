@@ -7,7 +7,7 @@
 <div class="text-center mt-4">
 @include('shared.formvaccin')
 <hr>
-<p><a href="/achats"> Retour Achats</a></p>
+<p><a href="/OutilsCampagne"> Retour Campagne</a></p>
 </div>
 @stop
 

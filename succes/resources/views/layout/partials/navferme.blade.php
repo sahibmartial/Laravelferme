@@ -9,7 +9,7 @@
 		<input type="button" onclick="window.location.href = 'bilan';" target="_blink" value="Bilan"/>
 		
 		<input type="button" onclick="window.location.href = 'StatCampagne';" target="_blink" value="Statistique"/>
-		<input type="button" onclick="window.location.href = 'StatCampagne';" target="_blink" value="Travaux_Achats_Mat'riels"/>
+		<input type="button" onclick="window.location.href = 'Tconstruction';" target="_blink" value="Travaux_Achats_Matériels"/>
 		
 	</fieldset>
 </nav>

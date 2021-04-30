@@ -14,7 +14,7 @@
 	<br>
   <div>                                                                                     
 		<select name="intitulevaccin" class="select">
-		<option selected>Actions</option>
+		<option selected>Traitements</option>
 		<option value="Arrivée des poussins">Arrivée des poussins</option>
 		<option value="Antibiotique">Antibiotiques</option>
 		<option value="Vitamines">Vitamines</option>

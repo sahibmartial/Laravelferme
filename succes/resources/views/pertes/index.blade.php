@@ -9,13 +9,13 @@
 </div>
 @endif
 <div class="text-center">
-<ul>
+    <ul>
 	@if($pertes->count()>0)
 	@foreach($pertes as $campagne)
 	<!--utilisation des routes -->
-	<li ><a href="{{ 
-		route('pertes.show',
-		$campagne->id)}}">{{ $campagne->campagne}}-{{$campagne->cause}}</a></li>
+	     <li ><a href="{{ 
+		    route('pertes.show',
+		      $campagne->id)}}">{{ $campagne->campagne}}-{{$campagne->cause}}</a></li>
 	@endforeach
 	</ul>
 	{{$pertes->links()}}
@@ -32,7 +32,7 @@
 / <a href="{{route('getallAll_losing')}}">Total_Pertes </a>
 </p>
 <hr>
-<p class="text-center"><a href="/ferme">Menu Principal</a></p>
+<p class="text-center"><a href="/OutilsCampagne">Menu Campagne</a></p>
 
 @stop
 

@@ -15,32 +15,32 @@ $result=$vente->calculateVenteOfCampagne(1);*/
     <p>{{ $message }}</p>
 </div>
 @endif
-<ul>
-	@if($ventes->count()>0)
-	@foreach($ventes as $vente)
-	<!--utilisation des routes -->
-	<li><a href="{{ 
-		route('ventes.show',
-		$vente->id)}}">{{ $vente->campagne}}-{{ $vente->date}}</a></li>
+@if($ventes->count()>0)
+     <ul>
+
+	    @foreach($ventes as $vente)
+	      <!--utilisation des routes -->
+	   <li><a href="{{ 
+		   route('ventes.show',
+		    $vente->id)}}">{{ $vente->campagne}}-{{ $vente->date}}</a></li>
 		
-	@endforeach
+     	@endforeach
 	</ul>
 	<div>
 		{{$ventes->links()}}
 	</div>
-	@else
+@else
 	<div class="alert alert-success">
 	<p>Aucune Vente  Enregistree pour une campagne En cours !!! </p>
 	</div>
-	@endif
-
+@endif
 <br>
 <p class="text-center"><a href="{{route('ventes.create')}}">Enregister une Vente</a>
 	 |
 	<a href="{{route('recap_vente')}}">Recap Vente</a>
 
 </p>
-<p><a href="/ferme">Menu Principal</a></p>
+<p><a href="/OutilsCampagne">Menu Campagne</a></p>
 </div>
 @stop
 

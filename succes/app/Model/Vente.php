@@ -64,7 +64,7 @@ class Vente extends Model
  }
 
 /**
-* generation du pdf du detail des ventes d'une vcampagne
+* generation du pdf du detail des ventes d'une campagne
 */
     
  public function downloadRecapVente($data)

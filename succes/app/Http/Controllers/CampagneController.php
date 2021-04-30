@@ -15,7 +15,7 @@ use App\Http\Controllers\TransportController;
 use App\Http\Controllers\PerteController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\FonctionController;
-
+use App\User;
 use Illuminate\Support\Facades\Auth;
 class CampagneController extends Controller
 {
@@ -45,7 +45,8 @@ class CampagneController extends Controller
         return view('campagnes.index',compact(['campagnes','som']));
 
         }else{
-          return back()->with('success','Aucune campagne en cours detectée !');
+          return view('campagnes.index',compact(['campagnes']));
+          //return back()->with('success','Aucune campagne en cours detectée !');
         }
         
         
@@ -81,7 +82,7 @@ class CampagneController extends Controller
           'status'=>'required|min:7'];
         
        $this->validate($request,$rules);
-       dd($request);
+   //    dd($request);
        Campagne::create([
            'intitule'=>Str::lower($request->title),
            'budget'=>$request->budget,
@@ -94,10 +95,14 @@ class CampagneController extends Controller
         
         $to_name= auth()->user()['name'];
         $to_email=auth()->user()['email'];
+        $users = User::all();
         $mail= new MailController;
-        $subject="Creation de la ".$request->title ;
-        $content="Votre campagne a été crée avec succes";
-       $mail->send($to_email,$to_name,$subject,$content);
+        $subject="Création de la ".$request->title ;
+        $content="Une nouvelle campagne viens d'être crée avec succes, restons focus.<br> Force et Courage à tous, excellente campagne Amen.";
+        foreach ( $users as $key => $user) {
+          $mail->send($user['email'],$user['name'],$subject,$content);
+        }
+      
        return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
     }
              

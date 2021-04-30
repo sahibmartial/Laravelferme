@@ -78,7 +78,9 @@ $cam= new Campagne();
     </tr>  
 </table>
 @else
+<div class="alert alert-success">
 Aucun Transport enregistré pour la campagne !!
+</div>
 @endif
 <hr>
 <p class="text-center"><a href="/achats"> Retour Achats</a></p>

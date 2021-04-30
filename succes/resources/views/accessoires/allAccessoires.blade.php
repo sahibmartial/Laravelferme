@@ -22,6 +22,7 @@ $cam= new Campagne();
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
 @section('content')
+
 <div class="text-center mt-4 mb-4">
   <h2> Get All Accessoires</h2>
 <form action=" {{route('show_all_accesoires')}}" method="POST">

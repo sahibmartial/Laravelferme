@@ -22,19 +22,22 @@ class GeneratePdfController extends Controller
         return view('pdf.pdf_form');
     }
 
-    public function pdfDownload(Request $request){
- 
+
+
+    public function pdfDownload(Request $request)
+    {
+       dd('pdf');
        $request->validate([
         'name' => 'required',
-        'email' => 'required|email',
-        'message' => 'required'
+       // 'email' => 'required|email',
+      //  'message' => 'required'
         ]);
      // dd($request);
          $data = 
          [
-            'name' => $request->name,
-            'email' => $request->email,
-            'message' => $request->message
+            'name' => $request->campagne,
+          //  'email' => $request->email,
+          //  'message' => $request->message
          ];
 
          //dd($data);
@@ -624,6 +627,20 @@ class GeneratePdfController extends Controller
      $reference=date('d/m/Y')."-"."RecapTransport"."-".$data."-".uniqid();
      return $pdf->download($reference.'.pdf');  
   
+ }
+
+/**
+ * gener pdf depuis la vue vaccin
+ */
+ public function downloadSuiviVaccins($data)
+ { 
+    //dump('pdf');
+   //  dd($data);
+     if (!empty($data)) {
+        return $data; 
+     }
+     return back()->with('success','Aucun suivi trouvé pour cette campagne');
+     
  }
 
 

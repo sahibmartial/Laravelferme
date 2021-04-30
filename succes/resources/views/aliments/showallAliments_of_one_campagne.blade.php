@@ -91,8 +91,9 @@ $total=null;
     </tr>  
 </table>
 @else
+<div class="alert alert-success">
 Aucun Aliment enregistré pour la campagne !!
-
+</div>
 @endif
 
 <hr>

@@ -8,7 +8,7 @@
     <th>Observations</th>
   </tr>
   <tr>
-     <td>{{$suivi->campagne_id}}</td>
+  <td>{{$suivi->campagne_id}}</td>
     <td>{{$suivi->campagne}}</td>
     <td>{{$suivi->datedevaccination}}</td>
     <td>{{$suivi->intitulevaccin}}</td> 

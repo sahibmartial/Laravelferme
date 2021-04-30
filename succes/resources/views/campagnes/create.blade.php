@@ -10,6 +10,7 @@ $tarted=date("Y-m-d ");
 <div >
 	<p><a href="{{route('home')}}">Accueil</a></p>
 </div>
-@include('shared.formcampagne')
+<div class="text-center"> @include('shared.formcampagne')</div>
+
 @stop
 

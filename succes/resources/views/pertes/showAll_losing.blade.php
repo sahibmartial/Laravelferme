@@ -40,6 +40,7 @@ $cam= new Campagne();
 <title>Tlosses-ofCampaign</title>
 @endsection
 @section('content')
+@if(count($results)>0)
 <div class="text-left"><a href="{{route('pdf_pertes',['data'=>$campagne])}}">download</a></div>
 <h3 class="text-center mt-3-mb-2">Detail pertes de la <b>{{$campagne}}</b></h3>
 <table class="table mt-3">
@@ -77,9 +78,14 @@ $cam= new Campagne();
     </tr>
   </tbody>
 </table> 
+@else
+	<div class="alert alert-success">
+	<p class="text-center">Aucune quantite de pertes Enregistres pour la campagne !!! </p>
+	</div>
+@endif
 
 <hr>
-<p class="text-center"><a href="/achats"> Retour Achats</a></p>
+<p class="text-center"><a href="/OutilsCampagne"> Retour Campagne</a></p>
 
 @stop
 

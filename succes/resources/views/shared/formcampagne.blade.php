@@ -1,4 +1,4 @@
-<h2>Creer une campagne</h2>
+<h2>Créer une campagne</h2>
 <form action="{{route('campagnes.store')}}" method="POST">
 	{{ csrf_field() }}
 	<input type="text" name="title" placeholder="Entrez nom campagne " value={{ old('title') }}>

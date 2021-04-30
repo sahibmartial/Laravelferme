@@ -20,6 +20,7 @@
 	       
     </fieldset>
 </nav>
+<p class="text-center mt-2"><a href="/ferme"> Board</a> </p>
 @stop
 
 

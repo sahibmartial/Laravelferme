@@ -37,13 +37,11 @@ $cam= new Campagne();
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
 @section('content')
+
 <div class="float-sm-left mt-3">
   <p><a href="{{route('pdf_accesoires',['data'=>$campagne])}}" class="btn btn-primary">Download</a></p>
 </div>
-<div class="float-sm-right mt-3">
-  <p><a href="/achats" class="retour">Retour_Achats</a></p>
-</div>
-
+@if(count($results)>0)
   <table style="width:100%">
   <tr>
     <th>ID</th>
@@ -76,9 +74,16 @@ $cam= new Campagne();
       <td><b>{{$total}}</b> FCFA</td>
     </tr>
 </table> 
+@else
+<div class="alert alert-success">
+	<p>Aucun Accessoire Enregistres pour la campagne !!! </p>
+</div>
+@endif
 
-
-
+<hr>
+<div class="float-sm-right mt-3 mb-2">
+  <p><a href="/achats" class="retour">Retour_Achats</a></p>
+</div>
 @stop
 
 

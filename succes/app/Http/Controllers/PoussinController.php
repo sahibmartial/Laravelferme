@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\CampagneController;
 
 use App\Model\Poussin;
+use App\Model\Vaccin;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -98,24 +99,60 @@ class PoussinController extends Controller {
 		$campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
 		// dd($request->campagne);
+         try {
+			$rules = [
+				// 'campagne_id'=>'bail|required',
+				'campagne'      => 'bail|required|min:9',
+				'quantite'      => 'bail|required',
+				'priceUnitaire' => 'bail|required',
+				'fournisseur'   => 'required|min:4',
+				'obs'           => 'required|min:3'];
 
-		$rules = [
-			// 'campagne_id'=>'bail|required',
-			'campagne'      => 'bail|required|min:9',
-			'quantite'      => 'bail|required',
-			'priceUnitaire' => 'bail|required',
-			'fournisseur'   => 'required|min:4',
-			'obs'           => 'required|min:3'];
-		$this->validate($request, $rules);
 
-		Poussin::create([
-				'campagne_id'   => $campagne_id,
-				'date_achat'    => $request->date_achat,
-				'campagne'      => Str::lower($request->campagne),
-				'quantite'      => $request->quantite,
-				'priceUnitaire' => $request->priceUnitaire,
-				'fournisseur'   => $request->fournisseur,
-				'obs'           => $request->obs]);
+			 if($this->validate($request, $rules))
+			 {
+                 
+	 	      Poussin::create([
+			   'campagne_id'   => $campagne_id,
+		    	'date_achat'    => $request->date_achat,
+		    	'campagne'      => Str::lower($request->campagne),
+			    'quantite'      => $request->quantite,
+			    'priceUnitaire' => $request->priceUnitaire,
+		      	'fournisseur'   => $request->fournisseur,
+		      	'obs'           => $request->obs]);
+                
+				 //step insertion arraive  dans la table vaccin et envoi de mail notification
+				  $now=now();
+				//  dd($now);
+				  $camapgne=Str::lower($request->campagne);
+				   $traitement="Arrivée des poussins";
+				   $obs="Arrivé poussins dans la ferme ";
+
+				  Vaccin::create([
+					'campagne_id'=>$campagne_id,
+					'campagne'=>Str::lower($request->campagne),
+					'datedevaccination'=>$now,
+					'intitulevaccin'=>$traitement,
+					'obs'=>$obs   
+				   ]);
+
+				  $content="Nous sommes le ".$now.", jour 1 de la ".$camapgne."<br> <br>";
+				  $content.="A) Preventions sanitaire:<br>";
+				  $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>"; 
+				  $content.="B) Traitements: <br>"; 
+				  $content.="2) EAu sucré /Mixtral /BetaSpro-C <br>"; 
+
+                  $vaccin= new Vaccin;
+				  $vaccin->alertMailingArrivePoussins($content);
+
+			 }else{
+				 new \Throwable("");
+			 }
+		 } catch (\Throwable $th) {
+			// dd($th->getMessage());
+			 return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+		 }
+		     
 
 		//return redirect()->route('head');
 		return redirect()->route('poussins.index')->with('success', 'Poussins has been successfully added');
@@ -194,9 +231,9 @@ class PoussinController extends Controller {
 
 	public function selectAllheadForOneCampagne($id) {
 		$poussin= new Poussin();
-        dd($id);
+      //  dd($id);
 		$result=$poussin-> selectAllheadForOneCampagne($id);
-		 dd($result);
+	//	 dd($result);
 		return $result;
 	}
 
