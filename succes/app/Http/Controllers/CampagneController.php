@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Support\Str;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Campagne;
 use App\Model\Bilan;
@@ -15,7 +15,7 @@ use App\Http\Controllers\TransportController;
 use App\Http\Controllers\PerteController;
 use App\Http\Controllers\VenteController;
 use App\Http\Controllers\FonctionController;
-
+use App\User;
 use Illuminate\Support\Facades\Auth;
 class CampagneController extends Controller
 {
@@ -29,22 +29,28 @@ class CampagneController extends Controller
        $cam = new Campagne();
         $campagne_id=null;
         
-      //  dd('index');
+        //dd('index');
       // $campagnes= Campagne::all();
         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->simplePaginate(2);
-
-        //recup id campagne 
+        if(count($campagnes)>0)
+        {
+          //recup id campagne 
         foreach ( $campagnes as $key => $value) {
           $campagne_id=$value['id'];
         }
-        
         //recup apports of this campagne and calculate
         $som=$cam->sumApportsOfcampagne($campagne_id);
-
-       
        // dd($campagne_id,$som);
         //send for view 
         return view('campagnes.index',compact(['campagnes','som']));
+
+        }else{
+          return view('campagnes.index',compact(['campagnes']));
+          //return back()->with('success','Aucune campagne en cours detectée !');
+        }
+        
+        
+        
     }
 
     /**
@@ -76,7 +82,7 @@ class CampagneController extends Controller
           'status'=>'required|min:7'];
         
        $this->validate($request,$rules);
-       dd($request);
+   //    dd($request);
        Campagne::create([
            'intitule'=>Str::lower($request->title),
            'budget'=>$request->budget,
@@ -89,10 +95,14 @@ class CampagneController extends Controller
         
         $to_name= auth()->user()['name'];
         $to_email=auth()->user()['email'];
+        $users = User::all();
         $mail= new MailController;
-        $subject="Creation de la ".$request->title ;
-        $content="Votre campagne a été crée avec succes";
-       $mail->send($to_email,$to_name,$subject,$content);
+        $subject="Création de la ".$request->title ;
+        $content="Une nouvelle campagne viens d'être crée avec succes, restons focus.<br> Force et Courage à tous, excellente campagne Amen.";
+        foreach ( $users as $key => $user) {
+          $mail->send($user['email'],$user['name'],$subject,$content);
+        }
+      
        return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
     }
              
@@ -242,22 +252,23 @@ class CampagneController extends Controller
     public function cloturerCampagne()
     {   
        $id=($_GET["id"]);//id campagne
-       $apportVente=$ApoortPersonnel=null;
+       //dd($id);
+       $apportVente=$apportPersonnel=$poussins=$poussinsPriceUnit=$budget=null;
 
          $cam = new Campagne();
          $apports=$cam->getApport($id);
-
+         
         if (!empty($apports)) {
           foreach ($apports as $key => $apport) {
             if ($apport['obs']=='Apport issu des Ventes') {
               $apportVente+=$apport['apport'];
             } else {
-              $ApoortPersonnel+=$apport['apport'];
+              $apportPersonnel+=$apport['apport'];
             }     
           }
         }
 
-        dd($apportVente,$ApoortPersonnel);
+     //   dd($apportVente,$apportPersonnel);
       // dd($bilans);
      //  dump($bilans[0]['campagne']);
       // dd($bilans[0]['totalAchats']);   
@@ -271,8 +282,7 @@ class CampagneController extends Controller
      $updated_at=date("Y-m-d H:i:s");
 
      $ended=date("Y-m-d ");
-    
-
+  
     // dd($year);
      $statut="TERMINE";
      $cloture=DB::table('campagnes')->whereId($_GET["id"])
@@ -282,54 +292,86 @@ class CampagneController extends Controller
       //appel bilan 
     //  $year = date('Y', strtotime($ended));
      $year = preg_split('/-/', $ended);
-        // dump("Annee : ".$year[0]);
-     $poussins=0;
+    //    dd("Annee : ".$year[0]);
+    // $poussins=0;
      $nomcampagne="";
      $obs="";
      $fonction=new FonctionController();
      $head= new PoussinController();
-     $result=$head->selectAllheadForOneCampagne($id);
+     
+     //select poussins lié a la campagne
+     $poussinsresult = Campagne::find($id)->poussins;
 
+     if (count($poussinsresult)>0) {
+      // dd($poussinsresult[0]);
+       $poussins=$poussinsresult[0]['quantite'];
+       $nomcampagne=$poussinsresult[0]['campagne'];
+       $poussinsPriceUnit=$poussinsresult[0]['priceUnitaire'];
+     }else{
+
+      return back()->with('success',"Impossible de cloturer la campagne aucune quantite de poussins trouvés");
+     }
+
+   /*  dd($result=$head->selectAllheadForOneCampagne($id));
      for($i=0; $i <count($result); $i++) { 
 
       $poussins=$result[$i]->quantite;
       $nomcampagne=$result[$i]->campagne;
 
-    }
+    }*/
 
           //dump("qte poussins : ".$poussins);
           //dump("Nom campagne : ".$nomcampagne);
-    $achatshead=$head->calculateAchatHeadOfThisCampagne($id);
+   // $achatshead=$head->calculateAchatHeadOfThisCampagne($id);
+
+    $achatshead=$poussins*$poussinsPriceUnit;
          // dump(" achat poussins :".$achatshead);
+         
     $access= new AccessoireController();
     $achataccessoire=$access->calculateDepenseAccessoireofthiscampagne($id);
-          //dump("accessoire :".$achataccessoire);
+         // dump("accessoire :".$achataccessoire);
+          
     $aliment= new AlimentController();
     $achataliment=$aliment->calculateDepenseAlimentofthiscampagne($id);
-         // dump("Achat aliment : ".$achataliment);
+        //  dump("Achat aliment : ".$achataliment);
+          
     $frais= new TransportController();
     $transport=$frais->calculateFraisTotalOfCampagne($id);
-         // dump(" Frais transport : ".$transport);
+        //  dump(" Frais transport : ".$transport);
+         
     $perte= new PerteController();
     $perdus=$perte->calculateTotalLossofthiscampagne($id);
-         // dump(" quantite perdus ".$perdus);
-
+        //  dump(" quantite perdus ".$perdus);
+          
     $vente=new VenteController();
     $vendus= $vente->calculateVenteOfCampagne($id);
-        //  dump(" Total vente : ".$vendus);
-
+         // dump(" Total vente : ".$vendus);
+           //  dd($charges_salaire);
 
           //calacul des total achats
     $totalachats=$achatshead+$achataliment+$achataccessoire+$transport+$charges_salaire;
     $totalvente=$vendus;
+  // dd( $totalachats,$totalvente);
+    $startcampagne=null;
+    $infoCampagne=$cam->getInfosCampagneById($id);
 
-    if ($totalvente < $totalachats) {
-      $obs= $nomcampagne." deficitaire";
+   // dd($infoCampagne[0]);
+
+    if (count($infoCampagne)>0) {
+      $budget=$infoCampagne[0]['budget'];
+      $startcampagne=$infoCampagne[0]['start'];
+    }else{
+      return back()->with('success',"Impossible de cloturer la ".$nomcampagne.", Budget non detecté");
+    }
+    //insertion bd 
+    try {
+      if ($totalvente < $totalachats) {
+        $obs= $nomcampagne." deficitaire";
       $ben=$totalvente-$totalachats;
-      $charges_salaire=20000;
-    //
       DB::table('bilans')->insert([
-        'campagne_id' =>$id, 'campagne' =>$nomcampagne,
+        'campagne_id' =>$id, 
+        'campagne' =>$nomcampagne,
+        'startcampagne'=>$startcampagne,
         'budget'=>$budget,
         'apportVente'=>$apportVente,
         'apportPersonnel'=>$apportPersonnel,
@@ -343,30 +385,39 @@ class CampagneController extends Controller
         
       ]
     );
+      //  dd('isertion reussit');
+      }elseif($totalvente > $totalachats){
 
-    }else{
-      $ben=$totalvente-$totalachats;
-      $partenaire=$ben-$reserve;
+        $ben=$totalvente-$totalachats;
+        $partenaire=$ben-$reserve;
 
-      $obs=$fonction->generateObsBilan($ben,$nomcampagne);
+       $obs=$fonction->generateObsBilan($ben,$nomcampagne);
             //insertion table bilan
-      DB::table('bilans')->insert([
-        'campagne_id' =>$id, 'campagne' =>$nomcampagne,
-        'budget'=>$budget,
-        'apportVente'=>$apportVente,
-        'apportPersonnel'=>$apportPersonnel,
-        'totalAchats'=>$totalachats,
-        'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
-        'quantite_perdus'=>$perdus,'benefice'=>$ben,
-        'reserve'=>$reserve,'partenaire'=>$partenaire,
-        'charges_salariale'=>$charges_salaire,
-        'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
-        'updated_at'=>$updated_at
-
-      ]
-    );
-
+            DB::table('bilans')->insert([
+              'campagne_id' =>$id, 
+              'campagne' =>$nomcampagne,
+              'startcampagne'=>$startcampagne,
+              'budget'=>$budget,
+              'apportVente'=>$apportVente,
+              'apportPersonnel'=>$apportPersonnel,
+              'totalAchats'=>$totalachats,
+              'totalVentes'=>$totalvente,'quantite_achetes'=>$poussins,
+              'quantite_perdus'=>$perdus,'benefice'=>$ben,
+              'reserve'=>$reserve,'partenaire'=>$partenaire,
+              'charges_salariale'=>$charges_salaire,
+              'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
+              'updated_at'=>$updated_at
+      
+            ]
+          );
+      }else {
+        throw new \Throwable("");
+      }     
+      
+    } catch (\Throwable $th) {
+      dd($th->getMessage());
     }
+
     //send mail cloture campagne
           $bilans=$this->recapBilan($id);//recup info campagne
 
@@ -376,7 +427,22 @@ class CampagneController extends Controller
         $subject="Cloture de la ".$bilans[0]['campagne'] ;
         $content="Votre campagne a été cloturée avec succes.<br>";
         $content.="Le detail de la campagne ci-dessous.<br>";
-        $content.="Intitule : ".$bilans[0]['campagne']. ", Total_Achats: ". $bilans[0]['totalAchats']." FCFA, "."Total_Vente: ".$bilans[0]['totalVentes']." FCFA, "." QtePoussins: ".$bilans[0]['quantite_achetes']." PertePoussins: ".$bilans[0]['quantite_perdus']. " Recettte: ".$bilans[0]['benefice']." FCFA,    Reserve: ". $bilans[0]['reserve']." FCFA,  Partenaire: ".$bilans[0]['partenaire']." FCFA,  Chges Salariales: ".$bilans[0]['charges_salariale']." FCFA,  Obs: ".$bilans[0]['obs'].", Date_start: ".$bilans[0]['created_at']. ", Date_fin".$bilans[0]['updated_at']."<br>";
+        $content.="Intitule : ".$bilans[0]['campagne']."<br>".
+        "Budget: ".$budget." FCFA <br>".
+        "Apport: ".($apportVente+$apportPersonnel)." FCFA <br>".
+        "ACHATS: <br>".
+         "Total_Achats: ". $bilans[0]['totalAchats'].
+         " FCFA <br> "."Total_Vente: ".$bilans[0]['totalVentes'].
+         " FCFA <br>"." QtePoussins: ".$bilans[0]['quantite_achetes'].
+         "<br> PertePoussins: ".$bilans[0]['quantite_perdus'].
+         " <br> RECETTE: <br>".
+          " Solde: ".$bilans[0]['benefice'].
+          " FCFA <br> Reserve: ". $bilans[0]['reserve'].
+          " FCFA<br>  Partenaire: ".$bilans[0]['partenaire'].
+          " FCFA <br>  Chges Salariales: ".$bilans[0]['charges_salariale'].
+          " FCFA <br>  Observations: ".$bilans[0]['obs'].
+          "<br> Date_debut: ".$startcampagne.
+           "<br> Date_fin".$bilans[0]['updated_at']."<br>";
 
         //dd($content);
        $mail->send($to_email,$to_name,$subject,$content);

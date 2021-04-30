@@ -19,7 +19,9 @@
 	</div>
 			
 	@else
+	<div class="alert alert-success">
 	<p>Aucun Accessoires Enregistres pour une campagne !!! </p>
+	</div>
 	@endif
 
 <br>

@@ -5,7 +5,7 @@
 @section('content')
 
 <div class="col-lg-0 mt-2">
-<a href="/ferme">Retour Menu Principale</a>	
+<a href="/OutilsCampagne">Retour</a>	
 </div>
 <div class="text-center">
 
@@ -29,13 +29,17 @@
 	{{ $campagnes->links() }}
     </div>
 	@else
+	<div class="alert alert-success">
 	<p>Aucune Campagne en Cours  Enregistrée !!! </p>
+	</div>
 	@endif
-<p>
-	<a href="{{route('campagnes.create')}}">créer une campagne</a>
-	/  <a href="/formCapital">Ajout-Capital</a>
+	<hr>
+    <p>
+	 <a href="{{route('campagnes.create')}}">créer une campagne</a>
+	 /  <a href="/formCapital">Ajout-Capital</a>
 
-</p>
+   </p>
+
+
 </div>
-
 @stop

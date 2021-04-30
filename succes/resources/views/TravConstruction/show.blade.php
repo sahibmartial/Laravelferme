@@ -15,9 +15,9 @@
 @include('shared.showtravaux')
 <hr>
 <p>
-<a href="{{route('travauxconstruction.edit',$materiel)}}">Modifiez Materiel</a></p>
+<a href="{{route('travaux.edit',$materiel)}}">Modifiez Materiel</a></p>
 /
-<form action="{{route('travauxconstruction.destroy',$materiel)}}" method="POST"
+<form action="{{route('travaux.destroy',$materiel)}}" method="POST"
  onsubmit="return confirm('Etes-vous sure?');" 
  >
 	{{csrf_field()}}
@@ -26,7 +26,7 @@
 	
 </form>
 <hr>
-<p><a href="{{route('travauxconstruction.index')}}">Liste materiel</a></p>
+<p><a href="{{route('travaux.index')}}">Liste materiel</a></p>
 </div>
 @stop
 

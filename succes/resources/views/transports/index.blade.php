@@ -27,7 +27,9 @@ $result=$vente->calculateFraisTotalOfCampagne(1);*/
 		{{$transports->links()}}
 	</div>
 	@else
+	<div class="alert alert-success">
 	<p>Aucun  frais de transport  Enregistres pour une campagne !!! </p>
+	</div>
 	@endif
 
 <br>

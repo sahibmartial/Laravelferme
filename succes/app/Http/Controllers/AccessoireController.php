@@ -288,7 +288,7 @@ class AccessoireController extends Controller
     */
 
     public function allAccessoires(){
-
+      //  dd('her');
         return view("accessoires.allAccessoires");
 
     }
@@ -301,6 +301,7 @@ class AccessoireController extends Controller
         $accessoire= new Accessoire();
          //$accessoire->
        // $campagne="";
+     ///  dd("in");
     
        return view("accessoires.showall");
 

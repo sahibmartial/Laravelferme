@@ -11,6 +11,7 @@ $duredevie=0;
 <title>PERTES</title>
 @endsection
 @section('content')
+<div class="text-center">
 <h2>Declarer une Perte</h2>
 <form action="{{route('pertes.store')}}" method="POST">
 	{{ csrf_field() }}
@@ -55,5 +56,7 @@ $duredevie=0;
 
 <hr>
 <p><a href="/perte"> Retour menu principal </a></p>
+
+</div>
 @stop
 

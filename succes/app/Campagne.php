@@ -55,5 +55,26 @@ class Campagne extends Model
 
     }
 
+    public function poussins()
+    {
+   //  dd("form");
+     return $this->hasMany('App\Model\Poussin') ;
+
+    }
+
+    public function transport()
+    {
+   //  dd("form");
+     return $this->hasMany('App\Model\Transport') ;
+
+    }
+
+    public function getInfosCampagneById($id)
+    {
+      return   campagne::whereId($id)->get();
+    }
+
+
+
   
 }

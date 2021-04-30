@@ -11,7 +11,7 @@
    {{ Form::label('Date', 'Date:') }}
                             <br>
                            <input type="date" name="date_achat" placeholder=""
-                           @error('date_achat') is-invalid @enderror" name="date_achat" value="{{ old('date_achat') }}" required autocomplete="date_achat" autofocus>
+                           @error('date_achat') is-invalid @enderror" name="date_achat" value="{{ old('date_achat')?? $poussin->date_achat }}" required autocomplete="date_achat" autofocus>
                            @error('date_achat')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -36,7 +36,7 @@
 	<input type="text" name="fournisseur" cols="20" rows="10" placeholder="Fournisseur" value=" {{old('fournisseur')?? $poussin->fournisseur}}">
 	{!! $errors->first('fournisseur','<span class="error-msg">:message</span>') !!}
 	<br>
-	<textarea name="obs" placeholder="RAS" value=" {{old('obs')?? $poussin->obs}}"></textarea>
+	<textarea name="obs" placeholder="RAS" value=" ">{{old('obs')?? $poussin->obs}}</textarea>
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	<br>
 	<input type="submit" value="Editer Achat Poussin">

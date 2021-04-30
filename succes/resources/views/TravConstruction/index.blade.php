@@ -22,7 +22,7 @@
 	<ul>
 	   
 		    @foreach($travaux as  $materiel)
-			<li><a href="{{route('travauxconstruction.show',$materiel)}}">{{ $materiel['materiel']}} --{{ $materiel['date']}} --{{ $materiel['obs']}} </a></li>
+			<li><a href="{{route('travaux.show',$materiel)}}">{{ $materiel['materiel']}} --{{ $materiel['date']}} --{{ $materiel['obs']}} </a></li>
 		    @endforeach
           
 		
@@ -39,7 +39,7 @@
 	@endif  
 
     <div>
-     <p><a href="{{route('travauxconstruction.create')}}">Declarez un Materiel</a></p>
+     <p><a href="{{route('travaux.create')}}">Declarez un Materiel</a></p>
     </div>	  
 	
 </div>

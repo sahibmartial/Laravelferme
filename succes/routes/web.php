@@ -18,6 +18,10 @@ Route::get('/', function () {
 Route::get('/ferme', function () {
     return view('shared.ferme');
 });
+
+Route::get('/OutilsCampagne', function () {
+    return view('layout.partials.navcampagnes');
+});
 Route::get('/achats', function () {
     return view('shared.achats');
 });
@@ -36,6 +40,7 @@ Route::get('/autocomplete', function () {
 Route::get('/StatCampagne', function () {
     return view('stats.index');
 });
+
 
 Route::get('/capital
     ', function () {
@@ -134,6 +139,8 @@ Route::get('/mean_masse', 'MasseController@index')->name('mean_masse');
 Route::get('vaccin', 'VaccinController@index')->name('vaccin');
 Route::get('vaccinform', 'VaccinController@create')->name('vaccinform');
 Route::post('vaccinformvalidation', 'VaccinController@store')->name('vaccinformvalidation');
+Route::get('recap_vaccin', 'VaccinController@recapVaccin')->name('recap_vaccin');
+Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')->name('downloadrecap_vaccin');
 
 /**
  *PDF 
@@ -155,11 +162,21 @@ Route::post('pdf_bilanComplet/{data}', 'GeneratePdfController@downloadRecapDetai
 Route::get('quinsommes', 'ContactController@qui_ns_sommes')->name('quinsommes');
 Route::get('contact', 'ContactController@contact')->name('contact');
 Route::post('sendcontact', 'ContactController@sendmessage')->name('sendcontact');
+/**
+ * error bd insert
+ */
+Route::get('errorbd', 'ErrorController@index')->name('errorbd');
 
 /**
  *MailChimp
  */
 //Route::get('/send-mail-using-mailchimp', [MailChimpController::class, 'index'])->name('send.mail.using.mailchimp.index');
+
+
+/**
+ * TravauxConstruction
+ */
+Route::get('Tconstruction','TravauxConstructionController@index')->name('Tconstruction');
 
 
  Route::get('/createcomplete','FonctionController@create');
@@ -183,6 +200,8 @@ Route::resource('masses', 'MasseController');
 Route::resource('employes', 'EmployeController');
 Route::resource('apports', 'ApportController');
 Route::resource('vaccins', 'VaccinController');
+Route::resource('travaux', 'TravauxConstructionController');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

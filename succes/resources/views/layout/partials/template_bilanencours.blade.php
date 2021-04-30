@@ -79,6 +79,6 @@ $pdf->pdfDownloadBilan($campagne);
 
 <div class="text-center"><a href="{{route('pdf_bilan',['data'=>$campagne])}}">Download</a></div>
 @else
-<div class="btn btn-info mt-3"><a href="/achats">{{$notification}}</a> </div>
+<div class="alert alert-success mt-3"><a href="/achats">{{$notification}}</a> </div>
 <hr>
 @endif

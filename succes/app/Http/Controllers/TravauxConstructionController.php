@@ -14,15 +14,15 @@ class TravauxConstructionController extends Controller
      */
     public function index()
     {
-       //dd('here');
+      // dd('here');
         $travaux=ConstructionRéparation::select()
         ->orderByDesc('id')
          ->simplePaginate(10);;
-       // dd($travaux);
+         // dd($travaux);
 
-         if( $travaux->count()>0 )
+         if( $travaux )
          {
-            // dd('IN -yes') ;
+           // dd('IN -yes') ;
 
             /* foreach ($travaux as $key => $value) {
                 dump($value['materiel']);
@@ -34,6 +34,7 @@ class TravauxConstructionController extends Controller
 
             return view('TravConstruction.index',compact('travaux'));
          }
+        // dd('OUT -yes') ;
          return view('TravConstruction.index',compact('travaux'));
         
         // return back()->with('success','Pas de Travaux ou Achats de materiels detectés');
@@ -82,7 +83,7 @@ class TravauxConstructionController extends Controller
             'obs' => $request->obs]);
 
     //return redirect()->route('head');
-    return redirect()->route('travauxconstruction.index')->with('success', 'Materiel enregistré avec success');
+    return redirect()->route('travaux.index')->with('success', 'Materiel enregistré avec success');
 
 
     }
@@ -125,6 +126,7 @@ class TravauxConstructionController extends Controller
      */
     public function update(Request $request, $id)
     {
+      //  dd('here update');
         $materiel=ConstructionRéparation::findOrFail($id);
         $rules = [
 			// 'campagne_id'=>'bail|required',
@@ -134,15 +136,22 @@ class TravauxConstructionController extends Controller
 			
 		//	'obs'           => 'required|min:3'
         ];
-        $materiel->update([
-            'date'=>$request->date,
-            'materiel'=>$request->materiel,
-            'quantite'=>$request->quantite,
-            'PriceUnitaire'=>$request->priceUnitaire,
-            'obs'=>$request->obs
+        try {
+            $materiel->update([
+                'date'=>$request->date,
+                'materiel'=>$request->materiel,
+                'quantite'=>$request->quantite,
+                'PriceUnitaire'=>$request->priceUnitaire,
+                'obs'=>$request->obs
+    
+            ]);
+        } catch (\Throwable $th) {
+          // dd($th->getMessage()) ;
+           return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+        }
 
-        ]);
-        return redirect()->route('travauxconstruction.show',$id)->with('success','infos modifié avec succes ');
+       
+        return redirect()->route('travaux.show',$id)->with('success','infos modifié avec succes ');
       //  dd('update');
     }
 
@@ -156,6 +165,6 @@ class TravauxConstructionController extends Controller
     {
         ConstructionRéparation::destroy($id);
 
-        return redirect()->route('travauxconstruction.index')->with('success', 'materiel a bien été supprimé de la liste .');
+        return redirect()->route('travaux.index')->with('success', 'materiel a bien été supprimé de la liste .');
     }
 }

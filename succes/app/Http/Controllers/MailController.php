@@ -135,4 +135,50 @@ class MailController extends Controller
       }
 
 
+       /**
+       * send email contact user 
+       */
+      public function sendEmailAlerteVaccin($to_email,$subject,$content)
+      {
+          $mj = new Client($this->api_key,$this->api_secret,true,['version' => 'v3.1']);
+          
+          //$mj = new MailjetClient(getenv('MJ_APIKEY_PUBLIC'), getenv('MJ_APIKEY_PRIVATE'),true,['version' => 'v3.1']);
+          //alixya09@gmail.com,"weddingalixmartial@gmail.com",
+          //"Mail de confirmation de votre invitation au mariage du duo parfait"
+          $body = [
+              'Messages' => [
+                  [
+                      'From' => [
+                          'Email' => "company.maya1@gmail.com",
+                          'Name' => "TEAM_MAYA"
+                      ],
+                      'To' => [
+                          [
+                              'Email' => $to_email,
+                              
+                          ]
+                      ],
+                      'TemplateID' => 2411042,
+                      'TemplateLanguage' => true,
+                      'Subject' => $subject ,
+                      'Variables' => [
+                      'content' => $content,
+                      
+                      ]
+                      
+                  ]
+              ]
+          ];
+          $response = $mj->post(Resources::$Email, ['body' => $body]);
+    
+          
+          $response->success();
+          //dd($response->getData());
+      }
+
+
+
+
+
+
 }

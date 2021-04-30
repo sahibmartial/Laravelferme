@@ -9,7 +9,7 @@
 	<br>
   <div>                                                                                     
 		<select name="intitulevaccin[]" class="select" multiple>
-		<option selected>Choisir Intitule</option>
+		<option selected>Traitement</option>
 		<option value="Antibiotique">Antibiotiques</option>
 		<option value="Vitamines">Vitamines</option>
 		<option value="Vaccin">Vaccins</option>

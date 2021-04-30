@@ -1,5 +1,5 @@
 <h2>Modifiez Materiel#{{ $materiel['id']}}</h2>
-<form action="{{route('travauxconstruction.update',$materiel)}}" method="POST">
+<form action="{{route('travaux.update',$materiel)}}" method="POST">
 	{{ csrf_field() }}
 	{{ method_field('PUT')}}	
     <div>

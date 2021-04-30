@@ -198,16 +198,13 @@ class BilanController extends Controller
         }
      }
      dd($results);*/
-
+  //  dd($results);
     //dd($results['Campagne']);
       $pdf = PDF::loadView('bilans.pdf_bilan',['results'=>$results,'campagne'=>Str::lower($request->campagne)]);
      //dd($data);
 
      $reference=date('d/m/Y')."-"."Recap"."-".Str::lower($request->campagne)."-".uniqid();
      return $pdf->download($reference.'.pdf'); 
-
-
-
 
    }
     
