@@ -42,518 +42,533 @@ class Vaccin extends Model
     */
    public function  alertMailingSuivi()
    {
-     //dd('alerte');
-    $email=$subject=$content=null;
-    $mail= new MailController;
-   //recuperation date du jour
-   $now = Carbon::now();
+        //dd('alerte');
+        $email=$subject=$content=null;
+        $mail= new MailController;
+       //recuperation date du jour
+       $now = Carbon::now();
+       //get infos campgne
+       $campagne= $this->infosCampagneStatus("EN COURS");
+      
+       // demarrage d partie alerte mail
+       if (count($campagne)>0) {
 
-   //recuperation date arrivé poussins
-   $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")->get();
-   //dump($date_arrivePoussins[0]);
-   //convertion format carbon
-  $datepoussins = new Carbon($date_arrivePoussins[0]['datedevaccination']);
-   //calcule date  et envoi mail selon use case
-   $diff = $datepoussins->diffInDays($now);
-    // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
-   $diff=$diff+1;
-  //use case pour envoi de mail:
+          //recuperation date arrivé poussins une et une seule campagne en cour pour le currently
+          $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")->get();
 
-    $users = User::all();
-    $mail= new MailController;
-  //  dd($users[0]['email']);
-    $subject=" Suivi des Traitements de la campagne en cours";
-    $content="Nous sommes le ".$now. ", jour ".$diff."  de la ".$date_arrivePoussins[0]['campagne']."<br>";
-    $content.="TRAITEMENTS :<br>";  
-    $today = date("Y-m-d H:i:s"); 
+            //compare id cmapagne en cours
+       if($campagne[0]['id']==$date_arrivePoussins[0]['campagne_id'])
+       {
+          //convertion format carbon
+          $datepoussins = new Carbon($date_arrivePoussins[0]['datedevaccination']);
+          //calcule date  et envoi mail selon use case
+           $diff = $datepoussins->diffInDays($now);
+          // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
+          $diff=$diff+1;
 
-     switch ($diff) {
+          //use case pour envoi de mail:
+          $users = User::all();
+          $mail= new MailController;
+         //dd($users[0]['email']);
+          $subject=" Suivi des Traitements de la campagne en cours";
+          $content="Nous sommes le ".$now. ", jour ".$diff."  de la ".$date_arrivePoussins[0]['campagne']."<br>";
+          $content.="TRAITEMENTS :<br>";  
+          $today = date("Y-m-d H:i:s"); 
 
-       case ($diff>=2 && $diff<=4):
+          switch ($diff) {
 
-        if ($diff==2 || $diff==3) {
-          $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Alfaceril <br>";
-        }else{
-          $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Imuneo <br>";
-        }
-        foreach ($users as $key => $user) {
-
-          $mail->sendEmailAlerteVaccin($$user['email'],$subject,$content);
-         }
-         try {
-          Vaccin::create([
-            'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-            'campagne'=>$date_arrivePoussins[0]['campagne'],
-            'datedevaccination'=>$today,
-            'intitulevaccin'=>'Antibiotiques',
-            'obs'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril / Imuneo '
-          ]);       
-          
-         } catch (\Throwable $th) {
-         // dd($th->getMessage());
-          return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-         }   
-         
-         break;
-       
-         case '5':
-          $content.="1) 1er vaccin HB1  <br>";
-          $content.="2) 1er vaccin H120  <br>";
-          $content.="3) SuperVitassol /  Panthéryl / Imuneo <br>";
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vaccins',
-              'obs'=>'1er vaccin HB1, 1er vaccin H120, SuperVitassol /  Panthéryl / Imuneo '
-            ]);       
-            
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-          break;
-
-          case '6':
-            $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Imuneo <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
+            case ($diff>=2 && $diff<=4):
+   
+              if ($diff==2 || $diff==3) {
+                $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Alfaceril <br>";
+              }else{
+                $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Imuneo <br>";
+              }
+              foreach ($users as $key => $user) {
+   
+               $mail->sendEmailAlerteVaccin($$user['email'],$subject,$content);
+              }
+              try {
               Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Antibiotiques',
-                'obs'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo'
+               'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+               'campagne'=>$date_arrivePoussins[0]['campagne'],
+               'datedevaccination'=>$today,
+               'intitulevaccin'=>'Antibiotiques',
+               'obs'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril / Imuneo '
               ]);       
-              
-             } catch (\Throwable $th) {
+             
+              } catch (\Throwable $th) {
              // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-            break;
-
-          case ($diff>=7 && $diff<=8):
-            $content.="1) Eau simple  <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-            break; 
-
-          case '9':
-            $content.="1) VITAMINES : AmineTotal / Supervitassol  <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vitamines',
-                'obs'=>'VITAMINES : AmineTotal / Supervitassol'
-              ]);       
-              
-             } catch (\Throwable $th) {
-             // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-            break;  
-
-          case '10':
-            $content.="1) 1er vaccin de GUMBHORO :  <br>";
-            $content.="2) VITAMINES : AmineTotal / Vitaminolyte Super  <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vaccins',
-                'obs'=>'1er Vaccin GUMBHORO, VITAMINES : AmineTotal / Supervitassol'
-              ]);       
-              
-             } catch (\Throwable $th) {
-             // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-            break; 
+             return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+             }   
             
-          case ($diff>=11 && $diff<=12) :
-            $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vitamines',
-                'obs'=>"VITAMINES : Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super"
-              ]);       
-              
-             } catch (\Throwable $th) {
-             // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-            break; 
-
-          case  ($diff>=13 && $diff<=16):
-            $content.="1) Eau simple  <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-            break; 
-
-          case '17':
-            $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vitamines',
-                'obs'=>"VITAMINES : Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super"
-              ]);       
-              
-             } catch (\Throwable $th) {
-             // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-
-            break;
-
-          case '18':
-            $content.="1) 2ième rappel vaccin  GUMBHORO :  <br>"; 
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vaccins',
-                'obs'=>'VACCINS : 2ième rappel vaccin de GUMBHORO'
-              ]);       
-              
-             } catch (\Throwable $th) {
-             // dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-
-            break;
+             break;
             
-          case '19':
-            $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }
-             try {
-              Vaccin::create([
-                'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-                'campagne'=>$date_arrivePoussins[0]['campagne'],
-                'datedevaccination'=>$today,
-                'intitulevaccin'=>'Vitamines',
-                'obs'=>'VACCINS : 2ième vaccin de GUMBHORO'
-              ]);       
-              
-             } catch (\Throwable $th) {
-            //  dd($th->getMessage());
-              return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-             }
-
-            break;  
-
-          case '20':
-            $content.="1) Eau simple  <br>";
-            foreach ($users as $key => $user) {
-
-              $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-             }    
-          break;
-
-        case ($diff>=21 && $diff<=23):  
-          $content.="1) Phase de Transition Alimentaire: <br>";
-
-          if ($diff==21) {
-            $content.="a) 3/4 Aliment de démarrage + 1/4 Aliment croissance <br>";
-
-            $content.="2) Anticoccidiens: Vetacox /Anticox <br>";
-
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }  
-
-          try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Transition Aliment',
-              'obs'=>'3/4 Aliment de démarrage + 1/4 Aliment croissance + Anticoccidiens(Vetacox / Anticox ) '
-            ]);       
-            
-           } catch (\Throwable $th) {
-          //  dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-          }
-          if ($diff==22) {
-            $content.="a) 1/2 Aliment de démarrage + 1/2 Aliment croissance <br>";
-
-            $content.="2) Anticoccidiens: Vetacox / Anticox <br>";
-
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }  
-
-          try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Transition Aliment',
-              'obs'=>'1/2 Aliment de démarrage + 1/2 Aliment croissance + Anticoccidiens(Vetacox / Anticox)'
-            ]);       
-            
-           } catch (\Throwable $th) {
-          //  dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-          }
-          if ($diff==23) {
-            $content.="a) 1/4 Aliment de démarrage + 3/4 Aliment croissance <br>";
-            $content.="2) Anticoccidiens: Vetacox / Anticox <br>";
-
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }  
-
-          try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Transition Aliment',
-              'obs'=>'1/4 Aliment de démarrage + 3/4 Aliment croissance + Anticoccidiens(Vetacox / Anticox) '
-            ]);       
-            
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-          }
+            case '5':
+              $content.="1) 1er vaccin HB1  <br>";
+              $content.="2) 1er vaccin H120  <br>";
+              $content.="3) SuperVitassol /  Panthéryl / Imuneo <br>";
+              foreach ($users as $key => $user) {
     
-         break;
-        
-        case ($diff>=24 && $diff<=25):
-          $content.="1) Anticoccidiens: Vetacox / Anticox <br>";
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Anticoccidiens',
-              'obs'=>'Anticoccidiens(Vetacox/Anticox )'
-            ]);       
+                $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+              }
+              try {
+                Vaccin::create([
+                  'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                  'campagne'=>$date_arrivePoussins[0]['campagne'],
+                  'datedevaccination'=>$today,
+                  'intitulevaccin'=>'Vaccins',
+                  'obs'=>'1er vaccin HB1, 1er vaccin H120, SuperVitassol /  Panthéryl / Imuneo '
+                ]);       
+                
+              } catch (\Throwable $th) {
+               // dd($th->getMessage());
+                return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+              }
+              break;
             
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }  
-
-          break; 
-
-         case '26':
-          $content.="1) Vitamines : Amin'Total <br>";
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           } 
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vitamines',
-              'obs'=>"Vitamines : Amin'Total"
-            ]);       
+            case '6':
+                $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Imuneo <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Antibiotiques',
+                    'obs'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo'
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+              break;  
+                
+            case ($diff>=7 && $diff<=8):
+                  $content.="1) Eau simple  <br>";
+                  foreach ($users as $key => $user) {
+      
+                    $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                  }
+               break; 
             
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }  
-          break;
-
-        case '27':
-          $content.="1) 2ième rappel vaccin HB1 <br>";
-          $content.="2) 2ième rappel vaccin H120 <br>";
-          $content.="3) Vitamines: Amin'Total <br>";
-          foreach ($users as $key => $user) {
-
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vaccins',
-              'obs'=>"2ième Rappel  vaccin HB1 et H120 + Vitamines : Amin'Total"
-            ]);       
+            case '9':
+                $content.="1) VITAMINES : AmineTotal / Supervitassol  <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>'VITAMINES : AmineTotal / Supervitassol'
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+              break;   
             
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }  
+            case '10':
+                $content.="1) 1er vaccin de GUMBHORO :  <br>";
+                $content.="2) VITAMINES : AmineTotal / Vitaminolyte Super  <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vaccins',
+                    'obs'=>'1er Vaccin GUMBHORO, VITAMINES : AmineTotal / Supervitassol'
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+              break; 
+              
+            case ($diff>=11 && $diff<=12) :
+                $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>"VITAMINES : Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+              break; 
+              
+            case  ($diff>=13 && $diff<=16):
+                $content.="1) Eau simple  <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+              break;  
+              
+            case '17':
+                $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>"VITAMINES : Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+    
+              break;  
 
-          break; 
-        case '28':
-          $content.="1) Eau simple  <br>";
-          foreach ($users as $key => $user) {
+            case '18':
+                $content.="1) 2ième rappel vaccin  GUMBHORO :  <br>"; 
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vaccins',
+                    'obs'=>'VACCINS : 2ième rappel vaccin de GUMBHORO'
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+    
+              break;   
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }  
-          break; 
+            case '19':
+                $content.="1) VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super <br>";
+                foreach ($users as $key => $user) {
+    
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                 }
+                 try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>'VACCINS : 2ième vaccin de GUMBHORO'
+                  ]);       
+                  
+                 } catch (\Throwable $th) {
+                //  dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                 }
+    
+                break;  
+
+            case '20':
+                  $content.="1) Eau simple  <br>";
+                  foreach ($users as $key => $user) {
+      
+                    $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                  }    
+               break; 
+
+            case ($diff>=21 && $diff<=23):  
+                $content.="1) Phase de Transition Alimentaire: <br>";
+      
+                if ($diff==21) {
+                  $content.="a) 3/4 Aliment de démarrage + 1/4 Aliment croissance <br>";
+      
+                  $content.="2) Anticoccidiens: Vetacox /Anticox <br>";
+      
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }  
+      
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Transition Aliment',
+                    'obs'=>'3/4 Aliment de démarrage + 1/4 Aliment croissance + Anticoccidiens(Vetacox / Anticox ) '
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                //  dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+                }
+                if ($diff==22) {
+                  $content.="a) 1/2 Aliment de démarrage + 1/2 Aliment croissance <br>";
+      
+                  $content.="2) Anticoccidiens: Vetacox / Anticox <br>";
+      
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }  
+      
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Transition Aliment',
+                    'obs'=>'1/2 Aliment de démarrage + 1/2 Aliment croissance + Anticoccidiens(Vetacox / Anticox)'
+                  ]);       
+                  
+                 } catch (\Throwable $th) {
+                //  dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+                }
+                if ($diff==23) {
+                  $content.="a) 1/4 Aliment de démarrage + 3/4 Aliment croissance <br>";
+                  $content.="2) Anticoccidiens: Vetacox / Anticox <br>";
+      
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }  
+      
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Transition Aliment',
+                    'obs'=>'1/4 Aliment de démarrage + 3/4 Aliment croissance + Anticoccidiens(Vetacox / Anticox) '
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+                }
           
-        case '29':
-          $content.="1) 3ième rappel vaccin GUMBORHO: HIPRAGUMBORO GM97 / CEVAC IBDL /AVI IBD PLUS / NOBILIS 228E  <br>";
-          foreach ($users as $key => $user) {
+              break;   
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vaccins',
-              'obs'=>"3ième Rappel vaccin GUMBORHO (souche intermediaire plus) pour les zones à forte pression virale "
-            ]);       
-            
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
+            case ($diff>=24 && $diff<=25):
+                $content.="1) Anticoccidiens: Vetacox / Anticox <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Anticoccidiens',
+                    'obs'=>'Anticoccidiens(Vetacox/Anticox )'
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }  
+      
+              break; 
 
-          break; 
-        case '30':
-          $content.="1) Eau simple  <br>";
-          foreach ($users as $key => $user) {
+            case '26':
+                $content.="1) Vitamines : Amin'Total <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                } 
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>"Vitamines : Amin'Total"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }  
+              break;
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }  
-          break;    
-        case ($diff>=31 && $diff<=34):
-          $content.="1) Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox   <br>";
-          foreach ($users as $key => $user) {
+            case '27':
+                $content.="1) 2ième rappel vaccin HB1 <br>";
+                $content.="2) 2ième rappel vaccin H120 <br>";
+                $content.="3) Vitamines: Amin'Total <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vaccins',
+                    'obs'=>"2ième Rappel  vaccin HB1 et H120 + Vitamines : Amin'Total"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }  
+      
+              break;  
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Maladies Respiratoires',
-              'obs'=>"Maladies Respiratoires: Vental /Enrosol"
-            ]);       
-            
-           } catch (\Throwable $th) {
-           // dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
+            case '28':
+                $content.="1) Eau simple  <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }  
+              break; 
 
-          break;
+            case '29':
+                $content.="1) 3ième rappel vaccin GUMBORHO: HIPRAGUMBORO GM97 / CEVAC IBDL /AVI IBD PLUS / NOBILIS 228E  <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vaccins',
+                    'obs'=>"3ième Rappel vaccin GUMBORHO (souche intermediaire plus) pour les zones à forte pression virale "
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+      
+              break; 
+             
+            case '30':
+                $content.="1) Eau simple  <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }  
+              break;  
+              
+            case ($diff>=31 && $diff<=34):
+                $content.="1) Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox   <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Maladies Respiratoires',
+                    'obs'=>"Maladies Respiratoires: Vental /Enrosol"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                 // dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+      
+              break; 
 
-        case '35':
-          $content.="1) Vermifuges: Sulfate de piperazine /levimasol /polystrongle  <br>";
-          foreach ($users as $key => $user) {
+            case '35':
+                $content.="1) Vermifuges: Sulfate de piperazine /levimasol /polystrongle  <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vermifuges',
+                    'obs'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle "
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                   // $th->getMessage();
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+              break;   
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-           try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vermifuges',
-              'obs'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle "
-            ]);       
-            
-           } catch (\Throwable $th) {
-             // $th->getMessage();
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-          break;  
+            case ($diff>=36 && $diff<=38):
+                $content.="1) Eau simple  <br>";
+                foreach ($users as $key => $user) {
+      
+                  $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+              break ;  
+             
+            case '39':
+                $content.="1) Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer";
+                foreach ($users as $key => $user) {
+                 $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+                try {
+                  Vaccin::create([
+                    'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
+                    'campagne'=>$date_arrivePoussins[0]['campagne'],
+                    'datedevaccination'=>$today,
+                    'intitulevaccin'=>'Vitamines',
+                    'obs'=>"Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer"
+                  ]);       
+                  
+                } catch (\Throwable $th) {
+                //  dd($th->getMessage());
+                  return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+                }
+      
+              break;  
+            default:
+                $content.="1) Campagne en cours, vigilance accru";
+                foreach ($users as $key => $user) {
+                $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
+                }
+              break;
+        }                       
 
-        case ($diff>=36 && $diff<=38):
-          $content.="1) Eau simple  <br>";
-          foreach ($users as $key => $user) {
+      }
+                                             
 
-            $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-           }
-          break ;
+    }
 
-        case '39':
-          $content.="1) Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer";
-          foreach ($users as $key => $user) {
-           $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-          }
-          try {
-            Vaccin::create([
-              'campagne_id'=>$date_arrivePoussins[0]['campagne_id'],
-              'campagne'=>$date_arrivePoussins[0]['campagne'],
-              'datedevaccination'=>$today,
-              'intitulevaccin'=>'Vitamines',
-              'obs'=>"Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer"
-            ]);       
-            
-           } catch (\Throwable $th) {
-          //  dd($th->getMessage());
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-           }
-
-          break;
-
-       default:
-       $content.="1) Campagne en cours, vigilance accru";
-       foreach ($users as $key => $user) {
-        $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
-       }
-       break;
-     }
-
-     // $mail->sendEmailAlerteVaccin($email,$subject,$content); 
+          // $mail->sendEmailAlerteVaccin($email,$subject,$content);     
 
    }
 
