@@ -17,10 +17,10 @@ class VaccinController extends Controller
     public function index()
     {
         $vaccin= new Vaccin();         
-         
-      //  $vaccin->alertMailingSuivi();
+        
+      // $vaccin->alertMailingSuivi();
         $resultscampa=$vaccin->infosCampagneStatus("EN COURS");
-      //  dd($resultscampa[0]['id']);
+       //dd($resultscampa);
 
         if (count($resultscampa)>0) {
             $vaccins= Vaccin::whereCampagneId($resultscampa[0]['id'])
