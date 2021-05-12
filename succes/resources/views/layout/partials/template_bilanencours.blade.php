@@ -1,8 +1,9 @@
 
-@if($resultcampagne)
-<div class="row mt-2 ">
+@if($campagneInfos->count()>0)
+
+<div class="row mt-4">
 	<div class="col-lg-0 mt-2">
-            <a class="btn btn-info" href="/achats">retour Achats</a>
+            <a class="btn btn-info ml-3" href="/achats">retour Achats</a>
 
             <a class="btn btn-success" href="{{route('bilan_achats')}}">Show</a>
         </div>
@@ -13,9 +14,6 @@
                 <h2>Detail Partiel <b>{{$campagne}}</b> </h2>
     </div>
       
-   @php
-  $total=0
-   @endphp
    
    <div class="text-center">
     <table class="table table-bordered ">
@@ -34,50 +32,46 @@
             <th>T_Achats</th>
             <!--<th width="280px">Action</th>-->
         </tr>
+
             <tr>
-                <td>{{ $resultcampagne['start']}}</td>
-                <td>{{ $resultcampagne['intitule']}}</td>
-                <td>{{ $resultcampagne['status'] }}</td>
-                <td>{{$budget}} FCFA</td>
+                <td>{{ $campagneInfos[0]['start'] }}</td>
+                <td>{{ $campagneInfos[0]['intitule']}}</td>
+                <td>{{ $campagneInfos[0]['status'] }}</td>
+                <td>{{$campagneInfos[0]['budget'] }} FCFA</td>
                 <td>
-                    <a href="{{route('apports.index')}}"><center>{{ 'Issu des Ventes : '.$apportVente }} </a> FCFA</center>
-                    <hr>
-                    <center><a href="{{route('apports.index')}}">{{'Personnel :'.$apportpersonel }}</a> FCFA</center>
+                <a href="{{route('apports.index')}}"><center>{{ 'Issu des Ventes : '.$apportVente }} </a> FCFA</center>
+                <hr>
+                <a href="{{route('apports.index')}}"><center>{{'Personnel :'.$apportpersonel }}</a> FCFA</center>
+                      
                 </td>
                 <td colspan="1">
-                    <center>{{ 'qte : '.$qtyhead }} | {{'price_U : '.$priceU}} FCFA</center>
-                    <hr>
-                    <b><center>{{ $total=$qtyhead * $priceU }} FCFA</center></b>
-                    
+                <center>{{ 'qte : '.$resultbilan['qtePoussins'] }} | {{'price_U : '.$resultbilan['PousPUAchat'] }} FCFA</center>
+                <hr>
+                <b><center>{{ $total=$resultbilan['qtePoussins'] * $resultbilan['PousPUAchat'] }} FCFA</center></b>   
                 </td>
                 <td colspan="1">
-                    <center>{{'Pertes : ' .$resultat_pertes['T_qte']}} </center> 
+                <center>{{'Pertes : ' .$resultbilan['resultat_pertes']['T_qte']}} </center> 
                     <hr>
-                    <b><center>{{'Restant : '. ($qtyhead - ($resultat_pertes['T_qte']+ $resulat_vente['T_qte']))}}</center></b>
+                <b><center>{{'Restant : '. ($resultbilan['qtePoussins'] - ($resultbilan['resultat_pertes']['T_qte']+ $resultbilan['resulat_vente']['T_qte']))}}</center></b>
                 </td>
                  <td colspan="1">
-                    <center>{{ 'qte vendu : '.$resulat_vente['T_qte']}} </center>
+                    <center>{{ 'qte vendu : '.$resultbilan['resulat_vente']['T_qte']}} </center>
                     <hr>
-                    <center><b>{{'Recette:'.$resulat_vente['T_vente']}}</b> FCFA</center>
-                    <center><b>{{'Solde:'.($resulat_vente['T_vente'] - $apportVente)}}</b> FCFA</center>
+                    <center><b>{{'Recette:'.$resultbilan['resulat_vente']['T_vente']}}</b> FCFA</center>
+                    <center><b>{{'Solde:'.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
                     
                 </td>
 
-                <td><b>{{ $totalacces }} FCFA</b></td>
-                <td><b>{{ $totalfood }} FCFA</b></td>
-                <td><b>{{ $totalfrais }} FCFA</b></td>
-                 <td><b>{{ $total+$totalacces+ $totalfood+$totalfrais}} FCFA</b></td>
+                <td><b>  {{ $resultbilan['totalacces'] }} FCFA</b></td>
+                <td><b>  {{ $resultbilan['totalfood'] }} FCFA</b></td>
+                <td><b> {{ $resultbilan['totalfrais'] }} FCFA</b></td>
+                 <td><b>  {{ $total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']}} FCFA</b></td>
                
             </tr>
     </table>
 </div>
 
-@php
-$pdf->pdfDownloadBilan($campagne);
-
-@endphp
-
-<div class="text-center"><a href="{{route('pdf_bilan',['data'=>$campagne])}}">Download</a></div>
+<div class="text-center"><a href="{{route('pdf_bilan',['array'=>$campagne])}}">Download</a></div>
 @else
 <div class="alert alert-success mt-3"><a href="/achats">{{$notification}}</a> </div>
 <hr>

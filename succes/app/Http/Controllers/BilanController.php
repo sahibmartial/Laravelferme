@@ -8,7 +8,9 @@ use App\Campagne;
 use App\Http\Controllers\GeneratePdfController;
 use Illuminate\Support\Str;
 use PDF;
-
+use App\Http\Controllers\AccessoireController;
+use App\Http\Controllers\AlimentController;
+use App\Http\Controllers\PoussinController;
 class BilanController extends Controller
 {
     /**
@@ -113,46 +115,108 @@ class BilanController extends Controller
        return view('bilans.bilan_achats_encours');
     
   }
-
+/**
+ * 
+ */
    public function getBilan_achats_campagne_en_cours(Request $request){
-    $apportVente=$apportpersonel=$budget=null;
+    // dd($request->request);
+     $apports=$apportVente=$apportpersonel=0;
+    $notification=null;
    $bilan= new Bilan();
    $cam= new Campagne();
+   $acess= new AccessoireController();
+   $food  = new AlimentController();
+   $head = new PoussinController();
+   $transport   = new TransportController();
+   $vente  = new VenteController();
+   $perte  = new PerteController();
    $campagneInfos= $bilan->getInfosCampagne(Str::lower($request->campagne));
-  // dd($campagneInfos,$campagneInfos[0]['budget']);
-   //dd($campagneInfos->isNotEmpty());
+  // dd($campagneInfos);
+   $campagne=$request->campagne;
+  //  dd($campagneInfos,$campagneInfos[0]['budget']);
+  // dd($campagneInfos->isNotEmpty());
    if ($campagneInfos->isNotEmpty()) {
-     $budget=$campagneInfos[0]['budget'];
-     $campagne_id=$campagneInfos[0]['id'];
-     $apports=$cam->getApport($campagne_id);//recu  apport of campagne
-
-   if(!empty($apports)){
-    foreach ($apports as $key => $value) {
-     //dump($value['obs']);
-     if ($value['obs']=='Apport issu des Ventes') {
-       $apportVente+=$value['apport'];
-     }else{
-      $apportpersonel+=$value['apport'];
-     }
-    
-   }
-
-   }
-
-   }
-   
   
+    $resultbilan=$qtyhead=$priceU=0;
+    $infosPoussins=Campagne::find($campagneInfos[0]['id'])->poussins;
    
-   //dd($apportVente,$apportpersonel);
-   
-       $notification=null;
-      $campagne=$request->campagne;
-     // dd($request->campagne);
-      $notification=" La ".$campagne." est Cloturée ou introuvable.";
-       return view('bilans.getDetailAchatsBilan',compact('campagne','notification','budget','apportVente','apportpersonel'));
+    $resulat_vente=$vente->calculRecapvente($campagne);
+    $resultat_pertes=$perte->pertesOfthisCampagne($campagne);
+
+    $resultsacces = $acess->selectAllAccessoireforthisCampagne($campagneInfos[0]['id']);
+    $totalacces = $acess->calculateDepenseAccessoireofthiscampagne($campagneInfos[0]['id']);
+
+    $resultsaliment = $food->selectAllAlimentforthisCampagne($campagneInfos[0]['id']);
+    $totalfood=$food->calculateDepenseAlimentofthiscampagne($campagneInfos[0]['id']);
+
+    $totalfrais = $transport->calculateFraisTotalOfCampagne($campagneInfos[0]['id']);
+   // $qtyhead = $head->selectheadForOneCampagne($campagneInfos[0]['id']);
+
+      $totalfood = $food->calculateDepenseAlimentofthiscampagne($campagneInfos[0]['id']);
+      $budget=$campagneInfos[0]['budget'];
+      $campagne_id=$campagneInfos[0]['id'];
+      $apports=$cam->getApport($campagne_id);//recu  apport of campagne
+     
+      if ($infosPoussins->isNotEmpty()) {
+        $qtyhead=$infosPoussins[0]['quantite'];
+        $priceU=$infosPoussins[0]['priceUnitaire'];
+
+      }
+     // dd($qtyhead,$priceU,$resulat_vente,$resultat_pertes,$totalfood,$campagneInfos);
+
+     // dd($apports);
+      if(!empty($apports)){
+       // dd('Apports');
+        foreach ($apports as $key => $value) {
+         //dump($value['obs']);
+         if ($value['obs']=='Apport issu des Ventes') {
+            $apportVente+=$value['apport'];
+          }else{
+            $apportpersonel+=$value['apport'];
+          }
+        }
+      }
+      if ($resultat_pertes['T_qte']==null) {
+       // dd('yes');
+        $resultat_pertes['T_qte']=0;
+      }
+
+      if ($resulat_vente['T_qte']==null) {
+        $resulat_vente['T_qte']=0;
+        $resulat_vente['T_vente']=0;
+      }
+
+      $resultbilan= array('resultat_pertes'=>$resultat_pertes,'resulat_vente'=>$resulat_vente,'totalacces'=>$totalacces,
+    'totalfood'=>$totalfood,'totalfrais'=>$totalfrais,'qtePoussins'=>$qtyhead,'PousPUAchat'=>$priceU);
+   //dd($resultbilan);
+   $resultCamp=array('Infos'=>$resultbilan,'Apport'=>array('ApVente'=>$apportVente,'ApPerso'=>$apportpersonel),
+    'InfosCampagne'=>$campagneInfos);
+    
+    $request->session()->put('detail',$resultCamp);
+   // $data = $request->session()->all();
+    
+    //dd($bilan->getDetailleAttribute());
+        //dd($apportVente,$apportpersonel,'View');
+        return view('bilans.getDetailAchatsBilan',compact(['campagne','apportVente','apportpersonel',
+        'campagneInfos','resultbilan','notification']));
+      
+    }
+  
+ //  dd($apportVente,$apportpersonel);       
+     
+      $notification=" La ".$campagne." est introuvable.";
+     // dd($campagne,$notification);
+       return view('bilans.getDetailAchatsBilan',compact(['campagne','notification','campagneInfos']));
     
   }
-
+  /**
+   * return result to pdf download
+   */
+  public function infosBilanDetaille($resultbilan,$apportVente,$apportpersonel,$campagneInfos)
+  {
+   $resultCamp=array('Infos'=>$resultbilan,'Apport'=>array('ApVente'=>$apportVente,'ApPerso'=>$apportpersonel),'InfosCampagne'=>$campagneInfos);
+   return $resultCamp;
+  }
 
   /**
    * 

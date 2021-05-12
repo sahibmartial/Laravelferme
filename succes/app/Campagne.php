@@ -73,8 +73,16 @@ class Campagne extends Model
     {
       return   campagne::whereId($id)->get();
     }
-
-
+     /**
+      * recuper infos campagne a partir de son intitule
+      */
+     public function getInfosCampagne($name)
+     {
+       $infos=Campagne::whereIntitule($name)->get();
+       //dd($infos);
+       return $infos;
+        
+     }
 
   
 }

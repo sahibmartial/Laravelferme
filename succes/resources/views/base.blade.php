@@ -12,6 +12,10 @@
 
     <link rel="stylesheet" type="text/css" href="{{asset('assets/css/ferme.css')}}">
 
+   
+ @yield('stylesheet')
+ 
+   
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -30,6 +34,7 @@
     </style>
     <!-- Custom styles for this template -->
     <link href="{{asset('assets/css/carousel.css')}}" rel="stylesheet">
+
 </head>
 <body>
 <header>
@@ -106,7 +111,7 @@
     <div class="container marketing mt-5">
 
       @yield('content')  
-
+      @yield('bootstrap')
     </div><!-- /.container -->
 
     <!-- FOOTER -->
@@ -122,5 +127,9 @@
 </main>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="{{asset('assets/js/bootstrap.bundle.js')}}"></script>
+<!-- chartjs-->
+
 </body>
+
+
 </html>
