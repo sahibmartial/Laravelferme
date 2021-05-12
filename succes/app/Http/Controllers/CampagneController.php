@@ -494,8 +494,10 @@ class CampagneController extends Controller
      }
          
     }
-
-
+  
+   /**
+    * infos cammpagne 
+    */
     public function getInfosOneCampagneEnCours($campagne)
     {
      //$resultcampagne = array('id'=>'','intitule'=>'','status'=>'','date-creation'=>'');
@@ -518,13 +520,19 @@ class CampagneController extends Controller
       } catch (Exception $e) {
        //echo $e->getMessage();
       }
-
-
     }
-
-
-       //  
   }   
+
+  /**
+   * 
+   */
+  public function getInfosCampagne($intitule)
+  { 
+    $camp= new Campagne();
+    $result=$camp->getInfosCampagne($intitule);
+  //  dd($result);
+      return $result;
+  }
 
    public function recapBilan($id)
     {
@@ -546,7 +554,7 @@ class CampagneController extends Controller
     {
        $camp = new Campagne();
    $result= $camp->apports();
-   dd($result);
+ //  dd($result);
      
     } 
 

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Model\Vente;
 use App\Http\Controllers\CampagneController;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class VenteController extends Controller
 {

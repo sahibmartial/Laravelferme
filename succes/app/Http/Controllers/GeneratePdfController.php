@@ -52,121 +52,69 @@ class GeneratePdfController extends Controller
  * pdf des achats, ventes , pertes et recettes
  *  
  */
-
-    public function pdfDownloadBilan($data){
-      $cam= new Campagne();
-    $status="";
-    $idCampagne=$apportVente=$apportPersonnel=$apports=$budget=null;
+    public function pdfDownloadBilan($array)
+    {
+      $data = session()->all();
+    //  dd($data['detail']);
+      
     $date=$moyPuVente=$reste=null;
     $quantity=$AchatsAliments=$fraisTransport=$T_Depenses=null;
     $pU=$T_Achats=$T_qtPoussins=$loss=$T_Vente=$qteVendu=$AchatsAccessoires=null;
-    $campagnes=Campagne::whereIntitule(['intitule'=>$data])->get();
-    if($campagnes->isNotEmpty())
-    {
-        foreach ($campagnes as $key => $campagne) {
-             //dd($campagne);
-            $status=$campagne->status;
-             $date=$campagne->start;
-             $idCampagne=$campagne->id;
-             $budget=$campagne->budget;
-        }
+    //dd($data);
+    $apportVente=$data['detail']['Apport']['ApVente'];
+    $apportPersonnel=$data['detail']['Apport']['ApVente'];
+    $apports=$apportVente+$apportPersonnel;
 
-        $apports=$cam->getApport($idCampagne);
-        if (!empty($apports)){
-          foreach ($apports as $key => $value) {
-     //dump($value['obs']);
-           if ($value['obs']=='Apport issu des Ventes') {
-             $apportVente+=$value['apport'];
-           }else{
-            $apportPersonnel+=$value['apport'];
-          }
+    $budget=$data['detail']['InfosCampagne'][0]['budget'];
+    $status=$data['detail']['InfosCampagne'][0]['status'];
+    $date=$data['detail']['InfosCampagne'][0]['start'];
+    $idCampagne=$data['detail']['InfosCampagne'][0]['id'];
+    $campagne=$data['detail']['InfosCampagne'][0]['intitule'];
+    //poussins
+    $quantity=$data['detail']['Infos']['qtePoussins'];
+    $pU=$data['detail']['Infos']['PousPUAchat'];
+    $T_qtPoussins=$quantity*$pU;
+    //Pertes
+    $loss=$data['detail']['Infos']['resultat_pertes']['T_qte'];
+    //ventes
+    $qteVendu=$data['detail']['Infos']['resulat_vente']['T_qte'];
+    $T_Vente=$data['detail']['Infos']['resulat_vente']['T_vente'];
 
-        }
+   //Accesoires
+   $AchatsAccessoires=$data['detail']['Infos']['totalacces'];
+   //Aliments
+   $AchatsAliments=$data['detail']['Infos']['totalfood'];
 
-
-        }
-    
-    }
-    
- //   dd($idCampagne);
-    $poussins=Poussin::whereCampagne(['campagne'=>$data])->get(['quantite','priceUnitaire']);
-    if ($poussins) {
-       foreach ($poussins as $key => $poussin) {
-             //dd($campagne);
-            $quantity=$poussin->quantite;
-             $pU=$poussin->priceUnitaire;
-             $T_qtPoussins=$quantity*$pU;
-        }
-    }
-     
-
-    $pertes=Perte::whereCampagne(['campagne'=>$data])->get('quantite');
-    if ($pertes) {
-        foreach ($pertes as $key => $perte) {
-             //dd($campagne);
-            $loss+=$perte->quantite;
-            
-        }
-    }
-   // dd( $loss);
-     $ventes=Vente::whereCampagne(['campagne'=>$data])->get(['quantite','priceUnitaire']);
-
-     if ($ventes) {
-         foreach ($ventes as $key => $vente) {
-            // dd( $vente);
-            $qteVendu+=$vente->quantite;
-            $T_Vente+=$vente->quantite*$vente->priceUnitaire;
-        }
-     }
-    // dump($qteVendu);
-    // dd($T_Vente);
-
-      $accessoires=Accessoire::whereCampagne(['campagne'=>$data])->get(['quantite','priceUnitaire']);
-
-     if ($accessoires) {
-         foreach ( $accessoires as $key => $accessoire) {
-            $AchatsAccessoires+=$accessoire->quantite*$accessoire->priceUnitaire;
-        }
-     }
-
-
-     $aliments=Aliment::whereCampagne(['campagne'=>$data])->get(['quantite','priceUnitaire']);
-
-     if ($aliments) {
-         foreach ($aliments as $key => $aliment) {
-            $AchatsAliments+=$aliment->quantite*$aliment->priceUnitaire;
-        }
-     }
-
-     $frais=Transport::whereCampagne(['campagne'=>$data])->get('montant');
-
-     if ($frais) {
-         foreach ($frais as $key => $transport) {
-            $fraisTransport+=$transport->montant;
-        }
-     }
-    
+   //frais
+   $fraisTransport=$data['detail']['Infos']['totalfrais'];
+  
 
     $T_Depenses=($AchatsAccessoires+$AchatsAliments+$fraisTransport+$T_qtPoussins);
-   
-   
-   if ($quantity==$qteVendu ) {
-    $reste="Tous vendus";
+    
+   if ($quantity==0) {
+      $reste="RAS";
+      $moyPuVente=0.0;
+   }elseif($quantity==$qteVendu && $quantity!=0){
+    
+      $reste="Tous vendus";
     $moyPuVente=($T_Vente/$qteVendu);
+
    }elseif ($qteVendu==null) {
+     
       $reste="Aucune Vente à ce jour"; 
       $moyPuVente=0.0;
    }else{
+     
     $reste=($quantity-($qteVendu+$loss));
     $moyPuVente=($T_Vente/$qteVendu);
    }
 
-
+  // dd( $apportVente,$apportPersonnel, $T_Depenses);  
 
     // $date=$data['debut'];
      $data2 =  [
             'date' =>$date,
-            'campagne'=>$data,
+            'campagne'=>$campagne,
             'Budget'=>$budget,
             'status'=>$status,
             'QuantitePoussins'=>$quantity,
@@ -186,9 +134,11 @@ class GeneratePdfController extends Controller
             'Solde'=>($T_Vente - $apportVente)
          ];
 
-     $pdf = PDF::loadView('pdf.pdf_bilanPartiel',$data2);
-     //dd($data);
+       // dd($data2);
 
+     $pdf = PDF::loadView('pdf.pdf_bilanPartiel',$data2);
+    // dd($pdf);
+    // die;
      $reference=date('d/m/Y')."-"."bilanPartiel"."-".uniqid();
      return $pdf->download($reference.'.pdf');
 

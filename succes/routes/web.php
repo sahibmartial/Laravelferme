@@ -118,6 +118,12 @@ Route::post('get_billan_achats_enCours','BilanController@getBilan_achats_campagn
 Route::get('get_billandetaille','BilanController@getBilan_detaille')->name('get_billandetaille');
 Route::post('download_billandetaille','BilanController@downloadBilan_detaille')->name('download_billandetaille');
 
+/**
+ * Statistique
+ */
+Route::get('stat','StatistiqueController@statCampagne')->name('stat');
+
+
 
 /*
 *Vente
@@ -148,7 +154,7 @@ Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')->name('download
 
  Route::get('pdf_form', 'GeneratePdfController@pdfForm')->name('pdf_form');
  Route::post('pdf_download', 'GeneratePdfController@pdfDownload')->name('pdf_download');
- Route::get('pdf_bilan/{data}', 'GeneratePdfController@pdfDownloadBilan')->name('pdf_bilan');
+ Route::get('pdf_bilan/{array}','GeneratePdfController@pdfDownloadBilan')->name('pdf_bilan');
 Route::get('pdf_vente/{data}', 'GeneratePdfController@downloadRecapVente')->name('pdf_vente');
 Route::get('pdf_accessoires/{data}', 'GeneratePdfController@downloadRecapAccessoires')->name('pdf_accesoires');
 Route::get('pdf_aliments/{data}', 'GeneratePdfController@downloadRecapAliments')->name('pdf_aliments');

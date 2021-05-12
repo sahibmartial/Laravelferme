@@ -4,7 +4,7 @@ namespace App\Model;
 use App\Campagne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\DB;
 class Bilan extends Model
 {
     protected $fillable=['campagne_id','campagne','totalAchats','quantite_achetes','quantite_perdus','totalVentes','benefice','reserve','charges_salariale','partenaire','year','obs','budget','apportVente','apportPersonnel'];
@@ -33,5 +33,18 @@ class Bilan extends Model
    	
       return Campagne::whereIntitule(['campagne'=>$campagne])->get();
    }
+   
+   
+   /**
+    * get budget and ben of each campagne
+    */
+
+    public function getBudgetBenefice()
+    {
+     //  dd('Here');
+      $infos= DB::select('select campagne,budget,totalAchats,totalVentes,quantite_achetes,
+     quantite_perdus,benefice from bilans');
+      return $infos;
+    }
 
 }
