@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Str;
-use DB;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Transport;
 use App\Http\Controllers\CampagneController;
@@ -16,17 +17,22 @@ class TransportController extends Controller
     public function index()
     {
        // $transports=Transport::all();
-
-         $transports= DB::table('campagnes')
-        ->join('transports', function ($join) {
-            $join->on('transports.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-        })
-        ->orderByDesc('transports.id')
-        ->SimplePaginate(10);
-
-      //  dd($transports);
-
-        return view('transports.index',compact('transports'));
+         try {
+            $transports= DB::table('campagnes')
+            ->join('transports', function ($join) {
+                $join->on('transports.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+            })
+            ->orderByDesc('transports.id')
+            ->SimplePaginate(10);
+    
+          //  dd($transports);
+    
+            return view('transports.index',compact('transports'));
+             
+         } catch (\Throwable $th) {
+             throw $th;
+         }
+        
     }
 
     /**
@@ -62,20 +68,26 @@ class TransportController extends Controller
          'obs'=>'required|min:3'
          ];
         $this->validate($request,$rules);
+        try {
+            Transport::create([
+                'campagne_id'=>$campagne_id,
+                'date_achat'=>$request->date_achat,
+                'campagne'=>Str::lower($request->campagne),
+               //'libelle'=>$request->libelle,
+                'montant'=>$request->montant,
+              //  'priceUnitaire'=>$request->priceUnitaire,
+               // 'fournisseur'=>$request->fournisseur,
+                'obs'=>$request->obs]);
+    
+          
+            //return redirect()->route('transport');  
+             return redirect()->route('transports.index')->with('success', 'Masse has been successfully added');
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
 
-           Transport::create([
-            'campagne_id'=>$campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-           //'libelle'=>$request->libelle,
-            'montant'=>$request->montant,
-          //  'priceUnitaire'=>$request->priceUnitaire,
-           // 'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs]);
-
-      
-        //return redirect()->route('transport');  
-         return redirect()->route('transports.index')->with('success', 'Masse has been successfully added');
+          
     }
 
     /**
@@ -86,8 +98,13 @@ class TransportController extends Controller
      */
     public function show($id)
     {
-        $transports=Transport::findOrFail($id);
+        try {
+            $transports=Transport::findOrFail($id);
         return view('transports.show',compact('transports'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
     }
 
     /**
@@ -98,8 +115,13 @@ class TransportController extends Controller
      */
     public function edit($id)
     {
-         $transports=Transport::findOrFail($id);
+        try {
+            $transports=Transport::findOrFail($id);
          return view('transports.edit',compact('transports'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+         
     }
 
     /**
@@ -111,20 +133,20 @@ class TransportController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $transports=Transport::findOrFail($id);
+        $rules=[
+            'campagne_id'=>'bail|required',  
+            'campagne'=>'bail|required|min:9',
+            //'libelle'=>'bail|required|min:3',
+            'montant'=>'bail|required',
+           // 'priceUnitaire'=>'bail|required',
+           // 'fournisseur'=>'required|min:4'
+            'obs'=>'required|min:3'
+            ];
+        $this->validate($request,$rules); 
 
-         $rules=[
-         'campagne_id'=>'bail|required',  
-         'campagne'=>'bail|required|min:9',
-         //'libelle'=>'bail|required|min:3',
-         'montant'=>'bail|required',
-        // 'priceUnitaire'=>'bail|required',
-        // 'fournisseur'=>'required|min:4'
-         'obs'=>'required|min:3'
-     ];
-        $this->validate($request,$rules);
-
-          $transports->update([
+        try {
+            $transports=Transport::findOrFail($id);
+         $transports->update([
             'campagne_id'=>$request->campagne_id,
             'date_achat'=>$request->date_achat,
             'campagne'=>Str::lower($request->campagne),
@@ -134,9 +156,13 @@ class TransportController extends Controller
             //'fournisseur'=>$request->fournisseur,
             'obs'=>$request->obs
         ]);
-
-      
         return redirect()->route('transports.show',$id);
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+           
+       
     }
 
     /**
@@ -146,9 +172,23 @@ class TransportController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        Transport::destroy($id);
-        return redirect()->route('transports.index');
+    { 
+        $folder="TransportsRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+
+        try {
+            $value=Transport::findorfail($id);
+        
+           $filebackup->backupfile($folder,$filename,$value);
+        
+            Transport::destroy($id);
+            return redirect()->route('transports.index');
+
+        } catch (\Throwable $th) {
+            throw $th;
+        } 
     }
     
 

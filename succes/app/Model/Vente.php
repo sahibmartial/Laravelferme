@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Model;
+
+use App\Campagne;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class Vente extends Model
 {
@@ -16,6 +18,9 @@ class Vente extends Model
     	'acheteur',
     	'contact',
     	'events',
+      'avance',
+      'impaye',
+      'regler',
     	'obs'
     ];
   
@@ -76,6 +81,88 @@ class Vente extends Model
  }
 
 
+ /**
+  * recup data vente campagne en cours
+  */
 
+  public function ventes_campagne_en_cours()
+  {
+     try {
+        $campagne=Campagne::whereStatus('En COURS')->get();
+      
+        if (isset($campagne[0]['id'])) {
+          // dd($campagne[0]['id']);
+          $resultVentes=Vente::whereCampagne_id($campagne[0]['id'])->get();
+        
+           return $resultVentes;
+        } else {
+          return 'Campagne Introuvable ' ;
+        }
+
+     } catch (\Throwable $th) {
+        throw $th;
+     }
+     
+  }
+/**
+ * get Ventes inmpayés de la campagne en cours 
+ */
+  public function ventes_impayes()
+  {
+     try {
+      $campagne=Campagne::whereStatus('En COURS')->get();
+      if (isset($campagne[0]['id'])) {
+         $reglement="NOK";
+         $resultVentes=Vente::whereCampagne_id($campagne[0]['id'])
+         ->where('regler','NOK')
+         ->orderbydesc('id')
+         ->get();
+
+         /*if ($resultVentes->isNotEmpty()) {
+           return  $resultVentes;
+         } else {
+           // dd("PAs de ventes non soldées trouvées");
+         }*/
+         return  $resultVentes;
+
+      } else {
+         return 'Campagne Introuvable ' ;
+      }
+      
+
+     } catch (\Throwable $th) {
+        throw $th;
+     }
+  }
+
+/**
+ * get Ventes inmpayés de la campagne en cours 
+ */
+public function ventes_regler()
+{
+   $reglement="OK";
+
+   try {
+      $campagne=Campagne::whereStatus('En COURS')->get();
+
+      if (isset($campagne[0]['id'])) {
+
+         $resultVentes=Vente::whereCampagne_id($campagne[0]['id'])
+         ->where('regler',null)
+         ->orWhere('regler','OK')
+         ->orderbydesc('id')
+         ->get();
+
+         return  $resultVentes;
+
+      } else {
+         return 'Campagne Introuvable ' ;
+      }
+      
+         
+   } catch (\Throwable $th) {
+      throw $th;
+   }
+}
 
 }

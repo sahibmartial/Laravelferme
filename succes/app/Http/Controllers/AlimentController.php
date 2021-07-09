@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Str;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Aliment;
 use App\Http\Controllers\CampagneController;
@@ -17,12 +17,18 @@ class AlimentController extends Controller
     {
          //dd('here');
          //$aliments=Aliment::all();
-         $aliments= DB::table('campagnes')
-        ->join('aliments', function ($join) {
-            $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-        })
-        ->orderByDesc('aliments.id')
-        ->SimplePaginate(10);
+
+         try {
+            $aliments= DB::table('campagnes')
+            ->join('aliments', function ($join) {
+                $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+            })
+            ->orderByDesc('aliments.id')
+            ->SimplePaginate(10);
+         } catch (\Throwable $th) {
+             throw $th;
+         }
+        
 
          return view('aliments.index',compact('aliments'));
     }
@@ -62,19 +68,23 @@ class AlimentController extends Controller
          //'obs'=>'required|min:3'
          ];
         $this->validate($request,$rules);
-
-           Aliment::create([
-            'campagne_id'=>$campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-           'libelle'=>$request->libelle,
-            'quantite'=>$request->quantite,
-            'priceUnitaire'=>$request->priceUnitaire,
-            'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs]);
-
-      
-        return redirect()->route('campaliments');   
+          try {
+            Aliment::create([
+                'campagne_id'=>$campagne_id,
+                'date_achat'=>$request->date_achat,
+                'campagne'=>Str::lower($request->campagne),
+               'libelle'=>$request->libelle,
+                'quantite'=>$request->quantite,
+                'priceUnitaire'=>$request->priceUnitaire,
+                'fournisseur'=>$request->fournisseur,
+                'obs'=>$request->obs]);
+    
+          
+            return redirect()->route('campaliments');   
+          } catch (\Throwable $th) {
+              throw $th;
+          }
+          
     }
 
     /**
@@ -84,9 +94,13 @@ class AlimentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-         $aliments=Aliment::findOrFail($id);
+    {   try {
+        $aliments=Aliment::findOrFail($id);
          return view('aliments.show', compact('aliments'));
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+         
     }
 
     /**
@@ -97,8 +111,13 @@ class AlimentController extends Controller
      */
     public function edit($id)
     {
-        $aliments=Aliment::findOrFail($id);
+        try {
+            $aliments=Aliment::findOrFail($id);
          return view('aliments.edit',compact('aliments'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
     }
 
     /**
@@ -110,6 +129,7 @@ class AlimentController extends Controller
      */
     public function update(Request $request, $id)
     {
+       // dd($request->date_achat);
         $aliments=Aliment::findOrFail($id);
 
          $rules=[
@@ -118,24 +138,29 @@ class AlimentController extends Controller
          'libelle'=>'bail|required|min:3',
          'quantite'=>'bail|required',
          'priceUnitaire'=>'bail|required',
-         'fournisseur'=>'required|min:4'
+         'fournisseur'=>'required|min:4',
+         'date_achat'=>'bail|required'
          //'obs'=>'required|min:3'
      ];
         $this->validate($request,$rules);
-
-           $aliments->update([
-            'campagne_id'=>$request->campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-           'libelle'=>$request->libelle,
-            'quantite'=>$request->quantite,
-            'priceUnitaire'=>$request->priceUnitaire,
-            'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs
-        ]);
-
-      
-        return redirect()->route('aliments.show',$id);
+         try {
+            $aliments->update([
+                'campagne_id'=>$request->campagne_id,
+                'date_achat'=>$request->date_achat,
+                'campagne'=>Str::lower($request->campagne),
+               'libelle'=>$request->libelle,
+                'quantite'=>$request->quantite,
+                'priceUnitaire'=>$request->priceUnitaire,
+                'fournisseur'=>$request->fournisseur,
+                'obs'=>$request->obs
+            ]);
+    
+          
+            return redirect()->route('aliments.show',$id);
+         } catch (\Throwable $th) {
+             throw $th;
+         }
+           
     }
 
     /**
@@ -146,8 +171,20 @@ class AlimentController extends Controller
      */
     public function destroy($id)
     {
-        Aliment::destroy($id);
-        return redirect()->route('aliments.index');
+        $folder="VenteRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+
+        try {
+            $value=Aliment::findorfail($id);     
+           $filebackup->backupfile($folder,$filename,$value);
+            Aliment::destroy($id);
+            return redirect()->route('aliments.index');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
     }
 
 
@@ -156,21 +193,24 @@ class AlimentController extends Controller
    */
    public function selectAllAlimentforthisCampagne($id){
        $result=array(); 
-       $collections=DB::table('aliments')->whereCampagneId($id)->get();
-
+       try {
+        $collections=DB::table('aliments')->whereCampagneId($id)->get();
         $result=$collections->toArray();
-       // $result = json_decode($result, true);
-         //dd($result);
-       return  $result;
-
+        // $result = json_decode($result, true);
+          //dd($result);
+        return  $result;
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+    
    }
 
-    /**
-     *
-     *
-     */
+/*** 
+* 
+*
+*/
 
-     public function calculateDepenseAlimentofthiscampagne($id){
+public function calculateDepenseAlimentofthiscampagne($id){
         $som=0;
 
         $result=$this->selectAllAlimentforthisCampagne($id);

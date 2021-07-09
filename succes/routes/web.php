@@ -130,7 +130,7 @@ Route::get('stat','StatistiqueController@statCampagne')->name('stat');
 */
 Route::get('recap_vente', 'VenteController@getRecap')->name('recap_vente');
 Route::post('recap_vente_show', 'VenteController@getRecapShow')->name('recap_vente_show');
-
+Route::get('recap_vente_impaye', 'VenteController@ventes_impayes')->name('recap_vente_impaye');
 
 /*
 *Masse
@@ -147,6 +147,7 @@ Route::get('vaccinform', 'VaccinController@create')->name('vaccinform');
 Route::post('vaccinformvalidation', 'VaccinController@store')->name('vaccinformvalidation');
 Route::get('recap_vaccin', 'VaccinController@recapVaccin')->name('recap_vaccin');
 Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')->name('downloadrecap_vaccin');
+Route::get('traitement_listing','VaccinController@traitement_pdf')->name('traitement_listing');
 
 /**
  *PDF 

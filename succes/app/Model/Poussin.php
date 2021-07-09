@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Model;
-use Db;
+
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
@@ -13,9 +14,15 @@ class Poussin extends Model {
 		'quantite',
 		'priceUnitaire',
 		'fournisseur',
-		'obs', 'date_achat'];
+    'phone',
+		'obs', 
+    'date_achat'];
 
-
+    
+    public function campagne()
+   {
+     return $this->belongsTo('App\Campagne');
+   }
 
  /**
    * 

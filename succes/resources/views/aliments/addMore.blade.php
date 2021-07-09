@@ -1,6 +1,6 @@
 @extends('layout.addmorealiments')
 @section('title')
-<title>Add/remove multiple aliments </title>
+<title>Ajouter aliments </title>
 @stop
 @section('contenu')
 @include('shared.addMoreAliments')

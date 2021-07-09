@@ -29,14 +29,14 @@ $cam= new Campagne();
 
        $total=$aliment->calculateDepenseAlimentofthiscampagne($campagne_id);
 
-     // dump($results);
-     //  dd($total);
+    // dd($results);
+     // dd($total);
 
 
   ?>
 @extends('base')
 @section('title')
-<title>ACHATS-FraisTransport</title>
+<title>ACHATS-Aliments</title>
 @endsection
 @section('content')
 @php

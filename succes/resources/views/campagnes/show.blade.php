@@ -28,15 +28,15 @@ $index=$campagnes->id;
 </p>
 </div>
  
-
-
-{{--<form action="{{route('campagnes.destroy',$campagnes)}}" method="POST"
- onsubmit="return confirm('Etes-vous sure?');" 
- >
+<div class="text-center">
+<form action="{{route('campagnes.destroy',$campagnes)}}" method="POST"
+ onsubmit="return confirm('Etes-vous sure?');">
 	{{csrf_field()}}
 	{{method_field('DELETE')}}
 	<input type="submit" value="supprimer">
 	
-</form>--}}
+</form>
+</div>
+
 <p class="btn btn-info float-right"><a href="{{route('campagnes.index')}}">Accueil</a></p>
 @stop

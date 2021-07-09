@@ -4,9 +4,8 @@
 @endsection
 @section('content')
 <div class="text-center mt-4">
-	<h3 class="mb-4">Menu Achats :</h3>
 @include('layout.partials.navachats')
-<a href="/ferme">Retour Menu Ferme</a>
+<a href="/ferme">Retour Board</a>
 
 </div>
 

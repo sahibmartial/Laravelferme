@@ -8,19 +8,30 @@
     <p>{{ $message }}</p>
 </div>
 @endif
-<h3 class="text-center mt-2 mb-2">Board Campagne</h3>
-<nav class="text-center">	
-  <fieldset>
-	
-	  
-	      <input type="button" onclick="window.location.href = 'campagnes';" target="_blink" value="Campagne"/>
-	      <input type="button" onclick="window.location.href = 'vaccins';" target="_blink" value="Vaccin"/>
-	      <input type="button" onclick="window.location.href = 'pertes';" target="_blink" value="Pertes"/>
-	      <input type="button" onclick="window.location.href = 'ventes';" target="_blink" value="Vente"/>
-	       
-    </fieldset>
-</nav>
 <p class="text-center mt-2"><a href="/ferme"> Board</a> </p>
+<div class="card text-center">
+  <div class="card-header">
+    Ma Campagne en cours
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Activités:</h5>
+  <p class="card-text">
+	<nav class="text-center">	
+      <fieldset> 
+	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'campagnes';" target="_blink" value="Campagne"/>
+	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'vaccins';" target="_blink" value="Vaccin"/>
+	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'pertes';" target="_blink" value="Pertes"/>
+	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'ventes';" target="_blink" value="Vente"/>
+	       
+      </fieldset>
+   </nav>
+ </p>
+    <a href="#" class="btn btn-primary">My Campagne</a>
+  </div>
+  <div class="card-footer text-muted">
+    Team-MAYA, une team à votre disposition pour vous aider à digitaliser votre secteur d'activité.
+  </div>
+</div>
 @stop
 
 
