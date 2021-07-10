@@ -90,8 +90,8 @@ class MailController extends Controller
           $response = $mj->post(Resources::$Email, ['body' => $body]);
     
           
-          $response->success();
-          //dd($response->getData());
+         return  $response->success();
+         // dd($response->getData());
       }
        /**
        * send email contact user 
@@ -218,6 +218,46 @@ class MailController extends Controller
           $response->success();
           //dd($response->getData());
       }
+/**
+ * reception message client
+ */
+public function recieveMessageContact($to_email,$to_name,$subject,$content)
+{
+
+  $mj = new Client($this->api_key,$this->api_secret,true,['version' => 'v3.1']);
+    
+  //$mj = new MailjetClient(getenv('MJ_APIKEY_PUBLIC'), getenv('MJ_APIKEY_PRIVATE'),true,['version' => 'v3.1']);
+  //alixya09@gmail.com,"weddingalixmartial@gmail.com",
+  //"Mail de confirmation de votre invitation au mariage du duo parfait"
+  $body = [
+      'Messages' => [
+          [
+              'From' => [
+                  'Email' => $to_email,
+                  'Name' => $to_name
+              ],
+              'To' => [
+                  [
+                      'Email' => "company.maya1@gmail.com",
+                      'Name' => "SAV Ferme"
+                  ]
+              ],
+              'TemplateID' => 2295318,
+              'TemplateLanguage' => true,
+              'Subject' => $subject ,
+              'Variables' => [
+              'content' => $content,
+              
+              ]
+              
+          ]
+      ]
+  ];
+  $response = $mj->post(Resources::$Email, ['body' => $body]);
+
+  
+  return $response->success();
+}
 
 
 
