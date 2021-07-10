@@ -37,12 +37,12 @@ $cam= new Campagne();
 <title>ACHATS-ACCESSOIRES</title>
 @endsection
 @section('content')
-
+<h4 class="text-center">Achat Accessoires</h4>
 <div class="float-sm-left mt-3">
   <p><a href="{{route('pdf_accesoires',['data'=>$campagne])}}" class="btn btn-primary">Download</a></p>
 </div>
 @if(count($results)>0)
-  <table style="width:100%">
+  <table class="table table-bordered">
   <tr>
     <th>ID</th>
     <th>Date</th>
@@ -58,7 +58,7 @@ $cam= new Campagne();
   for ($i=0; $i <count($results) ; $i++) { 
   ?>
   <tr>
-    <td>{{ $results[$i]->campagne_id}}</td>
+    <td>{{$i}}{{--$results[$i]->campagne_id --}}</td>
     <td>{{ $results[$i]->date_achat}}</td>
     <td>{{ $results[$i]->campagne}}</td>
     <td>{{ $results[$i]->libelle}}</td>
@@ -80,9 +80,8 @@ $cam= new Campagne();
 </div>
 @endif
 
-<hr>
-<div class="float-sm-right mt-3 mb-2">
-  <p><a href="/achats" class="retour">Retour_Achats</a></p>
+<div class="text-center mt-3">
+  <p ><a href="/achats" class="retour">Retour_Achats</a></p>
 </div>
 @stop
 

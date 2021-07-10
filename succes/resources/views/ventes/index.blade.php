@@ -38,6 +38,8 @@ $result=$vente->calculateVenteOfCampagne(1);*/
 <p class="text-center"><a href="{{route('ventes.create')}}">Enregister une Vente</a>
 	 |
 	<a href="{{route('recap_vente')}}">Recap Vente</a>
+	|
+	<a href="{{route('recap_vente_impaye')}}">Ventes_impayées</a>
 
 </p>
 <p><a href="/OutilsCampagne">Menu Campagne</a></p>

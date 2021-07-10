@@ -11,7 +11,7 @@
     </div>
 
   <div class="text-center">
-                <h2>Detail Partiel <b>{{$campagne}}</b> </h2>
+                <h2>Detail Provisoire <b>{{$campagne}}</b> </h2>
     </div>
       
    
@@ -57,15 +57,21 @@
                  <td colspan="1">
                     <center>{{ 'qte vendu : '.$resultbilan['resulat_vente']['T_qte']}} </center>
                     <hr>
-                    <center><b>{{'Recette:'.$resultbilan['resulat_vente']['T_vente']}}</b> FCFA</center>
-                    <center><b>{{'Solde:'.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
-                    
+                    <center><b>{{'Recette: '.$resultbilan['resulat_vente']['T_vente']}}</b> FCFA</center>
+                    <center><b>{{'Encaisse: '.($vente_impaye['Regler'])}}</b> FCFA</center>
+                    <center><b>{{'Crédit: '.($vente_impaye['Credit'])}}</b> FCFA</center>
+                    <hr>
+                    <small>Brut obtenu après déduction apport vente :</small> 
+                    <center><b>{{'Solde: '.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
+                     <hr>
+                     <small>Net obtenu après déduction des apports:</small> 
+                    <center><b>{{'Gain: '.( ($campagneInfos[0]['budget']+ $apportVente + $apportpersonel) - ($total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']) )}}</b> FCFA</center>
                 </td>
 
                 <td><b>  {{ $resultbilan['totalacces'] }} FCFA</b></td>
                 <td><b>  {{ $resultbilan['totalfood'] }} FCFA</b></td>
                 <td><b> {{ $resultbilan['totalfrais'] }} FCFA</b></td>
-                 <td><b>  {{ $total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']}} FCFA</b></td>
+                 <td><b> {{ $total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']}} FCFA</b></td>
                
             </tr>
     </table>

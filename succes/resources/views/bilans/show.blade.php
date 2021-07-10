@@ -8,8 +8,8 @@
 @section('content')
 
 @include('shared.bilanshow')
-<p><a href="{{ route('bilans.edit', $bilans)}}">Modifier Bilan</a>
+<p class="text-center"><a href="{{ route('bilans.edit', $bilans)}}">Modifier Bilan</a>
 </p>
 
-<p><a href="{{route('home')}}">Accueil</a></p>
+<p class="text-center"><a href="{{route('home')}}">Accueil</a></p>
 @stop

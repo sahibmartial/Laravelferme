@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\MailChimpController;
+use App\Http\Controllers\MailController;
 
 class ContactController extends Controller
 {
@@ -16,22 +16,22 @@ class ContactController extends Controller
      public function sendmessage(Request $request){
         //dd($request);
      	$notification=null;
-     	$mail= new MailchimpController();
-
-     	$response=$mail->index($request);
-     	//dump($response);
-
-     	if ($response['complete']) {
-         $notification='votre mail a été bien envoyé nous vous repondrons dans un plus  bref délai.';
-         return view('contact.contact')->with('notification', $notification);
-     	}
-     	
-     	
-     
-     	//dd($notification);
-
-
-     	
+     	$mail= new MailController();
+		 $reference= uniqid();
+		 $subject="Prise de contact reference: ".$reference;
+        
+     	$response=$mail->recieveMessageContact($request->email,$request->name,$subject,$request->content);
+     //	dd($response);
+     	if ($response) {
+		 $content="Bonjour ".$request->name. " nous avons reçu votre message reference ".$reference." notre SAV vous contactera merci à bientôt. <br>"; 
+		 $responseack= $mail->sendContact($request->email,$request->name,$subject,$content);	
+		 if($responseack) {
+			$notification='votre mail a été bien envoyé nous vous repondrons dans un plus  bref délai.';
+			return view('contact.contact')->with('notification', $notification);
+		 }
+         
+     	}	
+ 	
      	 return redirect()->route('contact');
      }
 

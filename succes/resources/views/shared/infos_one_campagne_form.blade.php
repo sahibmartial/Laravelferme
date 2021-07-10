@@ -13,5 +13,5 @@
 
                         </div>
 	<br>
-	<input type="submit" value="Get All">
+	<input type="submit" value="Bilan ">
 </form>

@@ -117,7 +117,7 @@
     <!-- FOOTER -->
     <footer class="footer-custom">
         <p>
-            &copy; 2017-2020 La Ferme MAYA, savoir-faire et savoir-être à partger<br>
+            &copy; 2019-2021 La Ferme MAYA, savoir-faire et savoir-être à partger<br>
             <small>
                 La Ferme 100% made in Cote D'ivoire<br>
                  <a href="#">Privacy</a> &middot; <a href="#">Terms</a>

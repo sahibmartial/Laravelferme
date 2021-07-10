@@ -10,6 +10,7 @@
      <th>Acheteur</th>
      <th>Contact</th>
       <th>Events</th>
+      <th>Regler</th>
     <th>Observations</th>
   </tr>
   <tr>
@@ -21,6 +22,7 @@
     <td>{{ $ventes->acheteur}}</td>
     <td>{{ $ventes->contact}}</td>
     <td>{{ $ventes->events}}</td>
+    <td>{{ $ventes->regler}}</td>
      <td>{{ $ventes->obs}}</td>
   </tr>
 </table> 

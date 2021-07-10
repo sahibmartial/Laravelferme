@@ -97,21 +97,24 @@ class PoussinController extends Controller {
 
 		$cam         = new CampagneController();
 		$campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
-
-		// dd($request->campagne);
-         try {
+      
+	   if (empty($campagne_id)) {
+		return back()->with('success', 'Enregistrement  Achat pousssins impossible, '.$request->campagne.' introuvable ,merci');
+	   } else {
+		try {
 			$rules = [
 				// 'campagne_id'=>'bail|required',
 				'campagne'      => 'bail|required|min:9',
 				'quantite'      => 'bail|required',
 				'priceUnitaire' => 'bail|required',
 				'fournisseur'   => 'required|min:4',
-				'obs'           => 'required|min:3'];
+				'contact'       => 'bail|required'
+			   ];
 
 
-			 if($this->validate($request, $rules))
-			 {
-                 
+			 $this->validate($request, $rules);
+			 
+             //  dd($request);  
 	 	      Poussin::create([
 			   'campagne_id'   => $campagne_id,
 		    	'date_achat'    => $request->date_achat,
@@ -119,12 +122,13 @@ class PoussinController extends Controller {
 			    'quantite'      => $request->quantite,
 			    'priceUnitaire' => $request->priceUnitaire,
 		      	'fournisseur'   => $request->fournisseur,
+				'phone'         =>$request->contact,
 		      	'obs'           => $request->obs]);
                 
-				 //step insertion arraive  dans la table vaccin et envoi de mail notification
+				 //step insertion   dans la table vaccin et envoi de mail notification
 				  $now=now();
 				//  dd($now);
-				  $camapgne=Str::lower($request->campagne);
+				  $campagne=Str::lower($request->campagne);
 				   $traitement="Arrivée des poussins";
 				   $obs="Arrivé poussins dans la ferme ";
 
@@ -136,7 +140,7 @@ class PoussinController extends Controller {
 					'obs'=>$obs   
 				   ]);
 
-				  $content="Nous sommes le ".$now.", jour 1 de la ".$camapgne."<br> <br>";
+				  $content="Nous sommes le ".$now.", jour 1 de la ".$campagne."<br> <br>";
 				  $content.="A) Preventions sanitaire:<br>";
 				  $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>"; 
 				  $content.="B) Traitements: <br>"; 
@@ -144,18 +148,26 @@ class PoussinController extends Controller {
 
                   $vaccin= new Vaccin;
 				  $vaccin->alertMailingArrivePoussins($content);
+				 
+				  //Ajout de 40 jours date arrive pour determine date de debut vente
+				 // echo date('d-m-Y', strtotime('+15 days'));
+                //  echo date($now, strtotime('+40 days'));
 
-			 }else{
-				 new \Throwable("");
-			 }
+                   $date_enter_production=date($now, strtotime('+40 days'));
+				  //envoi email debut vente
+				  $contentVente="<br> Le ".$date_enter_production.", la ".$campagne." rentre en production.<br> <br>";
+                  $contentVente.="Merci de faire le necessaire en contactant tous nos clients. <br>";
+				  $contentVente.="Force et Courage à nous, Dieu est au contrôle <br> <br>"; 
+				  $vaccin->alertEmailProduction($campagne,$contentVente);
+			 
 		 } catch (\Throwable $th) {
 			// dd($th->getMessage());
 			 return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
 		 }
-		     
-
 		//return redirect()->route('head');
-		return redirect()->route('poussins.index')->with('success', 'Poussins has been successfully added');
+		return redirect()->route('poussins.index')->with('success', 'Poussins declarés avec success');
+	   }
+        
 	}
 
 	/**
@@ -165,8 +177,15 @@ class PoussinController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show($id) {
-		$lists = Poussin::findOrFail($id);
+
+		try {
+			$lists = Poussin::findOrFail($id);
 		return view('poussins.show', compact('lists'));
+			
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+		
 
 	}
 
@@ -177,8 +196,14 @@ class PoussinController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function edit($id) {
-		$poussin = Poussin::findOrFail($id);
+
+		try {
+			$poussin = Poussin::findOrFail($id);
 		return view('poussins.edit', compact('poussin'));
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+		
 	}
 
 	/**
@@ -189,7 +214,7 @@ class PoussinController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id) {
-		$poussin = Poussin::findOrFail($id);
+		
 
 		$rules = [
 			'campagne_id'   => 'bail|required',
@@ -200,8 +225,9 @@ class PoussinController extends Controller {
 			//  'obs'=>'required|min:3'
 		];
 		$this->validate($request, $rules);
-
-		$poussin->update([
+		try {
+			$poussin = Poussin::findOrFail($id);
+			$poussin->update([
 				'campagne_id'   => $request->campagne_id,
 				'date_achat'    => $request->date_achat,
 				'campagne'      => Str::lower($request->campagne),
@@ -210,8 +236,15 @@ class PoussinController extends Controller {
 				'fournisseur'   => $request->fournisseur,
 				'obs'           => $request->obs
 			]);
+			return redirect()->route('poussins.show', $id);
 
-		return redirect()->route('poussins.show', $id);
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+
+		
+
+		
 	}
 
 	/**
@@ -221,8 +254,22 @@ class PoussinController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function destroy($id) {
-		Poussin::destroy($id);
-		return redirect()->route('head');
+
+		try {
+
+		$folder="PoussinRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+		$value=Poussin::findorfail($id);
+		$filebackup->backupfile($folder,$filename,$value);
+
+			Poussin::destroy($id);
+		    return redirect()->route('head');
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+		
 	}
 
 	/**

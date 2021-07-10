@@ -33,12 +33,9 @@ class AlimentAddMoreController extends Controller
     {
     	$campagne_id=0;
     	$campagne="";
-    	
- // dd($request->addmore);
-        
-
         $cam= new CampagneController();
         $aliment= new FonctionController();
+
         foreach ($request->addmore as $key => $value) {
         	 
              $campagne=$value['campagne'];
@@ -46,13 +43,42 @@ class AlimentAddMoreController extends Controller
 
        $campagne_id=$cam->getIntituleCampagneenCours($campagne);
        $arrayName =array('campagne_id'=> $campagne_id);
-    //  dd($arrayName);
-     //dump($request->addmore);
-      $collection=$request->addmore;
-      $result=$aliment->addmorealiments($collection,$arrayName);
+      
+      if (isset($arrayName['campagne_id'])) {
+        $collection=$request->addmore;
+        $result=$aliment->addmorealiments($collection,$arrayName);
+        $request->validate([
+          'addmore.*.date_achat' => 'bail|required',
 
-   //   dd($result);
-   
+            'addmore.*.campagne' => 'bail|required',
+
+            'addmore.*.libelle' => 'bail|required',
+
+            'addmore.*.quantite' => 'bail|required',
+
+            'addmore.*.priceUnitaire' => 'bail|required',
+
+            'addmore.*.fournisseur' => 'bail|required',
+            'addmore.*.contact' => 'bail|required',
+
+            'addmore.*.obs' => 'bail|required',   
+        ]); 
+        foreach ($result as $key => $value) {
+        	//dd($value);
+          try {
+            Aliment::create($value);
+          } catch (\Throwable $th) {
+            throw $th;
+          }
+          
+        }
+        return back()->with('success', 'Achat Aliment enregistré avec  Success.');
+        
+      } else {
+        return back()->with('success','Enregistrement Impossible, '.$campagne.' introuvable,merci');
+      
+      }
+      
       	//$result = array_merge($arrayName,$collection);
       	//$collection[0][0]=$arrayName['campagne_id'];
       	/*$arrayName2= array('campagne_id' => $arrayName['campagne_id'], "campagne" => "campagne2",
@@ -77,30 +103,7 @@ class AlimentAddMoreController extends Controller
          //dd($request->addmore);
       
      // $tab['campagne_id'] = $campagne_id;
-
-        $request->validate([
-          'addmore.*.date_achat' => 'bail|required',
-
-            'addmore.*.campagne' => 'bail|required',
-
-            'addmore.*.libelle' => 'bail|required',
-
-            'addmore.*.quantite' => 'bail|required',
-
-            'addmore.*.priceUnitaire' => 'bail|required',
-
-            'addmore.*.fournisseur' => 'bail|required',
-
-            'addmore.*.obs' => 'bail|required',
-            
-        ]); 
-
-        foreach ($result as $key => $value) {
-        //	dd($value);
-           Aliment::create($value);
-        }
-        
-        return back()->with('success', 'Aliment enregistrée avec  Success.');
-
-    }
+      // dd($request);
+    
+     }
 }

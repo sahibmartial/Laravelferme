@@ -14,6 +14,7 @@ class Aliment extends Model
 'quantite',
 'priceUnitaire',
 'fournisseur',
+'contact',
 'obs','date_achat'];
 
 

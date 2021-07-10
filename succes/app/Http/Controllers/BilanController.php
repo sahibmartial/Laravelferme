@@ -122,6 +122,7 @@ class BilanController extends Controller
     // dd($request->request);
      $apports=$apportVente=$apportpersonel=0;
     $notification=null;
+   $vente_impaye=array('Encaisse'=>null,'Credit'=>null,'Regler'=>null);
    $bilan= new Bilan();
    $cam= new Campagne();
    $acess= new AccessoireController();
@@ -141,6 +142,31 @@ class BilanController extends Controller
     $infosPoussins=Campagne::find($campagneInfos[0]['id'])->poussins;
    
     $resulat_vente=$vente->calculRecapvente($campagne);
+    $resultat_vente_impaye=$vente->ventes_impayes();
+    $resultat_vente_payes=$vente->ventes_regler();
+   // dd($resultat_vente_payes);
+    $regler=null;  
+    if($resultat_vente_payes->isNotEmpty()){
+     // dd($resultat_vente_payes[0]);
+    
+      foreach ($resultat_vente_payes as $key => $solder) {
+        $regler+=($solder['quantite']*$solder['priceUnitaire']);
+      }
+     // dd($regler);
+    }
+    if (isset($resultat_vente_impaye['venteimpayes'])) {
+     // dd($resultat_vente_impaye['venteimpayes']);
+      $avance=$reste=null;
+      foreach ($resultat_vente_impaye['venteimpayes'] as $key => $venteimpaye) {
+        $avance+=$venteimpaye['avance'];
+        $reste+=$venteimpaye['impaye'];    
+      }
+      $vente_impaye=array('Encaisse'=>$avance,'Credit'=>$reste,'Regler'=>($regler+$avance));
+     } 
+
+
+    //dd( $vente_impaye);
+   
     $resultat_pertes=$perte->pertesOfthisCampagne($campagne);
 
     $resultsacces = $acess->selectAllAccessoireforthisCampagne($campagneInfos[0]['id']);
@@ -198,7 +224,7 @@ class BilanController extends Controller
     //dd($bilan->getDetailleAttribute());
         //dd($apportVente,$apportpersonel,'View');
         return view('bilans.getDetailAchatsBilan',compact(['campagne','apportVente','apportpersonel',
-        'campagneInfos','resultbilan','notification']));
+        'campagneInfos','resultbilan','notification','vente_impaye']));
       
     }
   

@@ -35,7 +35,8 @@
     <p class="text-center"><a href="{{route('vaccins.create')}}">Enregister un Vaccin</a>
 	 |
 	<a href="{{route('recap_vaccin')}}">Recap Vaccin</a>
-
+	|
+	<a href="{{URL::to('traitement_listing')}}">Traitements</a>
     </p>
     <p><a href="/OutilsCampagne">Menu Campagne</a></p>
 </div>

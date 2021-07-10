@@ -21,10 +21,11 @@ class FonctionController extends Controller
     	return $obs;
     }
 
+
     public function getIdcampagne($campagne){
     	$cam= new CampagneController();
        $id=$cam->getCampagneenCours();
-
+     // dd( $id);
        for ($i=0; $i <$id->count(); $i++) { 
      $resultid[]=$id[$i]->id;
      $resultname[]=$id[$i]->intitule;
@@ -83,11 +84,13 @@ class FonctionController extends Controller
           "libelle" => "aliments croissance",
           "quantite" => "3",
            "priceUnitaire" => "5000",
-         "fournisseur" => "sahib"
+         "fournisseur" => "sahib",
+         "date_achat"=>"datecreate"
          );
 
       for ($i=0; $i <count($collection); $i++) { 
         $results[]=$arrayName2= array('campagne_id' => $arrayName['campagne_id'],
+        "date_achat"=>$collection[$i]['date_achat'],
          "campagne" => $collection[$i]['campagne'],
           "libelle" => $collection[$i]['libelle'],
           "quantite" =>$collection[$i]['quantite'],

@@ -1,4 +1,4 @@
-<table style="width:100%">
+<table class="table table-bordered">
   <tr>
     <th>ID</th>
     <th>Date</th>
@@ -13,7 +13,7 @@
   for ($i=0; $i <count($results) ; $i++) { 
   ?>
   <tr>
-     <td>{{ $results[$i]->campagne_id}}</td>
+     <td>{{$i}} {{--$results[$i]->campagne_id--}}</td>
      <td>{{ $results[$i]->date_achat}}</td>
     <td>{{ $results[$i]->campagne}}</td>
     {{--<td>{{ $results[$i]->libelle}}</td>

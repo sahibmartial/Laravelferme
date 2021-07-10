@@ -16,10 +16,16 @@ class MasseController extends Controller
      */
     public function index()
     {
-       
-        $masses=Masse::all();
-        return view ("masses.index",compact('masses'));
+       try {
+        $masses=Masse::all(); 
+           
+       } catch (\Throwable $th) {
+           throw $th;
+       }
 
+       return view ("masses.index",compact('masses'));
+
+       
     }
 
     /**
@@ -59,17 +65,24 @@ class MasseController extends Controller
      ];
         $this->validate($request,$rules);
 
+        try {
 
-        Masse::create([
-            'campagne_id'=>$campagne_id,
-            'campagne'=>Str::lower($request->campagne),
-            'mean_masse'=>$request->mean_masse,
-            //'priceUnitaire'=>$request->priceUnitaire,
-            'annee'=>$year,
-            'obs'=>$request->obs]);
+            Masse::create([
+                'campagne_id'=>$campagne_id,
+                'campagne'=>Str::lower($request->campagne),
+                'mean_masse'=>$request->mean_masse,
+                //'priceUnitaire'=>$request->priceUnitaire,
+                'annee'=>$year,
+                'obs'=>$request->obs
+            ]);
+            return redirect()->route('masses.index')->with('success', 'Masse has been successfully added');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
 
         //return redirect()->route('masses.index'); 
-         return redirect()->route('masses.index')->with('success', 'Masse has been successfully added');
+       
 
     }
 
@@ -81,8 +94,14 @@ class MasseController extends Controller
      */
     public function show($id)
     {
-        $masses=Masse::findOrFail($id);
-         return view('masses.show', compact('masses'));
+        try {
+            $masses=Masse::findOrFail($id);
+            return view('masses.show', compact('masses'));
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
     }
 
     /**
@@ -93,8 +112,14 @@ class MasseController extends Controller
      */
     public function edit($id)
     {
-         $masses=Masse::findOrFail($id);
+        try {
+            $masses=Masse::findOrFail($id);
          return view('masses.edit', compact('masses'));
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+         
 
     }
 
@@ -107,9 +132,6 @@ class MasseController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        $masses=Masse::findOrFail($id);
-
         $rules=[
          //'campagne_id'=>'bail|required',   
          'campagne'=>'bail|required|min:9',
@@ -119,16 +141,21 @@ class MasseController extends Controller
          'obs'=>'required|min:3'];
 
         $this->validate($request,$rules);
-
-         $masses->update([
-          // 'campagne_id'=>$request->campagne_id,
-            'campagne'=>Str::lower($request->campagne),
-            'mean_masse'=>$request->mean_masse,
-            //'priceUnitaire'=>$request->priceUnitaire,
-            //'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs]);
-
-        return redirect()->route('masses.show',$id); 
+         try {
+            $masses=Masse::findOrFail($id);
+            $masses->update([
+                // 'campagne_id'=>$request->campagne_id,
+                  'campagne'=>Str::lower($request->campagne),
+                  'mean_masse'=>$request->mean_masse,
+                  //'priceUnitaire'=>$request->priceUnitaire,
+                  //'fournisseur'=>$request->fournisseur,
+                  'obs'=>$request->obs]);
+      
+              return redirect()->route('masses.show',$id); 
+         } catch (\Throwable $th) {
+             throw $th;
+         }
+         
     }
 
     /**
@@ -139,8 +166,19 @@ class MasseController extends Controller
      */
     public function destroy($id)
     {
-        Masse::destroy($id);
-        //return back()->with('info', 'La massse a bien été supprimée dans la base de données.');
-        return redirect()->route('masses.index');
+        $folder="MasseRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+        try {
+            $value=Masse::findorfail($id);     
+           $filebackup->backupfile($folder,$filename,$value);
+            Masse::destroy($id);
+            //return back()->with('info', 'La massse a bien été supprimée dans la base de données.');
+            return redirect()->route('masses.index');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
     }
 }

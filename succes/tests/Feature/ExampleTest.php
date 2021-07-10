@@ -37,6 +37,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 1,
+            'date'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'quantite' => '10',
@@ -51,6 +52,7 @@ class ExampleTest extends TestCase
 
         $vente= new VenteController();
         $value=$vente->selectAllSaleForOneCampagne(1);  
+      //  dd($value[0]);
       //  $response = $this->get('/');
             
         $this->assertEquals($result,$value[0]);
@@ -83,6 +85,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 1,
+            'date_achat'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'montant' => 15000,
@@ -96,7 +99,8 @@ class ExampleTest extends TestCase
         ];
 
         $vente= new TransportController();
-        $value=$vente->selectAllFraisTrasnportForOneCampagne(1);  
+        $value=$vente->selectAllFraisTrasnportForOneCampagne(1);
+      //  dd( $value);  
       //  $response = $this->get('/');
             
         $this->assertEquals($result,$value[0]);
@@ -128,6 +132,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 12,
+            'date_achat'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'quantite' => 150,
@@ -143,7 +148,8 @@ class ExampleTest extends TestCase
         $vente= new PoussinController();
         $value=$vente->selectAllheadForOneCampagne(1);  
       //  $response = $this->get('/');
-        //dd($value);
+         
+      //  dd($value);
             
         $this->assertEquals($result,$value[0]);
 
@@ -175,6 +181,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 1,
+            'date_die'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'quantite' => 5,
@@ -192,7 +199,7 @@ class ExampleTest extends TestCase
         $vente= new PerteController();
         $value=$vente->selectAllLossOfThisCampagne(1);  
       //  $response = $this->get('/');
-            
+        // dd($value[0]);   
         $this->assertEquals($result,$value[0]);
 
         //return $vente;
@@ -223,6 +230,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 1,
+            'date_achat'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'libelle'=>'aliment croissance',
@@ -237,7 +245,7 @@ class ExampleTest extends TestCase
         $vente= new AlimentController();
         $value=$vente->selectAllAlimentforthisCampagne(1);  
       //  $response = $this->get('/');
-            
+            //dd($value[0]);
         $this->assertEquals($result,$value[0]);
 
         //return $vente;
@@ -270,6 +278,7 @@ class ExampleTest extends TestCase
         
         $result=(object)[
             'id' => 1,
+            'date_achat'=>null,
             'campagne_id' => 1,
             'campagne'=>'campagne1',
             'libelle'=>'mangoire',
@@ -329,9 +338,9 @@ class ExampleTest extends TestCase
     public function testgetIdcampagneTest()
     {
         $fonc = new FonctionController();
-        $result=$fonc->getIdcampagne('campagne2');  
-      //dd($result);
-       $this->assertEquals(3, $result);
+        $result=$fonc->getIdcampagne('campagne7');  
+      // dd($result);
+       $this->assertEquals(5, $result);
         
     }
 

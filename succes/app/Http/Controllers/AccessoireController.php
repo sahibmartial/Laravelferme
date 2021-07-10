@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Str;
-use DB;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Accessoire;
  use App\Http\Controllers\CampagneController;
@@ -19,13 +20,16 @@ class AccessoireController extends Controller
     {
         //dd($this->calculateDepenseAccessoireofthiscampagne(2));
        // $accessoires=Accessoire::paginate(2);
+       try {
         $accessoires= DB::table('campagnes')
         ->join('accessoires', function ($join) {
             $join->on('accessoires.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
         })
         ->orderByDesc('accessoires.id')
         ->SimplePaginate(5);
-
+       } catch (\Throwable $th) {
+           throw $th;
+       }
        //dd($accessoires);
         return view('accessoires.index', compact('accessoires'));
     }
@@ -55,20 +59,6 @@ class AccessoireController extends Controller
        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
        //dd($campagne_id);
-    /*    for ($i=0; $i <$id->count(); $i++) { 
-    //dd($id);
-     $resultid[]=$id[$i]->id;
-     $resultname[]=$id[$i]->intitule;
-
-      if($request->campagne == $id[$i]->intitule){
-         $campagne_id=$id[$i]->id;
-      }
-
-     }*/
-     
-     //check campagne_id
-    
-        
 
          $rules=[
          //'campagne_id'=>'bail|required',   
@@ -79,16 +69,21 @@ class AccessoireController extends Controller
         // 'fournisseur'=>'required|min:4',
          'obs'=>'required|min:3'];
         $this->validate($request,$rules);
-
-           Accessoire::create([
-            'campagne_id'=>$campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-           'libelle'=>$request->libelle,
-            'quantite'=>$request->quantite,
-            'priceUnitaire'=>$request->priceUnitaire,
-           // 'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs]);
+        
+        try {
+            Accessoire::create([
+                'campagne_id'=>$campagne_id,
+                'date_achat'=>$request->date_achat,
+                'campagne'=>Str::lower($request->campagne),
+               'libelle'=>$request->libelle,
+                'quantite'=>$request->quantite,
+                'priceUnitaire'=>$request->priceUnitaire,
+               // 'fournisseur'=>$request->fournisseur,
+                'obs'=>$request->obs]);
+        } catch (\Throwable $th) {
+             throw $th;
+        }
+          
 
       
         return redirect()->route('caccessoires');   
@@ -103,9 +98,13 @@ class AccessoireController extends Controller
     public function show($id)
     {
       // dd('here');
-        
-         $accessoires=Accessoire::findOrFail($id);
+        try {
+            $accessoires=Accessoire::findOrFail($id);
          return view('accessoires.show', compact('accessoires'));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+         
     }
 
     /**
@@ -115,9 +114,13 @@ class AccessoireController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-         $accessoires=Accessoire::findOrFail($id);
+    {  try {
+        $accessoires=Accessoire::findOrFail($id);
          return view('accessoires.edit',compact('accessoires'));
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+         
     }
 
     /**
@@ -129,7 +132,7 @@ class AccessoireController extends Controller
      */
     public function update(Request $request, $id)
     {
-       $accessoire=Accessoire::findOrFail($id);
+      
 
          $rules=[
         'campagne_id'=>'bail|required',
@@ -141,18 +144,25 @@ class AccessoireController extends Controller
          'obs'=>'required|min:3'];
         $this->validate($request,$rules);
 
-           $accessoire->update([
-            'campagne_id'=>$request->campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-           'libelle'=>$request->libelle,
-            'quantite'=>$request->quantite,
-            'priceUnitaire'=>$request->priceUnitaire,
-           // 'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs]);
-
-      
+        try {
+            $accessoire=Accessoire::findOrFail($id);
+            $accessoire->update([
+                'campagne_id'=>$request->campagne_id,
+                'date_achat'=>$request->date_achat,
+                'campagne'=>Str::lower($request->campagne),
+               'libelle'=>$request->libelle,
+                'quantite'=>$request->quantite,
+                'priceUnitaire'=>$request->priceUnitaire,
+               // 'fournisseur'=>$request->fournisseur,
+                'obs'=>$request->obs]);
+          
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
         return redirect()->route('accessoires.show',$id);
+         
     }
 
     /**
@@ -163,17 +173,31 @@ class AccessoireController extends Controller
      */
     public function destroy($id)
     {
-        Accessoire::destroy($id);
+        $folder="VenteRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+        try {
+            $value=Accessoire::findorfail($id);     
+            $filebackup->backupfile($folder,$filename,$value);
+            Accessoire::destroy($id);
         return redirect()->route('accessoires.index');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
     }
      /**
    *
    */
    public function selectAllAccessoireforthisCampagne($id){
        $result=array(); 
-       $collections=DB::table('accessoires')->whereCampagneId($id)->get();
-
+       try {
+        $collections=DB::table('accessoires')->whereCampagneId($id)->get();
         $result=$collections->toArray();
+       } catch (\Throwable $th) {
+           //throw $th;
+       }    
        // $result = json_decode($result, true);
          //dd($result);
        return  $result;
@@ -207,9 +231,13 @@ class AccessoireController extends Controller
    */
    public function selectAccessoireforthisCampagne($id){
        $result=array(); 
-       $collections=DB::table('accessoires')->whereCampagneId($id)->get();
-
+       try {
+        $collections=DB::table('accessoires')->whereCampagneId($id)->get();
         $result=$collections->toArray();
+
+       } catch (\Throwable $th) {
+           throw $th;
+       }
        // $result = json_decode($result, true);
          //dd($result);
        return  $result;

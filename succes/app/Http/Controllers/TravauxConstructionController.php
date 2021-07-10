@@ -15,12 +15,13 @@ class TravauxConstructionController extends Controller
     public function index()
     {
       // dd('here');
+      
         $travaux=ConstructionRéparation::select()
         ->orderByDesc('id')
          ->simplePaginate(10);;
          // dd($travaux);
 
-         if( $travaux )
+         if($travaux)
          {
            // dd('IN -yes') ;
 
@@ -38,7 +39,7 @@ class TravauxConstructionController extends Controller
          return view('TravConstruction.index',compact('travaux'));
         
         // return back()->with('success','Pas de Travaux ou Achats de materiels detectés');
-    }
+    } 
 
     /**
      * Show the form for creating a new resource.
@@ -74,16 +75,22 @@ class TravauxConstructionController extends Controller
 		$this->validate($request, $rules);
 
       // dd($request->request);
-      ConstructionRéparation::create([
-            'date' => $request->date_achat,
-            'materiel' =>  $request->materiel,
-            'quantite' => $request->quantite,
-            'PriceUnitaire' => $request->priceUnitaire,
-            
-            'obs' => $request->obs]);
 
-    //return redirect()->route('head');
-    return redirect()->route('travaux.index')->with('success', 'Materiel enregistré avec success');
+      try {
+        ConstructionRéparation::create([
+          'date' => $request->date_achat,
+          'materiel' =>  $request->materiel,
+          'quantite' => $request->quantite,
+          'PriceUnitaire' => $request->priceUnitaire,
+          
+          'obs' => $request->obs]);
+
+           //return redirect()->route('head');
+           return redirect()->route('travaux.index')->with('success', 'Materiel enregistré avec success');
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+      
 
 
     }
@@ -95,10 +102,16 @@ class TravauxConstructionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    { 
+      try {
         $materiel=ConstructionRéparation::findOrFail($id);
-      // dd($materiel);
         return view('TravConstruction.show', compact(['materiel']));
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+       
+      // dd($materiel);
+       
        // dd('here');
 
 
@@ -112,8 +125,13 @@ class TravauxConstructionController extends Controller
      */
     public function edit($id)
     { 
+      try {
         $materiel=ConstructionRéparation::findOrFail($id);
         return view('TravConstruction.edit', compact(['materiel']));
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+        
        // dd('edit');
     }
 
@@ -162,9 +180,21 @@ class TravauxConstructionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        ConstructionRéparation::destroy($id);
+    { 
+      $folder="TravauxRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+      try {
+        $value=ConstructionRéparation::findorfail($id);
+      $filebackup->backupfile($folder,$filename,$value);
+      ConstructionRéparation::destroy($id);
 
-        return redirect()->route('travaux.index')->with('success', 'materiel a bien été supprimé de la liste .');
+      return redirect()->route('travaux.index')->with('success', 'materiel a bien été supprimé de la liste .');
+
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+       
     }
 }

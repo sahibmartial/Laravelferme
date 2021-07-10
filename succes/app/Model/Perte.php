@@ -4,8 +4,8 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use DB;
-
+use App\Campagne;
+use Illuminate\Support\Facades\DB;
 class Perte extends Model
 {
   protected $fillable=[
@@ -14,6 +14,7 @@ class Perte extends Model
     'quantite',
     'cause',
     'obs',
+    'suggestion',
     'duredevie',
     'year',
     'date_die'
@@ -56,6 +57,27 @@ public function pertesOfthisCampagne($value)
     
  }
 
+ /**
+  * recup data pertes campagne en cours
+  */
+  
+  public function pertes_campagne_en_cours()
+  {
+     try {
+      $campagne=Campagne::whereStatus('En COURS')->get();
+      if (isset($campagne[0]['id'])) {
+         $resultsPertes=Perte::whereCampagne_id($campagne[0]['id'])->get();
+         return $resultsPertes;
+
+      } else {
+         return 'Campagne introuvable';
+      }
+      
+     } catch (\Throwable $th) {
+        throw $th;
+     }
+
+  }
      
 
 }

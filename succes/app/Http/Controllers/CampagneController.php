@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 use App\Campagne;
 use App\Model\Bilan;
 use App\Model\Apport;
+use App\Model\Poussin;
+use App\Model\Aliment;
+use App\Model\Accessoire;
+use App\Model\Perte;
+use App\Model\Transport;
+use App\Model\Vente;
+use App\Model\Vaccin;
+
 use App\Http\Controllers\PoussinController;
 use App\Http\Controllers\AccessoireController;
 use App\Http\Controllers\AlimentController;
@@ -26,11 +34,14 @@ class CampagneController extends Controller
      */
     public function index()
     {
+      $value= date('d-m-Y', strtotime('+40 days'));
+    //  dd($value);
        $cam = new Campagne();
         $campagne_id=null;
         
         //dd('index');
       // $campagnes= Campagne::all();
+      try {
         $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])->simplePaginate(2);
         if(count($campagnes)>0)
         {
@@ -49,8 +60,10 @@ class CampagneController extends Controller
           //return back()->with('success','Aucune campagne en cours detectée !');
         }
         
-        
-        
+          } catch (\Throwable $th) {
+        throw $th;
+       }
+         
     }
 
     /**
@@ -70,7 +83,7 @@ class CampagneController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
+    {  //dd($request);
      
       if (Auth::check()) {
 
@@ -83,32 +96,35 @@ class CampagneController extends Controller
         
        $this->validate($request,$rules);
    //    dd($request);
-       Campagne::create([
-           'intitule'=>Str::lower($request->title),
-           'budget'=>$request->budget,
-            'start'=>$tarted,
-           'status'=>$request->status,
-           'obs'=>$request->obs
-       ]);
 
-        //notification email get current user
+       try {
+           Campagne::create([
+          'intitule'=>Str::lower($request->title),
+          'budget'=>$request->budget,
+           'start'=>$tarted,
+          'status'=>$request->status,
+          'obs'=>$request->obs
+        ]);
+         //notification email get current user
         
-        $to_name= auth()->user()['name'];
-        $to_email=auth()->user()['email'];
-        $users = User::all();
-        $mail= new MailController;
-        $subject="Création de la ".$request->title ;
-        $content="Une nouvelle campagne viens d'être crée avec succes, restons focus.<br> Force et Courage à tous, excellente campagne Amen.";
-        foreach ( $users as $key => $user) {
-          $mail->send($user['email'],$user['name'],$subject,$content);
-        }
-      
-       return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
-    }
-             
-      //  return redirect()->route('/');   
+            $to_name= auth()->user()['name'];
+            $to_email=auth()->user()['email'];
+            $users = User::all();
+            $mail= new MailController;
+            $subject="Création de la ".$request->title ;
+            $content="Une nouvelle campagne viens d'être crée avec succes, restons focus.<br> Force et Courage à tous, excellente campagne Amen.";
+            foreach ( $users as $key => $user) {
+                $mail->send($user['email'],$user['name'],$subject,$content);
+            }
        
+           return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
 
+         } catch (\Throwable $th) {
+         throw $th;
+        }
+       
+      }
+         
     }
 
     /**
@@ -121,11 +137,14 @@ class CampagneController extends Controller
     {
       //  dd('show'); 
       $cam = new Campagne();
-
-        $campagnes=Campagne::findOrFail($id);
-        $som=$cam->sumApportsOfcampagne($id);
-         return view('campagnes.show', compact(['campagnes','som']));
-
+         try {
+          $campagnes=Campagne::findOrFail($id);
+          $som=$cam->sumApportsOfcampagne($id);
+           return view('campagnes.show', compact(['campagnes','som']));        
+         } catch (\Throwable $th) {
+           throw $th;
+         }
+        
     }
 
     /**
@@ -136,9 +155,13 @@ class CampagneController extends Controller
      */
     public function edit($id)
     {
-
-         $campagnes=Campagne::findOrFail($id);
+        try {
+          $campagnes=Campagne::findOrFail($id);
          return view('campagnes.edit',compact('campagnes'));
+        } catch (\Throwable $th) {
+          throw $th;
+        }
+         
     }
 
     /**
@@ -162,14 +185,19 @@ class CampagneController extends Controller
             'status'=>'required|min:7'];
         $this->validate($request,$rules);
       //  dd('store');
+      try {
         $campagnes->update([
-            'title'=>Str::lower($request->intitule),
-            'budget'=>$request->budget,
-            'status'=>$request->status,
-            'obs'=>$request->obs
-        ]);
+          'title'=>Str::lower($request->intitule),
+          'budget'=>$request->budget,
+          'status'=>$request->status,
+          'obs'=>$request->obs
+      ]);
+      return redirect()->route('campagnes.show',$id);
 
-        return redirect()->route('campagnes.show',$id);
+      } catch (\Throwable $th) {
+        return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+      }
+      
     }
 
     /**
@@ -180,11 +208,36 @@ class CampagneController extends Controller
      */
     public function destroy($id)
     {
+      $folder="CampagneRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+     //  dd("yes");
+        try {
+        $value=Campagne::findorfail($id);   
 
-        
-        Campagne::destroy($id);
+        $Poussins=Poussin::whereCampagne_id($id)->get(); 
+        $ventes=Vente::whereCampagne_id($id)->get();
+        $vaccins=Vaccin::whereCampagne_id($id)->get();
+        $pertes=Perte::whereCampagne_id($id)->get();
+        $aliments=Aliment::whereCampagne_id($id)->get();
+        $tansports=Transport::whereCampagne_id($id)->get();
+        $accessoires=Accessoire::whereCampagne_id($id)->get();
+        $contents=$value." Ventes: \n".$ventes." Vaccins: \n".$vaccins." Aliments: \n".$aliments." Accessoires: \n".
+        $accessoires." Poussins: \n".$Poussins." Pertes: \n".$pertes
+        ." Transports: \n".$tansports;
+        $filebackup->backupfile($folder,$filename,$contents);
+       // dd($Poussins, $ventes,$vaccins, $pertes, $aliments,$tansports,$accessoires);
+       // dd("NOT");
+        //die;   
+          Campagne::destroy($id);
 
-        return back()->with('success', 'La campagne a bien été supprimée dans la base de données.');
+          return back()->with('success', 'La campagne a bien été supprimée dans la base de données.');
+          
+        } catch (\Throwable $th) {
+          throw $th;
+        }
+
         //return redirect()->route('home');
     }
     
@@ -193,8 +246,12 @@ class CampagneController extends Controller
 
     // dd( Campagne::select('SELECT  * from campagnes'));
          //Debugbar::startMeasure('query builder');
-
-         $result=DB::table('campagnes')->whereId($id)->get('start');
+          try {
+            $result=DB::table('campagnes')->whereId($id)->get('start');
+          } catch (\Throwable $th) {
+            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+          }
+        
          //Debugbar::stopMeasure('query builder');
            return $result;
 
@@ -231,7 +288,12 @@ class CampagneController extends Controller
    */
     public function selectYearcreate($id)
     {
-          $collections=DB::table('campagnes')->whereId($id)->get('start');
+      try {
+        $collections=DB::table('campagnes')->whereId($id)->get('start');
+      } catch (\Throwable $th) {
+        return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+      }
+         
 
           foreach ($collections as $collection) {
            $result=$collection->start;
@@ -285,10 +347,15 @@ class CampagneController extends Controller
   
     // dd($year);
      $statut="TERMINE";
-     $cloture=DB::table('campagnes')->whereId($_GET["id"])
-     ->update(['end'=>$ended,
-      'status'=>$statut
-    ]);
+     try {
+      $cloture=DB::table('campagnes')->whereId($_GET["id"])
+      ->update(['end'=>$ended,
+       'status'=>$statut
+        ]);
+     } catch (\Throwable $th) {
+      return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+     }
+     
       //appel bilan 
     //  $year = date('Y', strtotime($ended));
      $year = preg_split('/-/', $ended);
@@ -415,7 +482,7 @@ class CampagneController extends Controller
       }     
       
     } catch (\Throwable $th) {
-      dd($th->getMessage());
+      return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
     }
 
     //send mail cloture campagne

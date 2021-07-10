@@ -121,9 +121,17 @@ class VaccinController extends Controller
      */
     public function show( $id )
     {
-        $suivi=Vaccin::findOrFail($id);
+        try {
+            $suivi=Vaccin::findOrFail($id);
+
+            return view('vaccins.show', compact('suivi'));
+
+        } catch (\Throwable $th) {
+             throw $th;
+        }
+       
        // dd( $suivi->id);
-        return view('vaccins.show', compact('suivi'));
+      
     }
 
     /**
@@ -148,25 +156,29 @@ class VaccinController extends Controller
      */
     public function update(Request $request,$id)
     {
-        $suivi=Vaccin::findOrFail($id);
-       // dd($request);
+      // dd($id);
+     // dump($request);
         try {
+            $suivi=Vaccin::findOrFail($id);
+         //   dd($suivi);
             if ($id) {
+              
                 $rules=[
                     'campagne'=>'required|min:9',
                      'datevaccination'=>'bail|required',
                     'intitulevaccin'=>'bail|required',
                     'obs'=>'required|min:3'];
                     $this->validate($request,$rules);
-                    
-                    $suivi->update([
-                        'campagne_id'=>$request->campagne_id,
-                        'campagne'=>$request->campagne,
-                        'datedevaccination'=>$request->datevaccination,
-                        'intitulevaccin'=>$request->intitulevaccin,
-                       'obs'=>$request->obs
+                   // dd("here IN");
+                   $suivi->update([
+                    'campagne_id'=>$request->campagne_id,
+                    'campagne'=>$request->campagne,
+                    'datedevaccination'=>$request->datevaccination,
+                    'intitulevaccin'=>$request->intitulevaccin,
+                   'obs'=>$request->obs
 
-                    ]);   
+                ]); 
+                      
             
             }else{
                 throw new \Throwable("Modification vaccin impossible");
@@ -187,9 +199,22 @@ class VaccinController extends Controller
      */
     public function destroy($id)
     {
-       // dd($id);
-        Vaccin::destroy($id);
-        return redirect()->route('vaccin')->with('success', 'Vaccin  supprimé avec sucess');
+        $folder="VaccinRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
+        try {
+            $value=Vaccin::findorfail($id);
+        
+            $filebackup->backupfile($folder,$filename,$value);
+
+            Vaccin::destroy($id);
+            return redirect()->route('vaccin')->with('success', 'Vaccin  supprimé avec sucess');
+        
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
     }
     /**
      * form to download recap traitement
@@ -217,9 +242,112 @@ class VaccinController extends Controller
             return $pdf->download($reference.'.pdf');  
         }
         return back()->with('success','Impossible de télécharger pdf, aucun suivi trouvé pour cette campagne');
-       
-      
+          
 
+    }
+   
+    /**
+     * pdf suivi des traitement
+     */
+
+    public function traitement_pdf()
+    {    $traitements=[];
+        $traitement=array('jour'=>'Jour1','Actions'=>' Pulverisations quotidien tous les 3 jours | Au sucré /Mixtral /BetaSpro-C');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour2','Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour3','Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour4','Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour5','Actions'=>'Vaccin : 1er vaccin HB1 |  1er vaccin H120  | SuperVitassol :  Panthéryl / Imuneo');
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour6','Actions'=>' Supervitassol / Panthéryl / Imuneo');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour7','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour8','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour9','Actions'=>' VITAMINES : AmineTotal / Supervitassol');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour10','Actions'=>' Vaccin: 1er vaccin de GUMBHORO | VITAMINES : AmineTotal / Vitaminolyte Super');
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour11','Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour12','Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour13','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour14','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour15','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour16','Actions'=>' Eau simple');
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour17','Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour18','Actions'=>"Vaccin :2ième rappel vaccin  GUMBHORO");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour19','Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour20','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour21','Actions'=>"Phase de Transition Alimentaire:3/4 Aliment de démarrage + 1/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour22','Actions'=>"Phase de Transition Alimentaire:1/2 Aliment de démarrage + 1/2 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour23','Actions'=>"Phase de Transition Alimentaire:1/4 Aliment de démarrage + 3/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+        $traitements[]=$traitement;
+       
+        $traitement=array('jour'=>'Jour24','Actions'=>"Anticoccidiens: Vetacox / Anticox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour25','Actions'=>"Anticoccidiens: Vetacox / Anticox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour26','Actions'=>"Vitamines : Amin'Total");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour27','Actions'=>"Vaccin: 2ième rappel vaccin HB1 | 2ième rappel vaccin H120 | Vitamines: Amin'Total");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour28','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour29','Actions'=>" Vaccin: 3ième rappel vaccin GUMBORHO: HIPRAGUMBORO GM97 / CEVAC IBDL /AVI IBD PLUS / NOBILIS 228E");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour30','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour31','Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+        $traitements[]=$traitement;
+
+        $traitement=array('jour'=>'Jour32','Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour33','Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour34','Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour35','Actions'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour36','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour37','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour38','Actions'=>"Eau simple");
+        $traitements[]=$traitement;
+        $traitement=array('jour'=>'Jour39','Actions'=>"Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer");
+        $traitements[]=$traitement;
+        
+
+        $pdf = PDF::loadView('vaccins.traitement',['data'=>$traitements]);
+        $reference=date('d/m/Y')."-"."Traitement"."-".uniqid();
+        return $pdf->download($reference.'.pdf');
+
+       // dd('your pdf traitment');
     }
     
 

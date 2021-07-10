@@ -9,6 +9,7 @@ use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+
 class Vaccin extends Model
 {
     protected $fillable=[
@@ -42,7 +43,7 @@ class Vaccin extends Model
     */
    public function  alertMailingSuivi()
    {
-        //dd('alerte');
+       // dd('alerte');
         $email=$subject=$content=null;
         $mail= new MailController;
        //recuperation date du jour
@@ -50,12 +51,18 @@ class Vaccin extends Model
        //get infos campgne
        $campagne= $this->infosCampagneStatus("EN COURS");
       
-       // demarrage d partie alerte mail
-       if (count($campagne)>0) {
-
+       // demarrage  partie alerte mail
+       if (isset($campagne[0]['id'])) {
+           
+      //  dd($campagne[0]['id']);
           //recuperation date arrivé poussins une et une seule campagne en cour pour le currently
-          $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")->get();
+          try {
+            $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")->get();
 
+          } catch (\Throwable $th) {
+            throw $th;
+          }
+         
             //compare id cmapagne en cours
        if($campagne[0]['id']==$date_arrivePoussins[0]['campagne_id'])
        {
@@ -65,7 +72,7 @@ class Vaccin extends Model
            $diff = $datepoussins->diffInDays($now);
           // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
           $diff=$diff+1;
-
+       //  dd($diff);
           //use case pour envoi de mail:
           $users = User::all();
           $mail= new MailController;
@@ -85,8 +92,8 @@ class Vaccin extends Model
                 $content.="1) ANTISTRESS : Supervitassol / Panthéryl / Imuneo <br>";
               }
               foreach ($users as $key => $user) {
-   
-               $mail->sendEmailAlerteVaccin($$user['email'],$subject,$content);
+              // dd($user);
+               $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
               }
               try {
               Vaccin::create([
@@ -507,7 +514,7 @@ class Vaccin extends Model
               break; 
 
             case '35':
-                $content.="1) Vermifuges: Sulfate de piperazine /levimasol /polystrongle  <br>";
+                $content.="1) Déparasitant (Vermifuges): Sulfate de piperazine /levimasol /polystrongle  <br>";
                 foreach ($users as $key => $user) {
       
                   $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
@@ -519,8 +526,17 @@ class Vaccin extends Model
                     'datedevaccination'=>$today,
                     'intitulevaccin'=>'Vermifuges',
                     'obs'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle "
-                  ]);       
+                  ]);  
                   
+                  //send email alerte vente satrt dans 5 jours
+                  $subject="Alerte entrée en Production ".$campagne[0]['intitule'];
+                  $contentStartvente="Nous sommes le ".$now. ", dans 5 jours démarre la vente de la campagne ".$campagne[0]['intitule']."<br>";
+                  $contentStartvente.="Large diffusion, merci .<br>";
+                  foreach ($users as $key => $user) {
+      
+                    $mail->sendEmailPrevisionVente($user['email'],$subject,$contentStartvente);
+                  }
+
                 } catch (\Throwable $th) {
                    // $th->getMessage();
                   return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
@@ -553,10 +569,22 @@ class Vaccin extends Model
                 //  dd($th->getMessage());
                   return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
                 }
+    
+              break;
+              
+            case '40':
+                  //send email start campagne en production
+                  $subject="Alerte Mise en Production ".$campagne[0]['intitule'];
+                  $contentStartvente="Nous sommes le ".$now. ",  40 ième jours,  jour de démarrage de la vente de la campagne ".$campagne[0]['intitule']."<br>";
+                  $contentStartvente.="Large diffusion, merci .<br>";
+                  foreach ($users as $key => $user) {
       
+                    $mail->sendEmailPrevisionVente($user['email'],$subject,$contentStartvente);
+                  }
+
               break;  
             default:
-                $content.="1) Campagne en cours, vigilance accru";
+                $content.="1) Campagne en cours, vigilance accrue";
                 foreach ($users as $key => $user) {
                 $mail->sendEmailAlerteVaccin($user['email'],$subject,$content);
                 }
@@ -586,9 +614,25 @@ class Vaccin extends Model
      foreach ($users as $key => $email) {
      // dd($email);
       $mail->sendEmailAlerteVaccin($email['email'],$subject,$content); 
-     }
+     } 
+ 
+    }
 
+    /**
+    * alert mail arrive poussin 
+    */
+    public function  alertEmailProduction($campagne,$content)
+    {
+     $email=$subject=null;
+     $mail= new MailController;
      
+     $users = User::all();
+     //dump($users);
+     $subject="Date démarrage des ventes de la : ".$campagne;
+     foreach ($users as $key => $email) {
+     // dd($email);
+      $mail->sendEmailPrevisionVente($email['email'],$subject,$content); 
+     } 
  
     }
 
@@ -600,7 +644,9 @@ class Vaccin extends Model
    //  dd($request);
       $traitement=Vaccin::whereCampagne($request)->get();
       return $traitement;
-     
-       
+        
     }
+
+    
+
 }

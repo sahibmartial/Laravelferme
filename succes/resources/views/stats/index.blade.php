@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="alert alert-success">
-	<p>Mes Statistique pour chaque campagne !!! </p>
+	<p>Mes Statistiques en temps réel !!! </p>
  </div> 
  
 @stop
@@ -22,14 +22,29 @@
 <div class="container">
   <div class="row">
   
+
+    <div class="col-md-4 mb-2">
+        <div class="card">
+        <small>Vente En cours</small>
+         <div><canvas id="myvente"></canvas></div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-2">
+        <div class="card">
+        <small>Pertes En cours</small>
+         <div><canvas id="myperte"></canvas></div>
+        </div>
+    </div>
+
+    <hr>
     <div class="col-md-4 mb-2">
         <div class="card">
         <small> Budget par campagne</small>
          <div><canvas id="mycampagne"></canvas></div>
         </div>
     </div>
-
-
+    
     <div class="col-md-4 mb-2">
       <div class="card">
         <div><canvas id="benefice"></canvas></div>
@@ -302,10 +317,90 @@ var myMix= new Chart(ctx,{
     }],
     labels: campagneP
   },
+  
 });
 
 
  </script>
+<!--Line  Pertes -->
+<script>
+var campagne = <?php echo  $result['campagne_enCours']; ?>;
+var qteLoss = <?php echo  $result['pertes_encours']; ?>;
+var Datedie = <?php echo  $result['DateDie_enCours']; ?>;
+//console.log(qteLoss);
+//console.log(Datedie );
+if (qteLoss.length > 0) {
+  var ctx = document.getElementById("myperte").getContext("2d");
+var myMix= new Chart(ctx,{
+  type: 'bar',
+  data: {
+    datasets: [{
+      label: 'Poussins',
+      data: qteLoss,
+      backgroundColor: 'pink'
+    }, {
+      label: 'Pertes',
+      data: qteLoss,
+      type: 'line',
+      borderColor: 'blue'
+
+    }],
+    labels: Datedie
+  },
+  options: {
+    title: {
+
+      display: true,
+      text: campagne
+
+    }
+  }
+});
+  
+} else {
+  
+}
+
+</script>
+
+<!--Line BAR Vente -->
+<script>
+
+var campagne = <?php echo  $result['campagne_enCours']; ?>;
+var qteVendu = <?php echo  $result['Vente_enCoursQte']; ?>;
+var dateVendu = <?php echo  $result['Vente_enCoursDate']; ?>;
+if ( qteVendu.length >0) {
+  var ctx = document.getElementById("myvente").getContext("2d");
+var myMix= new Chart(ctx,{
+  type: 'bar',
+  data: {
+    datasets: [{
+      label: 'Poussins',
+      data: qteVendu,
+      backgroundColor: 'pink'
+    }, {
+      label: 'Ventes',
+      data:qteVendu,
+      type: 'line',
+      borderColor: 'blue'
+
+    }],
+    labels: dateVendu
+  },
+  options: {
+    title: {
+
+      display: true,
+      text: campagne
+
+    }
+  }
+});
+ 
+} else {
+  
+}
+</script>
 
 <!-- dounghut and pie-->
 <script> 
@@ -338,7 +433,6 @@ var myChart4 = new Chart(
     config4
   );
 </script>
-
 
 
 @stop
