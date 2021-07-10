@@ -28,7 +28,7 @@
    </div>
   
    <button type="submit" onclick="validateForm()" class="btn btn-success">Déclarez perte</button>
-	<!--<input class="btn btn-primary" type="submit" value="Nous Contacter">-->
+	
 </form>
 </div>
 <script>
@@ -38,7 +38,6 @@ let errors=[];
 let nom = document.forms["myForm"]["nom"].value;
 let email = document.forms["myForm"]["email"].value;
 let msge = document.forms["myForm"]["content"].value;
-
 
 
 if(!nom.length >0){

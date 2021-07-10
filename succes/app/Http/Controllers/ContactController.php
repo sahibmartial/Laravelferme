@@ -30,10 +30,8 @@ class ContactController extends Controller
 			return view('contact.contact')->with('notification', $notification);
 		 }
          
-     	}
-     	  	
-     	//dd($notification);
-     	
+     	}	
+ 	
      	 return redirect()->route('contact');
      }
 

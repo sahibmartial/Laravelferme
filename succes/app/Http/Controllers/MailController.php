@@ -218,6 +218,7 @@ class MailController extends Controller
           $response->success();
           //dd($response->getData());
       }
+
 /**
  * reception message client
  */
@@ -258,9 +259,6 @@ public function recieveMessageContact($to_email,$to_name,$subject,$content)
   
   return $response->success();
 }
-
-
-
 
 
 
