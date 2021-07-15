@@ -185,6 +185,16 @@ Route::get('errorbd', 'ErrorController@index')->name('errorbd');
  */
 Route::get('Tconstruction','TravauxConstructionController@index')->name('Tconstruction');
 
+/**
+ * Pathologies Aviaires
+ */
+Route::get('pathologiesAviaires','PathologiesController@getPathoAviaires')->name('pathologiesAviaires');
+Route::get('MaladiesVirales','PathologiesController@getPathoVirales')->name('MaladiesVirales');
+Route::get('MaladiesBacteriennes','PathologiesController@getPathoBacteriennes')->name('MaladiesBacteriennes');
+Route::get('MaladiesparasitInternes','PathologiesController@getPathoBacteriennes')->name('MaladiesparasitInternes');
+Route::get('MaladiesBacteriennes','PathologiesController@getPathoBacteriennes')->name('MaladiesBacteriennes');
+
+
 
  Route::get('/createcomplete','FonctionController@create');
 Route::get('/listcampagne','FonctionController@getAutocompleteData');

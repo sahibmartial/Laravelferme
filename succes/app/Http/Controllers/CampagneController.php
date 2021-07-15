@@ -34,6 +34,7 @@ class CampagneController extends Controller
      */
     public function index()
     {
+     
       $value= date('d-m-Y', strtotime('+40 days'));
     //  dd($value);
        $cam = new Campagne();

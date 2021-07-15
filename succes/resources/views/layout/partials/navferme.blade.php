@@ -114,6 +114,22 @@
       </div>
     </div>
   </div>
+  <div class="col-sm-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Pathologies Aviaires</h5>
+        <p class="card-text">Listing des pathologies symptomes et traitements.
+			<ul>
+				<li>Maladies Virales</li>
+				<li>Maladies Bacteriennes</li>
+        <li>Maladies Parisitaires Internes</li>
+        <li>Maladies Parisitaires Externes</li>
+			</ul>
+		</p>
+        <a href="pathologiesAviaires" class="btn btn-primary">Go Pathologies </a>
+      </div>
+    </div>
+  </div>
  
 </div>
 

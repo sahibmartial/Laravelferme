@@ -15,7 +15,7 @@ class AlimentController extends Controller
      */
     public function index()
     {
-         //dd('here');
+        // dd('here');
          //$aliments=Aliment::all();
 
          try {
@@ -111,6 +111,7 @@ class AlimentController extends Controller
      */
     public function edit($id)
     {
+      //  dd($id);
         try {
             $aliments=Aliment::findOrFail($id);
          return view('aliments.edit',compact('aliments'));
@@ -129,7 +130,7 @@ class AlimentController extends Controller
      */
     public function update(Request $request, $id)
     {
-       // dd($request->date_achat);
+      // dd($request);
         $aliments=Aliment::findOrFail($id);
 
          $rules=[
@@ -171,7 +172,7 @@ class AlimentController extends Controller
      */
     public function destroy($id)
     {
-        $folder="VenteRemove/";
+        $folder="AlimentsRemove/";
         $name=uniqid().'-'.date("Y-m-d H:i:s");
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
