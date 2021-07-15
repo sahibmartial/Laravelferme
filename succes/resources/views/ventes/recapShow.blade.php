@@ -39,8 +39,8 @@ $quantity=null;
       <th scope="row">{{$result[$i]->campagne}}</th>
       <td>{{$result[$i]->quantite}}</td>
       <td>{{$result[$i]->priceUnitaire}} FCFA </td>
+      <td>{{$result[$i]->date}}</td>
       <td>{{$result[$i]->obs}}</td>
-      <td>{{$result[$i]->created_at}}</td>
       <td>{{$result[$i]->quantite * $result[$i]->priceUnitaire }} FCFA</td> 
 
       @php

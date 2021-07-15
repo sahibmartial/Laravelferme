@@ -8,11 +8,13 @@
      {{--@for($i=0;$i< count($vente); $i++)
     {{'Date : '.$vente[$i]['date']}}  {{' Quantite: '.$vente[$i]['Quantite']}}  {{' PrixUnitaire: '.$vente[$i]['PUA']}}<br>
     @endfor--}}
-    <center>
-     <table class="table">
+    <div class="text-center">
+
+   
+     <table class="table table-bordered">
   <thead>
     <tr>
-      <th scope="col">Date</th>
+      <th colspan="2" scope="col">Date</th>
       <th scope="col">Quantite</th>
       <th scope="col">PrixUnitaire</th>
       <th scope="col">Total</th>
@@ -21,9 +23,10 @@
   <tbody>
     @for($i=0;$i< count($vente['Data']); $i++)
     <tr>
-      <td>{{$vente['Data'][$i]['date']}}</td>
-      <td><b>{{  $vente['Data'][$i]['Quantite']}}</b></td>
-      <td>{{$vente['Data'][$i]['PUA']}}</td>
+      
+      <td colspan="2">{{$vente['Data'][$i]['date']}}</td>
+      <td ><b>{{  $vente['Data'][$i]['Quantite']}}</b></td>
+      <td >{{$vente['Data'][$i]['PUA']}}</td>
      
      
       <td>{{$vente['Data'][$i]['T_vente']}}</td>
@@ -32,7 +35,9 @@
   </tbody>
 
 </table>
-</center>
+
+
+</div>
 
     <hr>
     

@@ -27,13 +27,14 @@ class VenteController extends Controller
         })
         ->orderByDesc('ventes.id')
         ->SimplePaginate(10);
+       
         } catch (\Throwable $th) {
             throw $th;
         }
         
        // dd($this->handle());
 
-        return view('ventes.index',compact('ventes'));
+       return view('ventes.index',compact('ventes'));
     }
 
     /**
@@ -78,9 +79,13 @@ class VenteController extends Controller
             'events'=>'required|min:4',
             //'obs'=>'required|min:3'
         ];
+      
            $this->validate($request,$rules);
+
+          
            if ( ($request->avance==null || $request->avance==0 ) && ($request->impaye==null || $request->impaye==0)) {
             $regler="OK";
+          //  dd("OK");
             Vente::create([
                'campagne_id'=>$campagne_id,
                'date'=>$request->date,
@@ -96,7 +101,9 @@ class VenteController extends Controller
                'obs'=>$request->obs
                ]);
            // dd( $regler);
+           return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
            } else {
+           // dd("Nok");
                $regler="NOK";
               // dd( $regler);
               $netapayer=($request->quantite * $request->priceUnitaire);
@@ -119,17 +126,18 @@ class VenteController extends Controller
                        'impaye'=>$request->impaye,
                        'regler'=>$regler,
                        'obs'=>$request->obs
-                   ]);     
+                   ]); 
+
+                   return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
                     
                 } catch (\Throwable $th) {
                     throw $th;
                 }
-              
-               return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
+                
               }else {
    
                   return back()->with('success', 'Enregistrement Impossible, montant net à payer: '.$netapayer
-                  .' et somme avance: '.$request->avance.' plus, impaye: '.$request->impaye. ' different');
+                  .' est different de montant  avance: '.$request->avance.' + , montant impaye: '.$request->impaye);
               }      
    
            } 
@@ -184,6 +192,7 @@ class VenteController extends Controller
      */
     public function update(Request $request, $id)
     {
+     //   dd($request);
         $regler="";
         $rules=[
             'campagne_id'=>'bail|required',  
@@ -202,8 +211,9 @@ class VenteController extends Controller
            
             if ($request->avance==0 && $request->impaye==0) {
                 $regler="OK";
-              // dd($request);
+             //  dd($request);
                 $ventes->update([
+                    'date'=>$request->date_vente,
                     'campagne_id'=>$request->campagne_id,
                     'campagne'=>Str::lower($request->campagne),
                     'quantite'=>$request->quantite,
@@ -221,6 +231,7 @@ class VenteController extends Controller
             }elseif(($netapayer==$request->avance) && $request->impaye==0){
                 $regler="OK";
                 $ventes->update([
+                    'date'=>$request->date_vente,
                     'campagne_id'=>$request->campagne_id,
                     'campagne'=>Str::lower($request->campagne),
                     'quantite'=>$request->quantite,
@@ -240,7 +251,7 @@ class VenteController extends Controller
                 if ($netapayer == ($request->avance + $request->impaye)) {
 
                     $ventes->update([
-
+                        'date'=>$request->date_vente,
                         'campagne_id'=>$request->campagne_id,
                         'campagne'=>Str::lower($request->campagne),
                         'quantite'=>$request->quantite,
