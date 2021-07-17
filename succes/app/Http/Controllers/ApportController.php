@@ -51,6 +51,7 @@ class ApportController extends Controller
      */
     public function store(Request $request)
     {
+       // dd($request);
         //dd($request->obs);
         //get id de campagne
 
@@ -59,26 +60,26 @@ class ApportController extends Controller
         $campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
        // dump($request->campagne);
 
-        //dd($request,' here Apport ADD',$campagne_id);
+       // dd($request,' here Apport ADD',$campagne_id);
         $tarted=date("Y-m-d ");
 
         $rules=[
           'campagne'=>'bail|required',
           'apport'=>'bail|required',
-          'obs'=>'bail|required'
         ];
         
-       $this->validate($request,$rules);
-      // dd('store');
-       Apport::create([
-           'campagne_id'=>$campagne_id,
-           'campagne'=>Str::lower($request->campagne),
-           'apport'=>$request->apport,
-           'obs'=>$request->obs
-       ]);
 
-        //notification email get current user
-        
+      try {
+        $this->validate($request,$rules);
+     //   dd($request);
+        Apport::create([
+            'campagne_id'=>$campagne_id,
+            'campagne'=>Str::lower($request->campagne),
+            'apport'=>$request->apport,
+            'origine_apport'=>$request->origineapport,
+            'obs'=>$request->obs
+        ]);
+
         $to_name= auth()->user()['name'];
         $to_email=auth()->user()['email'];
         $mail= new MailController;
@@ -86,6 +87,12 @@ class ApportController extends Controller
         $content="Votre apport a été crée avec succes";
        $mail->send($to_email,$to_name,$subject,$content);
        return redirect()->route('apports.index')->with('success', 'Apport ajouté avec sucess');     
+ 
+      } catch (\Throwable $th) {
+          throw $th;
+      }
+      
+       
     }
         
     }
@@ -128,23 +135,33 @@ class ApportController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //dd($request);
+       // dd($request);
         //dd($request['budget'],$id);
-        $apports=Apport::findOrFail($id);
-        $rules=[
-            'campagne'=>'required|min:9',
-            'budget'=>'bail|required',
-            'obs'=>'bail|required'
-        ];
-        $this->validate($request,$rules);
-      //  dd('store');
-        $apports->update([
-            'campagne'=>Str::lower($request->campagne),
-            'budget'=>$request->budget,
-            'obs'=>$request->obs
-        ]);
+        try {
+            $apports=Apport::findOrFail($id);
+            $rules=[
+                'campagne'=>'required|min:9',
+                'apport'=>'bail|required',
+               
+            ];
+            $this->validate($request,$rules);
 
-        return redirect()->route('apports.show',$id)->with('success', 'Apport modifiée avec succes.');
+          //  dd($request);
+            $apports->update([
+                'campagne'=>Str::lower($request->campagne),
+                'budget'=>$request->budget,
+                'origine_apport'=>$request->origineapport,
+                'obs'=>$request->obs
+            ]);
+    
+            return redirect()->route('apports.show',$id)->with('success', 'Apport modifiée avec succes.');
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+       
+     
+      
     }
 
     /**
@@ -155,10 +172,15 @@ class ApportController extends Controller
      */
     public function destroy($id)
     {
-         
-        Apport::destroy($id);
+         try {
+            Apport::destroy($id);
+            return redirect()->route('apports.index')->with('success', 'Apport supprimé avec success.');
+         } catch (\Throwable $th) {
+             throw $th;
+         }
+       
 
-        return back()->with('success', 'Apport a bien été supprimée.');
+      
     }
 
 

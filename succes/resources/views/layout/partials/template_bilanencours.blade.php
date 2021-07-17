@@ -39,9 +39,9 @@
                 <td>{{ $campagneInfos[0]['status'] }}</td>
                 <td>{{$campagneInfos[0]['budget'] }} FCFA</td>
                 <td>
-                <a href="{{route('apports.index')}}"><center>{{ 'Issu des Ventes : '.$apportVente }} </a> FCFA</center>
+                <a href="{{route('apports.index')}}"><center>{{ 'Ventes : '.$apportVente }} </a> FCFA</center>
                 <hr>
-                <a href="{{route('apports.index')}}"><center>{{'Personnel :'.$apportpersonel }}</a> FCFA</center>
+                <a href="{{route('apports.index')}}"><center>{{'Personnel : '.$apportpersonel }}</a> FCFA</center>
                       
                 </td>
                 <td colspan="1">
@@ -64,6 +64,9 @@
                     <small>Brut obtenu après déduction apport vente :</small> 
                     <center><b>{{'Solde: '.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
                      <hr>
+                     <small style="color: rgb(214, 122, 127);"><b>Cout de revient Poussin:</b> <b> {{ $resultbilan['Cout_Revient'] }}</b> FCFA
+                    </small> 
+                     <br>
                      <small>Net obtenu après déduction des apports:</small> 
                     <center><b>{{'Gain: '.( ($campagneInfos[0]['budget']+ $apportVente + $apportpersonel) - ($total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']) )}}</b> FCFA</center>
                 </td>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBudgetToCampagnesTable extends Migration
+class AddOrigineApportToApportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddBudgetToCampagnesTable extends Migration
      */
     public function up()
     {
-        Schema::table('campagnes', function (Blueprint $table) {
-             $table->integer('budget')->nullable()->after('intitule');
+        Schema::table('apports', function (Blueprint $table) {
+            $table->string('origine_apport')->nullable()->after('apport');
         });
     }
 
@@ -25,8 +25,8 @@ class AddBudgetToCampagnesTable extends Migration
      */
     public function down()
     {
-        Schema::table('campagnes', function (Blueprint $table) {
-            $table->dropColumn('budget');
+        Schema::table('apports', function (Blueprint $table) {
+            $table->dropColumn('origine_apport');
         });
     }
 }

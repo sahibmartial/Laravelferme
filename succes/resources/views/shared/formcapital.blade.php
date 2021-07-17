@@ -1,14 +1,16 @@
 <div class="text-center">
 <h3>Ajout Apport</h3>
-<form name="myForm" action="{{route('ajoutCapital')}}" method="POST">
+<form name="myForm"   action="{{route('ajoutCapital')}}" method="POST">
 	{{ csrf_field() }}
 	<div class="form-group">
+	{{ Form::label('Campagne', 'Campagne:') }}
 	<input type="text" name="campagne" placeholder="Entrez nom campagne " 
 	value="{{ old('campagne') }}" class="form-control">
 	{!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
 
 	</div>
 	<div class="form-group">
+	{{ Form::label('Apport', 'Apport:') }}
 	<input type="integer" name="apport" placeholder="Entrez votre Apport"
 	 value="" class="form-control">
 	{!! $errors->first('apport','<span class="error-msg">:message</span>') !!}
@@ -16,11 +18,8 @@
 	<!--
 	<br>
   <input type="text" name="status" placeholder="" value="EN COURS">
-	{!! $errors->first('status','<span class="error-msg">:message</span>') !!}
-
+	{!! $errors->first('status','<span class="error-msg">:message</span>') !!
 	<br>
-  	<textarea name="obs" placeholder="RAS"></textarea>
-	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
 	-->
 	<div >
 		<select name="origineapport" class="custom-select">
@@ -32,8 +31,12 @@
 	</select>
 
 	</div>
-	
-	<br>
+
+	<div class="form-group">
+	{{ Form::label('Obs', 'Observations:') }}
+	<textarea name="obs" placeholder="RAS" class="form-control"></textarea>
+
+	</div>
 	<!--<input type="submit" value="Ajouter Apport">-->
 	<button type="submit" onclick="validateForm()" class="btn btn-success">Déclarez Apport</button>
 	
@@ -43,7 +46,7 @@
 
 <script>
 function validateForm() {
-
+//console.log('hello')
 let errors=[];
 let campagne = document.forms["myForm"]["campagne"].value;
 let apport = document.forms["myForm"]["apport"].value;
