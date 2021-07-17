@@ -22,7 +22,7 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('apports.show',
-		$campagne)}}">{{ $campagne->campagne}}-{{$campagne->apport}}-{{$campagne->obs}}</a></li>	
+		$campagne)}}">{{ $campagne->campagne}}-{{$campagne->apport}}-{{$campagne->origine_apport}}-{{$campagne->obs}}</a></li>	
 	@endforeach
     </ul>
 	<div>

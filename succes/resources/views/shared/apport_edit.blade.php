@@ -16,11 +16,6 @@
 	 value="{{old('apport')?? $apports->apport}}" class="form-control">
 	{!! $errors->first('budget','<span class="error-msg">:message</span>') !!}
 	</div>
-  
-	<!--
-  	<textarea name="obs" placeholder="RAS" value=" {{old('obs')?? $apports->obs}}"></textarea>
-	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
-    -->
     <div class="form-group">
 		<select name="origineapport" class="custom-select">
 		<option selected>Origine des Apports</option>
@@ -30,7 +25,14 @@
 		<option value="Autres">Autres</option>
 	</select>
 	</div>
-	<button type="submit" onclick="validateForm()" class="btn btn-success">Déclarez Apport</button>
+
+	<div class="form-group">
+	
+  	<textarea name="obs" placeholder="RAS" value="" class="form-control">{{old('obs')?? $apports->obs}}</textarea>
+	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
+
+	</div>
+	<button type="submit" onclick="validateForm()" class="btn btn-success">Modifier Apport</button>
 	<!--<input type="submit" value="Modifiez ">-->
 </form>
 
@@ -42,6 +44,8 @@ let errors=[];
 let campagne = document.forms["myForm"]["campagne"].value;
 let origine = document.forms["myForm"]["origineapport"].value;
 let apport = document.forms["myForm"]["apport"].value;
+let obs = document.forms["myForm"]["obs"].value;
+
 
 
 
@@ -58,6 +62,10 @@ if (!apport.length >0) {
 	errors.push('Apport manquant.\n');
 }
 
+if (!obs.length >0) {
+	
+	errors.push('Observations manquant.\n');
+}
 
 if (errors.length>0) {
 	event.preventDefault();

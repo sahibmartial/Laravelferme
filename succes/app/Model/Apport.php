@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Apport extends Model
 {
-     protected $fillable=['campagne_id','campagne','apport','obs'];
+     protected $fillable=[
+         'campagne_id',
+         'campagne',
+         'apport',
+         'origine_apport',
+         'obs'];
 
 /**
  * Cette fonction recupere tous les apports d'une campagne a partir de l'id campgne 

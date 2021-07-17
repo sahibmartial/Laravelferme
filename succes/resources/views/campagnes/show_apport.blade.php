@@ -15,20 +15,22 @@
 	</div>
 	
 
-	<p><a href="{{ route('apports.edit', $apports)}}">Modifier Apport</a>
+	<p>
+		<a href="{{ route('apports.edit', $apports)}}">Modifier Apport</a>
+		
+        <form action="{{route('apports.destroy',$apports)}}" method="POST"
+      onsubmit="return confirm('Etes-vous sure?');" >
+	{{csrf_field()}}
+	{{method_field('DELETE')}}
+	<input type="submit" value="supprimer Apport">
 	
-</p>
+</form>
+	
+  </p>
 </div>
  
 
 
-{{--<form action="{{route('campagnes.destroy',$campagnes)}}" method="POST"
- onsubmit="return confirm('Etes-vous sure?');" 
- >
-	{{csrf_field()}}
-	{{method_field('DELETE')}}
-	<input type="submit" value="supprimer">
-	
-</form>--}}
+
 <p class="btn btn-info float-right"><a href="{{route('apports.index')}}">Retour liste Apport</a></p>
 @stop

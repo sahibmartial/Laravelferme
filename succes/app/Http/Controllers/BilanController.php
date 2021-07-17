@@ -121,7 +121,7 @@ class BilanController extends Controller
    public function getBilan_achats_campagne_en_cours(Request $request){
     // dd($request->request);
      $apports=$apportVente=$apportpersonel=0;
-    $notification=null;
+   $notification=$cout_de_revientPoussin=null;
    $vente_impaye=array('Encaisse'=>null,'Credit'=>null,'Regler'=>null);
    $bilan= new Bilan();
    $cam= new Campagne();
@@ -190,18 +190,23 @@ class BilanController extends Controller
       }
      // dd($qtyhead,$priceU,$resulat_vente,$resultat_pertes,$totalfood,$campagneInfos);
 
-     // dd($apports);
+     // var_dump($apports);
+      //die;
       if(!empty($apports)){
-       // dd('Apports');
+      // dd('Apports');
         foreach ($apports as $key => $value) {
-         //dump($value['obs']);
-         if ($value['obs']=='Apport issu des Ventes') {
+       //  dd($value);
+         if ($value['origine_apport']=='Apport issu des Ventes') {
+          // dd('ventes');
             $apportVente+=$value['apport'];
           }else{
             $apportpersonel+=$value['apport'];
           }
         }
       }
+
+      //dd( $apportVente,$apportpersonel);
+     // die;
       if ($resultat_pertes['T_qte']==null) {
        // dd('yes');
         $resultat_pertes['T_qte']=0;
@@ -212,9 +217,16 @@ class BilanController extends Controller
         $resulat_vente['T_vente']=0;
       }
 
+     //calcul coutbde revient
+     $totalachat= $totalfrais+$totalfood+$totalacces+($qtyhead*$priceU);
+    // dump($totalachat);
+    // dd($qtyhead-$resultat_pertes['T_qte']);
+    $cout_de_revientPoussin=round( ($totalachat/($qtyhead - $resultat_pertes['T_qte'] )), 2);
+  //  $cout_de_revientPoussin;
       $resultbilan= array('resultat_pertes'=>$resultat_pertes,'resulat_vente'=>$resulat_vente,'totalacces'=>$totalacces,
-    'totalfood'=>$totalfood,'totalfrais'=>$totalfrais,'qtePoussins'=>$qtyhead,'PousPUAchat'=>$priceU);
+    'totalfood'=>$totalfood,'totalfrais'=>$totalfrais,'qtePoussins'=>$qtyhead,'PousPUAchat'=>$priceU,'Cout_Revient'=>$cout_de_revientPoussin);
    //dd($resultbilan);
+  
    $resultCamp=array('Infos'=>$resultbilan,'Apport'=>array('ApVente'=>$apportVente,'ApPerso'=>$apportpersonel),
     'InfosCampagne'=>$campagneInfos);
     

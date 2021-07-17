@@ -16,6 +16,7 @@ class CreateCampagnesTable extends Migration
         Schema::create('campagnes', function (Blueprint $table) {
             $table->id();
             $table->string('intitule')->unique();
+            $table->integer('budget')->nullable();
             $table->timestamps();
         });
     }
