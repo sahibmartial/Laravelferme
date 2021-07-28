@@ -6,6 +6,18 @@
 @section('content')
 <p class="text-center mt-2 mb-2">Detail masse </p>
 <div class="text-center mt-4">
+	@if ($message = Session::get('success'))
+<div class="alert alert-success">
+    <p>{{ $message }}</p>
+</div>
+@endif
+
+@if($message = Session::get('notif'))
+<div class="alert alert-danger" role="alert">
+    <p>{{ $message }}</p>
+</div>
+@endif
+<div class="text-center mt-4">
 @include('shared.show_masses')
 
 <p><a href="{{ route('masses.edit', $masses)}}">Modifier Masse</a>

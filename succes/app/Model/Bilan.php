@@ -7,7 +7,25 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 class Bilan extends Model
 {
-    protected $fillable=['campagne_id','campagne','totalAchats','quantite_achetes','quantite_perdus','totalVentes','benefice','reserve','charges_salariale','partenaire','year','obs','budget','apportVente','apportPersonnel'];
+    protected $fillable=[
+       'campagne_id',
+       'campagne',
+       'totalAchats',
+       'quantite_achetes',
+       'quantite_perdus',
+       'totalVentes',
+       'benefice',
+       'reserve',
+       'charges_salariale',
+       'partenaire',
+       'year',
+       'obs',
+       'budget',
+       'apportVente',
+       'apportPersonnel',
+       'dureeCampagne',
+       'meanMasse'
+      ];
 
 
     public function recapBilan($id)

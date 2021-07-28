@@ -203,8 +203,9 @@ class PerteController extends Controller
      */
     public function destroy($id)
     {  
+      $user=Auth()->user();
       $folder="PerteRemove/";
-      $name=uniqid().'-'.date("Y-m-d H:i:s");
+      $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
       $filename=$name."."."txt";
       $filebackup= new BackUpFermeController();
         try {

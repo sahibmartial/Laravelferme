@@ -191,8 +191,8 @@ Route::get('Tconstruction','TravauxConstructionController@index')->name('Tconstr
 Route::get('pathologiesAviaires','PathologiesController@getPathoAviaires')->name('pathologiesAviaires');
 Route::get('MaladiesVirales','PathologiesController@getPathoVirales')->name('MaladiesVirales');
 Route::get('MaladiesBacteriennes','PathologiesController@getPathoBacteriennes')->name('MaladiesBacteriennes');
-Route::get('MaladiesparasitInternes','PathologiesController@getPathoBacteriennes')->name('MaladiesparasitInternes');
-Route::get('MaladiesBacteriennes','PathologiesController@getPathoBacteriennes')->name('MaladiesBacteriennes');
+Route::get('MaladiesparasitInternes','PathologiesController@getPathoParasitInternes')->name('MaladiesparasitInternes');
+Route::get('MaladiesparasitExternes','PathologiesController@getPathoParasitExternes')->name('MaladiesparasitExterne');
 
 
 
