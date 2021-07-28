@@ -57,7 +57,14 @@
             <tr>  
                  <td><input type="date" name="addmore[0][date_achat]" placeholder="Date" class="form-control" /></td>  
                 <td><input type="text" name="addmore[0][campagne]" placeholder="Name" class="form-control" /></td>  
-                <td><input type="text" name="addmore[0][libelle]" placeholder="Libelle" class="form-control" /></td>  
+                <td>
+                    <select name="addmore[0][libelle]" id="addmore[0][libelle]" required>
+                    <option value="Choisir" selected hidden>ALIMENT</option>
+                    <option value="ALIMENT DÉMARRAGE">DEMARRAGE</option>
+                    <option value="ALIMENT CROISSANCE">CROISSANCE</option>
+
+                    </select>
+                </td>  
                 <td><input type="text" name="addmore[0][quantite]" placeholder=" Qte" class="form-control" /></td>
                 <td><input type="text" name="addmore[0][priceUnitaire]" placeholder=" Prix Unit" class="form-control" /></td> 
                 <td><input type="text" name="addmore[0][fournisseur]" placeholder="Fournisseur" class="form-control" /></td>

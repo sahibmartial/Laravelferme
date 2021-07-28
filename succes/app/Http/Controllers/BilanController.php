@@ -310,5 +310,4 @@ class BilanController extends Controller
 
    }
     
-
 }

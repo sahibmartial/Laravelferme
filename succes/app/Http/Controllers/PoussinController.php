@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Campagne;
 use App\Http\Controllers\CampagneController;
 
 use App\Model\Poussin;
@@ -96,7 +98,13 @@ class PoussinController extends Controller {
 		}*/
 
 		$cam         = new CampagneController();
-		$campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+		try {
+			$campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+		$updateCampagne=Campagne::findorfail($campagne_id);
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+		
       
 	   if (empty($campagne_id)) {
 		return back()->with('success', 'Enregistrement  Achat pousssins impossible, '.$request->campagne.' introuvable ,merci');
@@ -124,6 +132,12 @@ class PoussinController extends Controller {
 		      	'fournisseur'   => $request->fournisseur,
 				'phone'         =>$request->contact,
 		      	'obs'           => $request->obs]);
+
+
+				  //update  duree camapge
+				  $updateCampagne->update([
+                   'duree'=>1
+				  ]);
                 
 				 //step insertion   dans la table vaccin et envoi de mail notification
 				  $now=now();
@@ -140,10 +154,12 @@ class PoussinController extends Controller {
 					'obs'=>$obs   
 				   ]);
 
+
+
 				  $content="Nous sommes le ".$now.", jour 1 de la ".$campagne."<br> <br>";
-				  $content.="A) Preventions sanitaire:<br>";
+				  $content.="A) <b> Preventions sanitaire </b>:<br/>";
 				  $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>"; 
-				  $content.="B) Traitements: <br>"; 
+				  $content.="B) <b>Traitements </b>: <br>"; 
 				  $content.="2) EAu sucré /Mixtral /BetaSpro-C <br>"; 
 
                   $vaccin= new Vaccin;
@@ -256,9 +272,9 @@ class PoussinController extends Controller {
 	public function destroy($id) {
 
 		try {
-
+		$user=Auth()->user();
 		$folder="PoussinRemove/";
-        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
 		$value=Poussin::findorfail($id);

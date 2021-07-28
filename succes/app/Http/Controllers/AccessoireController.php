@@ -173,8 +173,9 @@ class AccessoireController extends Controller
      */
     public function destroy($id)
     {
-        $folder="VenteRemove/";
-        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $user=Auth()->user();
+        $folder="AccessoiresRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
         try {

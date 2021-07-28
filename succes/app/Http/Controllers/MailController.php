@@ -234,13 +234,56 @@ public function recieveMessageContact($to_email,$to_name,$subject,$content)
       'Messages' => [
           [
               'From' => [
-                  'Email' => $to_email,
-                  'Name' => $to_name
+                  'Email' => "company.maya1@gmail.com",
+                  'Name' => "Suivi Aliment"
               ],
               'To' => [
                   [
-                      'Email' => "company.maya1@gmail.com",
-                      'Name' => "SAV Ferme"
+                      'Email' =>  $to_email,
+                      'Name' =>  $to_name
+                  ]
+              ],
+              'TemplateID' => 2295318,
+              'TemplateLanguage' => true,
+              'Subject' => $subject ,
+              'Variables' => [
+              'content' => $content,
+              
+              ]
+              
+          ]
+      ]
+  ];
+  $response = $mj->post(Resources::$Email, ['body' => $body]);
+
+  
+  return $response->success();
+}
+
+
+
+/**
+ * reception message client
+ */
+public function emailAlerteAliment($to_email,$subject,$content)
+{
+
+  $mj = new Client($this->api_key,$this->api_secret,true,['version' => 'v3.1']);
+    
+  //$mj = new MailjetClient(getenv('MJ_APIKEY_PUBLIC'), getenv('MJ_APIKEY_PRIVATE'),true,['version' => 'v3.1']);
+  //alixya09@gmail.com,"weddingalixmartial@gmail.com",
+  //"Mail de confirmation de votre invitation au mariage du duo parfait"
+  $body = [
+      'Messages' => [
+          [
+              'From' => [
+                  'Email' =>  "company.maya1@gmail.com",
+                  'Name' =>"Suivi Aliment" 
+              ],
+              'To' => [
+                  [
+                      'Email' => $to_email,
+                      
                   ]
               ],
               'TemplateID' => 2295318,

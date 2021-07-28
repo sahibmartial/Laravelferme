@@ -17,14 +17,19 @@
 	<!--utilisation des routes -->
 	<li><a href="{{ 
 		route('masses.show',
-		$masse)}}">{{ $masse->campagne}}</a></li>
+		$masse->id)}}">{{ $masse->campagne}}--{{$masse->date}}--{{$masse->obs}}</a></li>
 	@endforeach
-	@else
-	<p>Aucun Enregistrement de masses disponible !!! </p>
-	@endif
 </ul>
-<br>
-<p><a href="{{route('masses.create')}}">Enregister une masse pour une campagne </a></p>
+<div> 
+	{{$masses->links()}}
+</div>
+
+	@else
+	<div class="alert alert-success">
+	<p>Aucun Enregistrement de masses disponible !!! </p>
+	</div>
+	@endif
+<p><a href="{{route('masses.create')}}">Enregister une masse </a></p>
 <hr>
 <p><a href="/ferme"> Menu principal</a></p>
 </div>

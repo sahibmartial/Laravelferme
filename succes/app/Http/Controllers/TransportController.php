@@ -173,8 +173,9 @@ class TransportController extends Controller
      */
     public function destroy($id)
     { 
+        $user=Auth()->user();
         $folder="TransportsRemove/";
-        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
 

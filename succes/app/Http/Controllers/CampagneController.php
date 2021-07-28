@@ -209,8 +209,9 @@ class CampagneController extends Controller
      */
     public function destroy($id)
     {
+      $user=Auth()->user();
       $folder="CampagneRemove/";
-        $name=uniqid().'-'.date("Y-m-d H:i:s");
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
      //  dd("yes");
@@ -319,6 +320,10 @@ class CampagneController extends Controller
        $apportVente=$apportPersonnel=$poussins=$poussinsPriceUnit=$budget=null;
 
          $cam = new Campagne();
+
+         $meanMasse= $cam->meanMasse($id);
+         $dureeCampagne=$cam->getDureeCampagne($id);
+
          $apports=$cam->getApport($id);
          
         if (!empty($apports)) {
@@ -353,6 +358,8 @@ class CampagneController extends Controller
       ->update(['end'=>$ended,
        'status'=>$statut
         ]);
+
+
      } catch (\Throwable $th) {
       return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
      }
@@ -448,7 +455,11 @@ class CampagneController extends Controller
         'quantite_perdus'=>$perdus,'benefice'=>$ben,
         'reserve'=>$reserve,'partenaire'=>$partenaire,
         'charges_salariale'=>$charges_salaire,
-        'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
+        'annee'=>$year[0],
+        'dureeCampagne'=>$dureeCampagne,
+        'meanMasse'=>$meanMasse,
+        'obs'=>$obs,
+        'created_at'=>$created_at,
         'updated_at'=>$updated_at
         
       ]
@@ -473,7 +484,11 @@ class CampagneController extends Controller
               'quantite_perdus'=>$perdus,'benefice'=>$ben,
               'reserve'=>$reserve,'partenaire'=>$partenaire,
               'charges_salariale'=>$charges_salaire,
-              'annee'=>$year[0],'obs'=>$obs,'created_at'=>$created_at,
+              'annee'=>$year[0],
+              'dureeCampagne'=>$dureeCampagne,
+              'meanMasse'=>$meanMasse,   
+              'obs'=>$obs,
+              'created_at'=>$created_at,
               'updated_at'=>$updated_at
       
             ]
@@ -496,21 +511,23 @@ class CampagneController extends Controller
         $content="Votre campagne a été cloturée avec succes.<br>";
         $content.="Le detail de la campagne ci-dessous.<br>";
         $content.="Intitule : ".$bilans[0]['campagne']."<br>".
-        "Budget: ".$budget." FCFA <br>".
-        "Apport: ".($apportVente+$apportPersonnel)." FCFA <br>".
-        "ACHATS: <br>".
-         "Total_Achats: ". $bilans[0]['totalAchats'].
-         " FCFA <br> "."Total_Vente: ".$bilans[0]['totalVentes'].
-         " FCFA <br>"." QtePoussins: ".$bilans[0]['quantite_achetes'].
-         "<br> PertePoussins: ".$bilans[0]['quantite_perdus'].
-         " <br> RECETTE: <br>".
+        "<b>Budget</b>: ".$budget." FCFA <br>".
+        "<b>Apport</b>: ".($apportVente+$apportPersonnel)." FCFA <br>".
+        "<b>ACHATS</b>: <br>".
+         " Total_Achats: ". $bilans[0]['totalAchats'].
+         " FCFA <br><br/> "."<b>Total_Vente</b>: ".$bilans[0]['totalVentes'].
+         " FCFA <br>"."<b> QtePoussins</b>: ".$bilans[0]['quantite_achetes'].
+         "<br> <b>PertePoussins</b>: ".$bilans[0]['quantite_perdus'].
+         " <br><br/> <b>RECETTE</b>: <br>".
           " Solde: ".$bilans[0]['benefice'].
-          " FCFA <br> Reserve: ". $bilans[0]['reserve'].
-          " FCFA<br>  Partenaire: ".$bilans[0]['partenaire'].
-          " FCFA <br>  Chges Salariales: ".$bilans[0]['charges_salariale'].
-          " FCFA <br>  Observations: ".$bilans[0]['obs'].
-          "<br> Date_debut: ".$startcampagne.
-           "<br> Date_fin".$bilans[0]['updated_at']."<br>";
+          " FCFA <br> <b> Reserve</b>: ". $bilans[0]['reserve'].
+          " FCFA<br>  <b>Partenaire </b>: ".$bilans[0]['partenaire'].
+          " FCFA <br>  <b>Chges Salariales</b>: ".$bilans[0]['charges_salariale'].
+          " FCFA <br>  <b>Observations </b>: ".$bilans[0]['obs'].
+          "<br><br/> <b>Date_debut </b>: ".$startcampagne.
+          "<br/> <b>Durée </b>:".$dureeCampagne. 
+          "<br/> <b>Moyenne massse</b> :".$meanMasse.
+           "<br /> <b>Date_fin </b>:".$bilans[0]['updated_at']."<br>";
 
         //dd($content);
        $mail->send($to_email,$to_name,$subject,$content);

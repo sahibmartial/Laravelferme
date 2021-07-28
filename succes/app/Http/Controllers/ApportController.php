@@ -172,15 +172,19 @@ class ApportController extends Controller
      */
     public function destroy($id)
     {
+        $user=Auth()->user();
+        $folder="ApportRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
          try {
-            Apport::destroy($id);
+            $apport= Apport::destroy($id);
+            $filebackup->backupfile($folder,$filename,$apport);
             return redirect()->route('apports.index')->with('success', 'Apport supprimé avec success.');
          } catch (\Throwable $th) {
              throw $th;
          }
-       
-
-      
+            
     }
 
 

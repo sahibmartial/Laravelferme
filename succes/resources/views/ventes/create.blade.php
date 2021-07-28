@@ -75,13 +75,13 @@ $duredevie=0;
 	
 	<div class="form-group">
 	{{  Form::label('avance', 'Avance: ')  }}
-	<input type="number" name="avance" placeholder="Avance" value="" class="form-control">
+	<input type="number" name="avance" step="any" placeholder="Avance" value="" class="form-control">
 	{!! $errors->first('avance','<span class="error-msg">:message</span>') !!}
 	</div>
 	 
 	 <div class="form-group">
 	 {{  Form::label('impaye', 'Impaye: ')  }}
-	<input type="number" name="impaye" placeholder="Impaye" value="" class="form-control">
+	<input type="number" name="impaye" step="any" placeholder="Impaye" value="" class="form-control">
 	{!! $errors->first('impaye','<span class="error-msg">:message</span>') !!}
 	 </div>
 	<!--
