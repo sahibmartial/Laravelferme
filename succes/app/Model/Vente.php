@@ -107,10 +107,11 @@ class Vente extends Model
 /**
  * get Ventes inmpayés de la campagne en cours 
  */
-  public function ventes_impayes()
+  public function ventes_impayes($id)
   {
      try {
-      $campagne=Campagne::whereStatus('En COURS')->get();
+      $campagne=Campagne::whereId($id)->get();
+     // dd($campagne);
       if (isset($campagne[0]['id'])) {
          $reglement="NOK";
          $resultVentes=Vente::whereCampagne_id($campagne[0]['id'])
@@ -123,10 +124,11 @@ class Vente extends Model
          } else {
            // dd("PAs de ventes non soldées trouvées");
          }*/
+       //  dd($resultVentes);
          return  $resultVentes;
 
       } else {
-         return 'Campagne Introuvable ' ;
+         return 'Campagne Introuvable' ;
       }
       
 
@@ -138,31 +140,32 @@ class Vente extends Model
 /**
  * get Ventes inmpayés de la campagne en cours 
  */
-public function ventes_regler()
+public function ventes_regler($id)
 {
    $reglement="OK";
 
    try {
-      $campagne=Campagne::whereStatus('En COURS')->get();
+      $campagne=Campagne::whereId($id)->get();
 
       if (isset($campagne[0]['id'])) {
 
          $resultVentes=Vente::whereCampagne_id($campagne[0]['id'])
-         ->where('regler',null)
-         ->orWhere('regler','OK')
+//         ->where('regler',null)
+         ->Where('regler','OK')
          ->orderbydesc('id')
-         ->get();
+         ->get();  
 
-         return  $resultVentes;
-
-      } else {
-         return 'Campagne Introuvable ' ;
-      }
-      
+      }else {
+         return 'Campagne Introuvable' ;
+      }   
          
    } catch (\Throwable $th) {
       throw $th;
    }
+
+   //dd($resultVentes);
+
+   return  $resultVentes;
 }
 
 }

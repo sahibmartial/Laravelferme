@@ -23,16 +23,19 @@ class FonctionController extends Controller
 
 
     public function getIdcampagne($campagne){
+     // dd($campagne);
     	$cam= new CampagneController();
        $id=$cam->getCampagneenCours();
-     // dd( $id);
+     //  dd($id);
        for ($i=0; $i <$id->count(); $i++) { 
-     $resultid[]=$id[$i]->id;
-     $resultname[]=$id[$i]->intitule;
+          $resultid[]=$id[$i]->id;
+          $resultname[]=$id[$i]->intitule;
 
-      if($campagne == $id[$i]->intitule){
-         $campagne_id=$id[$i]->id;
-      }
+          if($campagne == $id[$i]->intitule){
+            $campagne_id=$id[$i]->id;
+          }else{
+            $campagne_id="Not Found";
+          }
      }
 
         return $campagne_id;

@@ -10,6 +10,7 @@ use App\Http\Controllers\PoussinController;
 use App\Http\Controllers\PerteController;
 use App\Http\Controllers\AlimentController;
 use App\Http\Controllers\AccessoireController;
+use App\Http\Controllers\BilanController;
 use App\Http\Controllers\FonctionController;
 
 
@@ -45,6 +46,9 @@ class ExampleTest extends TestCase
             'acheteur' => 'Particulier',
             'contact' => '08-43-60-53',
             'events' => 'Party',
+            'avance'=>null,
+            'impaye'=>null,
+            'regler'=>null,
             'obs' => 'ras',
            'created_at' => '2020-10-14 15:34:28',
            'updated_at' => '2020-10-14 16:08:33'
@@ -52,7 +56,7 @@ class ExampleTest extends TestCase
 
         $vente= new VenteController();
         $value=$vente->selectAllSaleForOneCampagne(1);  
-      //  dd($value[0]);
+       // dd($value[0]);
       //  $response = $this->get('/');
             
         $this->assertEquals($result,$value[0]);
@@ -138,18 +142,21 @@ class ExampleTest extends TestCase
             'quantite' => 150,
             'priceUnitaire' => 500,
             'fournisseur' => 'sahib',
+            'phone'=>null,
            // 'contact' => '08-43-60-53',
           //  'events' => 'Party',
             'obs' => 'Testing',
            'created_at' => "2020-10-20 18:04:11",
-           'updated_at' => "2020-10-20 18:04:11"
+           'updated_at' => "2020-10-20 18:04:11",
+           
         ];
-
+        
+       // dump($result);
         $vente= new PoussinController();
         $value=$vente->selectAllheadForOneCampagne(1);  
       //  $response = $this->get('/');
          
-      //  dd($value);
+     //  dd($value);
             
         $this->assertEquals($result,$value[0]);
 
@@ -189,7 +196,8 @@ class ExampleTest extends TestCase
           //  'obs' => '',
            // 'contact' => '08-43-60-53',
           //  'events' => 'Party',
-           'obs' => '',
+           'obs' => null,
+           'suggestion'=>null,
            'duredevie'=>1,
            'year'=>2020,
            'created_at' => "2020-10-15 16:12:20",
@@ -199,7 +207,7 @@ class ExampleTest extends TestCase
         $vente= new PerteController();
         $value=$vente->selectAllLossOfThisCampagne(1);  
       //  $response = $this->get('/');
-        // dd($value[0]);   
+       //  dd($value[0]);   
         $this->assertEquals($result,$value[0]);
 
         //return $vente;
@@ -237,6 +245,7 @@ class ExampleTest extends TestCase
             'quantite' => 3,
             'priceUnitaire' => 10000,
             'fournisseur'=>'sahib', 
+            'contact'=>null,
            'obs' => 'Testing',
            'created_at' => "2020-10-15 19:59:53",
            'updated_at' => "2020-10-15 19:59:53"
@@ -261,9 +270,10 @@ class ExampleTest extends TestCase
     public function testCalculTotalAlimentTest()
     {
         $vente= new AlimentController();
-        $result=$vente->calculateDepenseAlimentofthiscampagne(1);  
+        $result=$vente->calculateDepenseAlimentofthiscampagne(6);  
+     //  dd($result);
       
-       $this->assertEquals(90000, $result);
+       $this->assertEquals(0, $result);
         
     }
 
@@ -340,9 +350,52 @@ class ExampleTest extends TestCase
         $fonc = new FonctionController();
         $result=$fonc->getIdcampagne('campagne7');  
       // dd($result);
-       $this->assertEquals(5, $result);
+       $this->assertEquals("Not Found", $result);
         
     }
+
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testgetBilanTest()
+    {
+      $myvalue=[
+        "id" => 7,
+        "campagne_id" => 5,
+        "campagne" => "campagne7",
+        "startcampagne" => "2021-05-03",
+        "budget" => 542600,
+        "apportVente" => null,
+        "apportPersonnel" => 716100,
+        "totalAchats" => 1278700,
+        "totalVentes" => 1021700,
+        "quantite_achetes" => 400,
+        "quantite_perdus" => 39,
+        "benefice" => -257000,
+        "reserve" => 10000,
+        "partenaire" => 0,
+        "charges_salariale" => 20000,
+        "annee" => 2021,
+        "dureeCampagne" => 142,
+        "meanMasse" => 2.57,
+        "obs" => "campagne7 deficitaire",
+        "created_at" => "2021-09-30 22:45:05",
+        "updated_at" => "2021-09-30 22:45:05",
+
+      ];
+
+      $bilan=new BilanController();
+      $result=$bilan->getSoftbilanOfTheCampgne(7);
+      // dd($myvalue);
+      $this->assertEquals($myvalue, $result);
+
+
+    }
+
+
 
 
 

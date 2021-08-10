@@ -325,14 +325,18 @@ class PerteController extends Controller
    $campagne='';
    $perte= new Perte();
    $resultsPertes=$perte->pertes_campagne_en_cours();
-   if (!empty($resultsPertes)) {
-       $campagne=$resultsPertes[0]['campagne'];
-     //  dd($campagne);
-    foreach ($resultsPertes as $key => $value) {
-    // dd($value);
-     $resultqte[]=$value['quantite'];
-     $resultdate[]=$value['date_die'];
-    }
+   if ($resultsPertes=='Campagne introuvable') {
+    return 'Aucune campagne en cours !';
+   }else {
+      if (isset($resultsPertes[0]['campagne'])) {
+        $campagne=$resultsPertes[0]['campagne'];
+        //  dd($campagne);
+      foreach ($resultsPertes as $key => $value) {
+      // dd($value);
+        $resultqte[]=$value['quantite'];
+        $resultdate[]=$value['date_die'];
+        }
+      } 
    }
  //  dd(   $resultqte,$resultdate);
    return array('campagne'=> $campagne,'qte'=>$resultqte,'dateDie'=> $resultdate);

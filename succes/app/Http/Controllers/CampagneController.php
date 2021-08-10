@@ -196,7 +196,7 @@ class CampagneController extends Controller
       return redirect()->route('campagnes.show',$id);
 
       } catch (\Throwable $th) {
-        return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+        return redirect()->route('errorbd')->with('success',$th->getMessage());
       }
       
     }
@@ -251,7 +251,7 @@ class CampagneController extends Controller
           try {
             $result=DB::table('campagnes')->whereId($id)->get('start');
           } catch (\Throwable $th) {
-            return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+            return redirect()->route('errorbd')->with('success',$th->getMessage());
           }
         
          //Debugbar::stopMeasure('query builder');
@@ -293,7 +293,7 @@ class CampagneController extends Controller
       try {
         $collections=DB::table('campagnes')->whereId($id)->get('start');
       } catch (\Throwable $th) {
-        return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+        return redirect()->route('errorbd')->with('success',$th->getMessage());
       }
          
 
@@ -361,7 +361,7 @@ class CampagneController extends Controller
 
 
      } catch (\Throwable $th) {
-      return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+      return redirect()->route('errorbd')->with('success',$th->getMessage());
      }
      
       //appel bilan 
@@ -494,18 +494,24 @@ class CampagneController extends Controller
             ]
           );
       }else {
-        throw new \Throwable("");
+        throw new \Throwable("RAS");
       }     
       
     } catch (\Throwable $th) {
-      return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+     // dd('redirect route');
+      return redirect()->route('errorbd')->with('success',$th->getMessage());//A revoir 
     }
 
     //send mail cloture campagne
           $bilans=$this->recapBilan($id);//recup info campagne
-
+        // dd(auth()->user()); //current user
+        //send email to user admin
+         $users=DB::table('users')->where('roles','=',"admin")
+         ->get();
          $to_name= auth()->user()['name'];
         $to_email=auth()->user()['email'];
+
+
         $mail= new MailController;
         $subject="Cloture de la ".$bilans[0]['campagne'] ;
         $content="Votre campagne a été cloturée avec succes.<br>";
@@ -529,15 +535,19 @@ class CampagneController extends Controller
           "<br/> <b>Moyenne massse</b> :".$meanMasse.
            "<br /> <b>Date_fin </b>:".$bilans[0]['updated_at']."<br>";
 
-        //dd($content);
-       $mail->send($to_email,$to_name,$subject,$content);
-
+      //  dd($users);
+        foreach ($users as $key => $user) {
+        //  dump($user->email);
+          $mail->send($user->email,$to_name,$subject,$content);
+        }
+        
+       
          // dump("observation: ".$obs);
 
         //  dd("Total achat: ".$totalachats);
 
 
-    return redirect()->route('bilans.index')->with('success', 'Campagne a été cloturée avec sucess, vous recevrez un mail avec le detail de la campagne'); ;
+      return redirect()->route('bilans.index')->with('success', 'Campagne a été cloturée avec sucess, vous recevrez un mail avec le detail de la campagne'); ;
         
     }
 

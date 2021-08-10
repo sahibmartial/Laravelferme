@@ -58,7 +58,9 @@
                     <center>{{ 'qte vendu : '.$resultbilan['resulat_vente']['T_qte']}} </center>
                     <hr>
                     <center><b>{{'Recette: '.$resultbilan['resulat_vente']['T_vente']}}</b> FCFA</center>
-                    <center><b>{{'Encaisse: '.($vente_impaye['Regler'])}}</b> FCFA</center>
+                    <hr>
+                    Recap ventes :
+                    <center><b>{{'En caisse: '.($vente_impaye['Regler'])}}</b> FCFA</center>
                     <center><b>{{'Crédit: '.($vente_impaye['Credit'])}}</b> FCFA</center>
                     <hr>
                     <small>Brut obtenu après déduction apport vente :</small> 

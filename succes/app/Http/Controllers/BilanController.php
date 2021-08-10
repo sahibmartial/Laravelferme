@@ -55,6 +55,7 @@ class BilanController extends Controller
     public function show($id)
     {
         $bilans=Bilan::findOrFail($id);
+     //   dd( $bilans);
          return view('bilans.show', compact('bilans'));
     }
 
@@ -136,15 +137,19 @@ class BilanController extends Controller
    $campagne=$request->campagne;
   //  dd($campagneInfos,$campagneInfos[0]['budget']);
   // dd($campagneInfos->isNotEmpty());
-   if ($campagneInfos->isNotEmpty()) {
+   if ( isset($campagneInfos[0]['id'])) {
   
     $resultbilan=$qtyhead=$priceU=0;
     $infosPoussins=Campagne::find($campagneInfos[0]['id'])->poussins;
    
     $resulat_vente=$vente->calculRecapvente($campagne);
-    $resultat_vente_impaye=$vente->ventes_impayes();
-    $resultat_vente_payes=$vente->ventes_regler();
-   // dd($resultat_vente_payes);
+ //   dd($resulat_vente);
+
+    $resultat_vente_impaye=$vente->ventes_impayes($campagneInfos[0]['id']);
+  //  dd( $resultat_vente_impaye);
+    $resultat_vente_payes=$vente->ventes_regler($campagneInfos[0]['id']);
+   // die;
+  //  dd($resultat_vente_payes);
     $regler=null;  
     if($resultat_vente_payes->isNotEmpty()){
      // dd($resultat_vente_payes[0]);
@@ -156,7 +161,7 @@ class BilanController extends Controller
     }
     if (isset($resultat_vente_impaye['venteimpayes'])) {
      // dd($resultat_vente_impaye['venteimpayes']);
-      $avance=$reste=null;
+      $avance=$reste=0;
       foreach ($resultat_vente_impaye['venteimpayes'] as $key => $venteimpaye) {
         $avance+=$venteimpaye['avance'];
         $reste+=$venteimpaye['impaye'];    
@@ -309,5 +314,17 @@ class BilanController extends Controller
      return $pdf->download($reference.'.pdf'); 
 
    }
+
+
+   /**
+    * get soft bilanof this campagne 
+    */
+
+    public function getSoftbilanOfTheCampgne($id)
+    {
+      $bilans=Bilan::findOrFail($id);
+    //  dd($bilans->getAttributes());
+      return  $bilans->getAttributes();
+    }
     
 }

@@ -169,7 +169,7 @@ class PoussinController extends Controller {
 				 // echo date('d-m-Y', strtotime('+15 days'));
                 //  echo date($now, strtotime('+40 days'));
 
-                   $date_enter_production=date($now, strtotime('+40 days'));
+			     $date_enter_production=date("d-m-Y",strtotime($now.'+40 days'));
 				  //envoi email debut vente
 				  $contentVente="<br> Le ".$date_enter_production.", la ".$campagne." rentre en production.<br> <br>";
                   $contentVente.="Merci de faire le necessaire en contactant tous nos clients. <br>";

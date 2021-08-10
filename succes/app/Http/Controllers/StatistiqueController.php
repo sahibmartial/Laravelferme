@@ -17,7 +17,9 @@ class StatistiqueController extends Controller
      
     $vente= new VenteController();
     $resultsVente=$vente->ventes_campagne_en_cours();  
-    //dd($resultsVente);
+   // dd($resultsVente);
+    
+   //dd($resultsVente['qte']);
      
     $perte= new PerteController();
     $resultsPertes=$perte->pertes_campagne_en_cours();
@@ -37,6 +39,7 @@ class StatistiqueController extends Controller
    $arrayqteperdus=[];
    $arrayqteachetes=[];
     if (!empty($result)) {
+
         foreach ($result as $key => $campagne) {
             $arraycampagne[]=$campagne->campagne;
             $arraybudget[]=$campagne->budget;
@@ -45,29 +48,32 @@ class StatistiqueController extends Controller
             $arrayqteachetes[]=$campagne->quantite_achetes;
             $arrayqteperdus[]=$campagne->quantite_perdus;
            $arraybenefice[]=$campagne->benefice;
+           
+          }
+          
+          $result= array('campagne'=>json_encode($arraycampagne),'budget'=>json_encode($arraybudget),
+          'achats'=>json_encode($arrayachats),'ventes'=>json_encode($arrayventes)
+         ,'poussins'=>json_encode($arrayqteachetes),'pertes'=>json_encode($arrayqteperdus),
+         'benefice'=>json_encode($arraybenefice),'pertes_encours'=>json_encode($resultsPertes['qte']),
+         'campagne_enCours'=>json_encode($resultsPertes['campagne']),
+         'DateDie_enCours'=>json_encode($resultsPertes['dateDie']),
+         'Vente_enCoursQte'=>json_encode($resultsVente['qte']) ,
+         'Vente_enCoursDate'=>json_encode($resultsVente['dateVente']) 
+       );
 
-        }
+       
     }
 
-
-     
+    return view('stats.index',compact('result'));
    /* dd($arraycampagne,$arraybudget,
     $arrayachats,$arrayventes,$arrayqteachetes,
     $arrayqteperdus,$arraybenefice);
     */
-    $result= array('campagne'=>json_encode($arraycampagne),'budget'=>json_encode($arraybudget),
-     'achats'=>json_encode($arrayachats),'ventes'=>json_encode($arrayventes)
-    ,'poussins'=>json_encode($arrayqteachetes),'pertes'=>json_encode($arrayqteperdus),
-    'benefice'=>json_encode($arraybenefice),'pertes_encours'=>json_encode($resultsPertes['qte']),
-    'campagne_enCours'=>json_encode($resultsPertes['campagne']),
-    'DateDie_enCours'=>json_encode($resultsPertes['dateDie']),
-    'Vente_enCoursQte'=>json_encode($resultsVente['qte']) ,
-    'Vente_enCoursDate'=>json_encode($resultsVente['dateVente']) 
-  );
+   
 
  // dd($result);
     
-    return view('stats.index',compact('result'));
+ 
      
    }
 

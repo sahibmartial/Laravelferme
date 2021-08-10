@@ -429,7 +429,7 @@ public function calculRecapvente($request)
     $vente= new Vente();
     $resultsVentes=$vente->ventes_campagne_en_cours();
     
-    if ($resultsVentes->isNotEmpty()) {
+    if ( $resultsVentes !=='Campagne introuvable') {
       // dd($resultsVentes);
         if (isset($resultsVentes[0]['campagne'])) {
             $campagne=$resultsVentes[0]['campagne'];
@@ -439,10 +439,7 @@ public function calculRecapvente($request)
                 $resultdate[]=$value['date'];
                }           
 
-        }else{
-
-            return 'Pas de vente Disponible  ';
-        }  
+        } 
      
     }
    
@@ -450,11 +447,13 @@ public function calculRecapvente($request)
   }
   /**
    * get ventes impayés
+   * futur prendra  id car o peut avoir deux campagnes en cours 
    */
-  public function ventes_impayes()
+  public function ventes_impayes($id)
   {
+     // dd($id);
       $vente = new Vente();
-      $venteimpayes=$vente->ventes_impayes();
+      $venteimpayes=$vente->ventes_impayes($id);
      // dd($venteimpayes);
       return view('ventes.recapVentesImpayes',compact('venteimpayes'));
   }
@@ -463,10 +462,11 @@ public function calculRecapvente($request)
 /**
  * get Ventes inmpayés de la campagne en cours 
 */
-public function ventes_regler()
+public function ventes_regler($id)
  {
+   //  dd($id);
     $vente = new Vente();
-    $ventepayes=$vente->ventes_regler();
+    $ventepayes=$vente->ventes_regler($id);
     return $ventepayes;
    
  }
