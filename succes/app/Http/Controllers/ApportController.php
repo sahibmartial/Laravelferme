@@ -20,11 +20,12 @@ class ApportController extends Controller
     public function index()
     {
       
-        $cam  = new CampagneController();
-      //  dd($cam->apports());
+        $cam  = new Campagne();
+       $id=$cam->getCampagnebyStatus();//status = EN COURS sinon aucun resultat
        // $query = DB::table('apports')->orderBy('id');
       // $campagnes= Apport::all()->sortByDesc('id');
       $apports= Apport::select()
+      ->where('campagne_id',"=",$id)
       ->orderByDesc('id')
        ->simplePaginate(10);
         //dd($campagnes);

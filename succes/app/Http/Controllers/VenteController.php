@@ -429,7 +429,7 @@ public function calculRecapvente($request)
     $vente= new Vente();
     $resultsVentes=$vente->ventes_campagne_en_cours();
     
-    if ($resultsVentes->isNotEmpty()) {
+    if ( $resultsVentes !=='Campagne introuvable') {
       // dd($resultsVentes);
         if (isset($resultsVentes[0]['campagne'])) {
             $campagne=$resultsVentes[0]['campagne'];
@@ -440,10 +440,11 @@ public function calculRecapvente($request)
                }           
 
         }else{
-
             return 'Pas de vente Disponible  ';
         }  
      
+    }else{
+        return 'Aucune campagne en cours !';
     }
    
     return array('campagne'=> $campagne,'qte'=>$resultqte,'dateVente'=> $resultdate);
