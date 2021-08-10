@@ -10,13 +10,15 @@
 @stop
 
 @section('content')
-<div class="alert alert-success">
-	<p>Mes Statistiques en temps réel !!! </p>
- </div> 
- 
+
 @stop
 
 @section('bootstrap')
+@if(count($resul)>0)
+<div class="alert alert-success">
+	<p class="text-center">Mes Statistiques en temps réel !!! </p>
+ </div> 
+ 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="container">
@@ -89,9 +91,17 @@
 
 <script> 
 
-var budget = <?php echo $result['budget']; ?>;
+var budget = <?php 
+if (isset($result['budget'])) {
+  echo $result['budget']; 
+}
+?>;
 
-var campagneB = <?php echo  $result['campagne']; ?>
+var campagneB = <?php
+if (isset($result['campagne'])) {
+  echo  $result['campagne']; 
+}
+ ?>
 
 const datab = {
   labels:campagneB,
@@ -120,8 +130,16 @@ var myChartb = new Chart(
 
 
 <script>
-var campagne = <?php echo $result['campagne']; ?>;
-var ben = <?php echo $result['benefice']; ?>;
+var campagne = <?php
+if (isset( $result['campagne'])) {
+  echo $result['campagne']; 
+}
+?>;
+var ben = <?php
+if (isset($result['benefice'])) {
+  echo $result['benefice'];
+}
+  ?>;
 const config2 = {
   type: 'line',
   data: {
@@ -145,8 +163,16 @@ var myChart2 = new Chart(
 </script>
 
 <script>
-var campagne = <?php echo $result['campagne']; ?>;
-var poussins = <?php echo $result['poussins']; ?>;
+var campagne = <?php
+if (isset($result['campagne'])) {
+  echo $result['campagne'];
+}
+  ?>;
+var poussins = <?php 
+if (isset($result['poussins'])) {
+  echo $result['poussins'];
+}
+ ?>;
 const config3 = {
   type: 'line',
   data: {
@@ -176,9 +202,17 @@ var myChart3 = new Chart(
 
 <script>
 
-    var achat = <?php echo $result['achats']; ?>;
+    var achat = <?php 
+    if (isset($result['achats'])) {
+      echo $result['achats']; 
+    }
+   ?>;
 
-    var campagne2 = <?php echo  $result['campagne']; ?>;
+    var campagne2 = <?php 
+    if (isset($result['campagne'])) {
+      echo  $result['campagne']; 
+    }
+    ?>;
 
     var barChartData = {
 
@@ -237,9 +271,17 @@ var myChart3 = new Chart(
 
 <script>
 
-    var vente = <?php echo $result['ventes']; ?>;
+    var vente = <?php
+    if (isset($result['ventes'])) {
+      echo $result['ventes'];
+    }
+     ?>;
 
-    var campagneV = <?php echo  $result['campagne']; ?>;
+    var campagneV = <?php 
+    if (isset($result['campagne'])) {
+      echo  $result['campagne']; 
+    }
+   ?>;
 
     var barChartData = {
 
@@ -297,9 +339,22 @@ var myChart3 = new Chart(
 
 <!-- mix line and bar -->
  <script>
-var campagneP = <?php echo  $result['campagne']; ?>;
-var qtePouss = <?php echo  $result['poussins']; ?>;
-var qtePerte = <?php echo  $result['pertes']; ?>;
+var campagneP = <?php 
+if (isset( $result['campagne'])) {
+  echo  $result['campagne'];
+}
+ ?>;
+var qtePouss = <?php 
+if (isset( $result['poussins'])) {
+  echo  $result['poussins'];
+}
+
+ ?>;
+var qtePerte = <?php 
+if (isset($result['pertes'])) {
+  echo  $result['pertes'];
+}
+?>;
 var ctx = document.getElementById("mymix").getContext("2d");
 var myMix= new Chart(ctx,{
   type: 'bar',
@@ -324,9 +379,21 @@ var myMix= new Chart(ctx,{
  </script>
 <!--Line  Pertes -->
 <script>
-var campagne = <?php echo  $result['campagne_enCours']; ?>;
-var qteLoss = <?php echo  $result['pertes_encours']; ?>;
-var Datedie = <?php echo  $result['DateDie_enCours']; ?>;
+var campagne = <?php 
+if ( isset($result['campagne_enCours'])) {
+  echo $result['campagne_enCours'];
+}
+?>;
+var qteLoss = <?php
+if (isset($result['pertes_encours'])) {
+  echo  $result['pertes_encours'];
+}
+?>;
+var Datedie = <?php 
+if (isset($result['DateDie_enCours'])) {
+  echo  $result['DateDie_enCours']; 
+}
+?>;
 //console.log(qteLoss);
 //console.log(Datedie );
 if (qteLoss.length > 0) {
@@ -366,9 +433,21 @@ var myMix= new Chart(ctx,{
 <!--Line BAR Vente -->
 <script>
 
-var campagne = <?php echo  $result['campagne_enCours']; ?>;
-var qteVendu = <?php echo  $result['Vente_enCoursQte']; ?>;
-var dateVendu = <?php echo  $result['Vente_enCoursDate']; ?>;
+var campagne = <?php 
+if (isset($result['campagne_enCours'])) {
+  echo  $result['campagne_enCours']; 
+}
+?>;
+var qteVendu = <?php 
+if (isset($result['Vente_enCoursQte'])) {
+  echo  $result['Vente_enCoursQte'];
+}
+ ?>;
+var dateVendu = <?php
+if (isset($result['Vente_enCoursDate'])) {
+  echo  $result['Vente_enCoursDate'];
+}
+?>;
 if ( qteVendu.length >0) {
   var ctx = document.getElementById("myvente").getContext("2d");
 var myMix= new Chart(ctx,{
@@ -405,9 +484,17 @@ var myMix= new Chart(ctx,{
 <!-- dounghut and pie-->
 <script> 
 
-var poussins = <?php echo $result['pertes']; ?>;
+var poussins = <?php 
+if (isset($result['pertes'])) {
+  echo $result['pertes'];
+}
+ ?>;
 
-var campagneP = <?php echo  $result['campagne']; ?>
+var campagneP = <?php 
+if (isset( $result['campagne'])) {
+  echo  $result['campagne'];
+}
+ ?>
 
 const data = {
   labels:campagneP,
@@ -433,6 +520,10 @@ var myChart4 = new Chart(
     config4
   );
 </script>
-
+@else
+<div class="alert alert-success">
+	<p class="text-center"> Aucune Campagne disponible, merci </p>
+ </div> 
+@endif
 
 @stop

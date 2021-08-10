@@ -40,6 +40,8 @@ class Campagne extends Model
   return Campagne::find($campagne_id)->apports->sum('apport');
 // 
  }
+
+
 /**
  * retourne une collection des masses liées  à la campagne 
  */
@@ -120,18 +122,49 @@ class Campagne extends Model
 
     public function getInfosCampagneById($id)
     {
-      return   campagne::whereId($id)->get();
+      try {
+        return   campagne::whereId($id)->get();
+      } catch (\Throwable $th) {
+        throw $th;
+      }
+    
     }
      /**
       * recuper infos campagne a partir de son intitule
       */
      public function getInfosCampagne($name)
      {
-       $infos=Campagne::whereIntitule($name)->get();
-       //dd($infos);
+       try {
+        $infos=Campagne::whereIntitule($name)->get();
+       } catch (\Throwable $th) {
+         throw $th;
+       }
        return $infos;
         
      }
+
+     /**
+      * recuper infos campagne a partir de son intitule
+      */
+      public function getCampagnebyStatus()
+      {
+        try {
+          $infos=Campagne::whereStatus("EN COURS")->get('id');
+
+          if($infos->isNotEmpty()){
+            return $infos[0]['id'];
+          }else{
+            return "Aucune en Campagne en cours";
+          }
+        
+        } catch (\Throwable $th) {
+          throw $th;
+        }
+       
+     
+       
+         
+      }
 
   
 }
