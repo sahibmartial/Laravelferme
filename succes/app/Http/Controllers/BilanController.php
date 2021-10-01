@@ -20,7 +20,7 @@ class BilanController extends Controller
      */
     public function index()
     {
-        $bilans=Bilan::all();
+        $bilans=Bilan::all()->sortByDesc('id');
 
         return view('bilans.index',compact('bilans'));
     }

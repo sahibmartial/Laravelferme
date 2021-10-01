@@ -11,6 +11,7 @@ class ErrorController extends Controller
      */
     public function index()
     {
-        return view('errors.bdInsert');
+        $errors="DB insertion erreur thank you";
+        return view('errors.bdInsert',compact('errors'));
     }
 }

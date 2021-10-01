@@ -109,6 +109,7 @@ class PoussinController extends Controller {
 	   if (empty($campagne_id)) {
 		return back()->with('success', 'Enregistrement  Achat pousssins impossible, '.$request->campagne.' introuvable ,merci');
 	   } else {
+		   $errobd="Error database insert thank you";
 		try {
 			$rules = [
 				// 'campagne_id'=>'bail|required',
@@ -167,18 +168,24 @@ class PoussinController extends Controller {
 				 
 				  //Ajout de 40 jours date arrive pour determine date de debut vente
 				 // echo date('d-m-Y', strtotime('+15 days'));
-                //  echo date($now, strtotime('+40 days'));
+				// echo $now."\n";
+               //   echo date($now, strtotime('+40 days'))."\n";
+				 
 
-			     $date_enter_production=date("d-m-Y",strtotime($now.'+40 days'));
+			     $date_enter_production=date("d-m-Y",strtotime($now.'+45 days'));
+               //  dd($date_enter_production);
+
+				
 				  //envoi email debut vente
 				  $contentVente="<br> Le ".$date_enter_production.", la ".$campagne." rentre en production.<br> <br>";
                   $contentVente.="Merci de faire le necessaire en contactant tous nos clients. <br>";
 				  $contentVente.="Force et Courage à nous, Dieu est au contrôle <br> <br>"; 
 				  $vaccin->alertEmailProduction($campagne,$contentVente);
+				//  die;
 			 
-		 } catch (\Throwable $th) {
+		 } catch (\Throwable $errobd) {
 			// dd($th->getMessage());
-			 return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
+			 return redirect()->route('errorbd')->with('success',$errobd);
 		 }
 		//return redirect()->route('head');
 		return redirect()->route('poussins.index')->with('success', 'Poussins declarés avec success');
