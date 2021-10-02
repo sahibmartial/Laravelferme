@@ -442,7 +442,7 @@ class CampagneController extends Controller
     try {
       if ($totalvente < $totalachats) {
         $obs= $nomcampagne." deficitaire";
-      $ben=$totalvente-$totalachats;
+      $ben=$totalvente-($totalachats+$apportVente);
       DB::table('bilans')->insert([
         'campagne_id' =>$id, 
         'campagne' =>$nomcampagne,
@@ -525,7 +525,7 @@ class CampagneController extends Controller
          " FCFA <br>"."<b> QtePoussins</b>: ".$bilans[0]['quantite_achetes'].
          "<br> <b>PertePoussins</b>: ".$bilans[0]['quantite_perdus'].
          " <br><br/> <b>RECETTE</b>: <br>".
-          " Solde: ".$bilans[0]['benefice'].
+          " Benefice/perte Net: ".$bilans[0]['benefice'].
           " FCFA <br> <b> Reserve</b>: ". $bilans[0]['reserve'].
           " FCFA<br>  <b>Partenaire </b>: ".$bilans[0]['partenaire'].
           " FCFA <br>  <b>Chges Salariales</b>: ".$bilans[0]['charges_salariale'].

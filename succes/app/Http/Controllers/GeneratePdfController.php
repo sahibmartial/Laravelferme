@@ -60,9 +60,9 @@ class GeneratePdfController extends Controller
     $date=$moyPuVente=$reste=null;
     $quantity=$AchatsAliments=$fraisTransport=$T_Depenses=null;
     $pU=$T_Achats=$T_qtPoussins=$loss=$T_Vente=$qteVendu=$AchatsAccessoires=null;
-    //dd($data);
+ //   dd($data);
     $apportVente=$data['detail']['Apport']['ApVente'];
-    $apportPersonnel=$data['detail']['Apport']['ApVente'];
+    $apportPersonnel=$data['detail']['Apport']['ApPerso'];
     $apports=$apportVente+$apportPersonnel;
 
     $budget=$data['detail']['InfosCampagne'][0]['budget'];
@@ -112,6 +112,7 @@ class GeneratePdfController extends Controller
   // dd( $apportVente,$apportPersonnel, $T_Depenses);  
 
     // $date=$data['debut'];
+    $CoutRevient=$data['detail']['Infos']['Cout_Revient'];
      $data2 =  [
             'date' =>$date,
             'campagne'=>$campagne,
@@ -128,6 +129,7 @@ class GeneratePdfController extends Controller
             'T_Transport'=>$fraisTransport,
             'T_DepnsesAchats'=>$T_Depenses,
             'MoyenPU_vente'=>round($moyPuVente,2),
+            'Cout_RevientPoussin'=>$CoutRevient,
             'Qte_Restante'=>$reste,
             'ApportVente'=>$apportVente,
             'ApportPersonnel'=>$apportPersonnel,

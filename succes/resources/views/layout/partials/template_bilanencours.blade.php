@@ -64,7 +64,7 @@
                     <center><b>{{'Crédit: '.($vente_impaye['Credit'])}}</b> FCFA</center>
                     <hr>
                     <small>Brut obtenu après déduction apport vente :</small> 
-                    <center><b>{{'Solde: '.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
+                    <center><b>{{'Recette net: '.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
                      <hr>
                      <small style="color: rgb(214, 122, 127);"><b>Cout de revient Poussin:</b> <b> {{ $resultbilan['Cout_Revient'] }}</b> FCFA
                     </small> 
