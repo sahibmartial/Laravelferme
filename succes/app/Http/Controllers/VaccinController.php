@@ -18,7 +18,7 @@ class VaccinController extends Controller
     {
         $vaccin= new Vaccin();         
         
-      // $vaccin->alertMailingSuivi();
+     //  $vaccin->alertMailingSuivi();
         $resultscampa=$vaccin->infosCampagneStatus("EN COURS");
        //dd($resultscampa);
 
