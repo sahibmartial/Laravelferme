@@ -147,15 +147,15 @@ Route::get('vaccinform', 'VaccinController@create')->name('vaccinform');
 Route::post('vaccinformvalidation', 'VaccinController@store')->name('vaccinformvalidation');
 Route::get('recap_vaccin', 'VaccinController@recapVaccin')->name('recap_vaccin');
 Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')->name('downloadrecap_vaccin');
-Route::get('traitement_listing','VaccinController@traitement_pdf')->name('traitement_listing');
-
+Route::get('traitement_listing/{id}', 'VaccinController@traitement_pdf')->name('traitement_listing');
+Route::get('campagnetreat', 'VaccinController@treatmentCampagneEnCours')->name('campagnetreat');
 /**
  *PDF 
  */
 
  Route::get('pdf_form', 'GeneratePdfController@pdfForm')->name('pdf_form');
  Route::post('pdf_download', 'GeneratePdfController@pdfDownload')->name('pdf_download');
- Route::get('pdf_bilan/{array}','GeneratePdfController@pdfDownloadBilan')->name('pdf_bilan');
+ Route::get('pdf_bilan/{array}', 'GeneratePdfController@pdfDownloadBilan')->name('pdf_bilan');
 Route::get('pdf_vente/{data}', 'GeneratePdfController@downloadRecapVente')->name('pdf_vente');
 Route::get('pdf_accessoires/{data}', 'GeneratePdfController@downloadRecapAccessoires')->name('pdf_accesoires');
 Route::get('pdf_aliments/{data}', 'GeneratePdfController@downloadRecapAliments')->name('pdf_aliments');

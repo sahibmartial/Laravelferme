@@ -36,7 +36,7 @@
 	 |
 	<a href="{{route('recap_vaccin')}}">Recap Vaccin</a>
 	|
-	<a href="{{URL::to('traitement_listing')}}">Traitements</a>
+	<a href="{{URL::to('campagnetreat')}}">Traitements</a>
     </p>
     <p><a href="/OutilsCampagne">Menu Campagne</a></p>
 </div>

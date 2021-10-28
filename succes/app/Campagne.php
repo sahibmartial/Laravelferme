@@ -3,8 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use PhpParser\Node\Stmt\Foreach_;
 
+/**
+ * ClientController short of the class
+ * 
+ * @category CategoryName
+ * @package  PackageName
+ * @author   Original Author <author@example.com>
+ * @license  http://www.php.net/license/3_01.txt  PHP License 3.01
+ * @link     http://pear.php.net/package/PackageName
+ */
 class Campagne extends Model
 {
     protected $fillable=[
@@ -20,151 +28,208 @@ class Campagne extends Model
       'alimentCroisUtil',
       'obs'];
 
-/**
- * retourne une collection des apports dont id identique a campagne
- */
-
+    /**
+     * Apports
+     *
+     * @return $apports
+     */
     public function apports()
     {
-   //  dd("form");
-     return $this->hasMany('App\Model\Apport');
+         //  dd("form");
+         return $this->hasMany('App\Model\Apport');
     } 
-   /**
-    * apports est une collection du coup j'applique les methods utiles pour faire la somme
-    * des apports de la campagne à partir de l'id
-    *calcule la somme des apports e parcourant la collection
-    */  
- public function sumApportsOfcampagne($campagne_id)
- {
- 	
-  return Campagne::find($campagne_id)->apports->sum('apport');
-// 
- }
-
-
-/**
- * retourne une collection des masses liées  à la campagne 
- */
- public function masse()
+       
+    /**
+     * SumApportsOfcampagne
+     *
+     * @param  mixed $campagne_id
+     * 
+     * @return $apport
+     */
+    public function sumApportsOfcampagne($campagne_id)
     {
-   //  dd("form");
-     return $this->hasMany('App\Model\Masse');
+         return Campagne::find($campagne_id)->apports->sum('apport');
+
+    }
+
+
+   
+    /**
+     * Masse of this campagne
+     *
+     * @return void
+     */
+    public function masse()
+    {
+
+         return $this->hasMany('App\Model\Masse');
     } 
-/**
- * Applique la fonction average pour avoir la moyenne des mean_masse(champ de otre table masse)
- */
- public function meanMasse($id_campagne)
- {
-  return Campagne::find($id_campagne)->masse->avg('mean_masse');
- }
-
- public  function getDureeCampagne($id)
- {
-  $duree=0;
-   try {
-    $result=Campagne::whereId($id)->get('duree');
-    if ($result->isNotEmpty()) {
-      foreach ($result as $key => $value) {
-        $duree=$value['duree'];
-      }
-
-    } else {
-      return "Aucun resulat trouve pour cet Id:".$id;
+   
+    /**
+     * MeanMasse
+     *
+     * @param  mixed $id_campagne
+     * 
+     * @return $meanmasse
+     */
+    public function meanMasse($id_campagne)
+    {
+        return Campagne::find($id_campagne)->masse->avg('mean_masse');
     }
     
+    /**
+     * GetDureeCampagne by id
+     *
+     * @param  mixed $id
+     * 
+     * @return void
+     */
+    public  function getDureeCampagne($id)
+    {
+        $duree=0;
+        try {
+             $result=Campagne::whereId($id)->get('duree');
+            if ($result->isNotEmpty()) {
+                foreach ($result as $key => $value) {
+                    $duree=$value['duree'];
+                }
+
+            } else {
+                 return "Aucun resulat trouve pour cet Id:".$id;
+            }
     
-   } catch (\Throwable $th) {
-     throw $th;
-   }
+    
+        } catch (\Throwable $th) {
+             return 'campagne introuvable : '.$id;
+        }
   
-   return $duree;
- }
+        return $duree;
+    }
 
-/**
- * retourne une collection
- */
-   public function bilan()
+   
+    /**
+     * Bilan get of this campagne
+     *
+     * @return void
+     */
+    public function bilan()
     {
-   //  dd("form");
-     return $this->hasOne('App\Model\Bilan') ;
+  
+          return $this->hasOne('App\Model\Bilan');
 
     }
 
-
+    
+    /**
+     * GetApport of this campagne
+     *
+     * @param  mixed $campagne_id
+     * 
+     * @return $array
+     */
     public function getApport($campagne_id)
-  {
-  
-  return Campagne::find($campagne_id)->apports->all();
- 
-  }
-
-
-  public function vaccin()
     {
-   //  dd("form");
-     return $this->hasMany('App\Model\Vaccin') ;
-
+  
+         return Campagne::find($campagne_id)->apports->all();
+  
     }
 
+    
+    /**
+     * Vaccin of this campagne
+     *
+     * @return void
+     */
+    public function vaccin()
+    {
+  
+            return $this->hasMany('App\Model\Vaccin');
+    }
+    
+    /**
+     * Poussins of this campagne
+     *
+     * @return $collection
+     */
     public function poussins()
     {
-   //  dd("form");
-     return $this->hasMany('App\Model\Poussin') ;
+
+          return $this->hasMany('App\Model\Poussin');
 
     }
-
+    
+    /**
+     * Transport of this campagne
+     *
+     * @return $collection
+     */
     public function transport()
     {
-   //  dd("form");
-     return $this->hasMany('App\Model\Transport') ;
+  
+        return $this->hasMany('App\Model\Transport');
 
     }
-
+    
+    /**
+     * GetInfosCampagneById 
+     *
+     * @param  mixed $id
+     * 
+     * @return $collection
+     */
     public function getInfosCampagneById($id)
     {
-      try {
-        return   campagne::whereId($id)->get();
-      } catch (\Throwable $th) {
-        throw $th;
-      }
-    
-    }
-     /**
-      * recuper infos campagne a partir de son intitule
-      */
-     public function getInfosCampagne($name)
-     {
-       try {
-        $infos=Campagne::whereIntitule($name)->get();
-       } catch (\Throwable $th) {
-         throw $th;
-       }
-       return $infos;
-        
-     }
-
-     /**
-      * recuper infos campagne a partir de son intitule
-      */
-      public function getCampagnebyStatus()
-      {
         try {
-          $infos=Campagne::whereStatus("EN COURS")->get('id');
+            return campagne::whereId($id)->get();
+        } catch (\Throwable $th) {
+            return "campagne not found by id : ".$id;
+        }
+     
+    }
+         
+     /**
+      * GetInfosCampagne
+      *
+      * @param  mixed $name
 
-          if($infos->isNotEmpty()){
-            return $infos[0]['id'];
-          }else{
-            return "Aucune en Campagne en cours";
-          }
+      * @return $collection
+      */
+    public function getInfosCampagne($name)
+    {
+        try {
+            $infos=Campagne::whereIntitule($name)->get();
+        } catch (\Throwable $th) {
+            return "campagne not found by name : ".$name;
+        }
+         return $infos;
+        
+    }
+
+         
+      /**
+       * GetCampagnebyStatus
+       *
+       * @return $collection
+       */
+    public function getCampagnebyStatus()
+    {
+        try {
+            $infos=Campagne::whereStatus("EN COURS")->get('id');
+
+            if ($infos->isNotEmpty()) {
+                return $infos[0]['id'];
+            } else {
+                return "Aucune en Campagne en cours";
+            }
         
         } catch (\Throwable $th) {
-          throw $th;
+            return "Statut not found";
         }
        
      
        
          
-      }
+    }
 
   
 }
