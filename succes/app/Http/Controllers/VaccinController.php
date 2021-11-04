@@ -286,7 +286,7 @@ class VaccinController extends Controller
     }
    
     /**
-     * Pdf suivi des traitement
+     * Generation Pdf suivi des traitements pour chaque campagne
      * 
      * @return $response
      */
@@ -307,7 +307,7 @@ class VaccinController extends Controller
             $datepoussins = new Carbon($datearrivePousin[0]['date_achat']);
             $date_vente=$datepoussins->add(45, 'day');
 
-            $production=array('Campagne'=>$campagnes[0]['intitule'],'Date'=>date_format( $date_vente, 'Y-m-d'), 'Actions'=>'Démarrage des ventes ');
+            $production=array('Campagne'=>$campagnes[0]['intitule'],'Date'=>date_format( $date_vente, 'd-m-Y'), 'Actions'=>'Démarrage des ventes ');
             $traitements['production']=$production;
 
             //Step Traitements
@@ -319,194 +319,194 @@ class VaccinController extends Controller
                 $day='Jour'.$value;
                 switch ( $value) {
                     case ($value==1):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'), 'Actions'=>' Pulverisations quotidien tous les 3 jours | Au sucré /Mixtral /BetaSpro-C');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'), 'Actions'=>' Pulverisations quotidien tous les 3 jours | Au sucré /Mixtral /BetaSpro-C');
                         $traitements['traitement'][]=$traitement;   
                         break;
                     case ($value==2):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
                         $traitements['traitement'][]=$traitement;
                         break;
                     case ($value==3):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
                         $traitements['traitement'][]=$traitement;
                         break;
                     
                     case  ($value==4):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==5):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>'Vaccin : 1er vaccin HB1 |  1er vaccin H120  | SuperVitassol :  Panthéryl / Imuneo');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'Vaccin : 1er vaccin HB1 |  1er vaccin H120  | SuperVitassol :  Panthéryl / Imuneo');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==6):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Supervitassol / Panthéryl / Imuneo');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Supervitassol / Panthéryl / Imuneo');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==7):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
                     case ($value==8):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==9):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' VITAMINES : AmineTotal / Supervitassol');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' VITAMINES : AmineTotal / Supervitassol');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==10):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Vaccin: 1er vaccin de GUMBHORO | VITAMINES : AmineTotal / Vitaminolyte Super');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Vaccin: 1er vaccin de GUMBHORO | VITAMINES : AmineTotal / Vitaminolyte Super');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==11):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==12):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==13):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==14):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case  ($value==15):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==16):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>' Eau simple');
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>' Eau simple');
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==17):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==18):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Vaccin :2ième rappel vaccin  GUMBHORO");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Vaccin :2ième rappel vaccin  GUMBHORO");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==19):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"VITAMINES: Amin'Total / Colivit AM+ / Vitamino / Vitaminolyte super");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==20):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==21):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Phase de Transition Alimentaire:3/4 Aliment de démarrage + 1/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Phase de Transition Alimentaire:3/4 Aliment de démarrage + 1/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==22):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Phase de Transition Alimentaire:1/2 Aliment de démarrage + 1/2 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Phase de Transition Alimentaire:1/2 Aliment de démarrage + 1/2 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==23):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Phase de Transition Alimentaire:1/4 Aliment de démarrage + 3/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Phase de Transition Alimentaire:1/4 Aliment de démarrage + 3/4 Aliment croissance | Anticoccidiens: Vetacox /Anticox");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==24):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Anticoccidiens: Vetacox / Anticox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Anticoccidiens: Vetacox / Anticox");
                         $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==25):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Anticoccidiens: Vetacox / Anticox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Anticoccidiens: Vetacox / Anticox");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==26):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Vitamines : Amin'Total");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Vitamines : Amin'Total");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==27):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Vaccin: 2ième rappel vaccin HB1 | 2ième rappel vaccin H120 | Vitamines: Amin'Total");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Vaccin: 2ième rappel vaccin HB1 | 2ième rappel vaccin H120 | Vitamines: Amin'Total");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==28):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==29):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>" Vaccin: 3ième rappel vaccin GUMBORHO: HIPRAGUMBORO GM97 / CEVAC IBDL /AVI IBD PLUS / NOBILIS 228E");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>" Vaccin: 3ième rappel vaccin GUMBORHO: HIPRAGUMBORO GM97 / CEVAC IBDL /AVI IBD PLUS / NOBILIS 228E");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==30):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==31):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==32):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==33):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==34):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Maladies respiratoires: Vental /Phytocuff/ Enrosol / Tylodox");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==35):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Vermifuges: Sulfate de piperazine /levimasol /polystrongle");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==36):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                          $traitements['traitement'][]=$traitement;
                         break;
 
                     case ($value==37):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                          $traitements['traitement'][]=$traitement;
                         break;
                     
                     case ($value==38):
-                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Eau simple");
+                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                           $traitements['traitement'][]=$traitement;
                          break;
 
                     case ($value==39):
-                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'Y-m-d'),'Actions'=>"Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer");
+                        $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Vitamine: Amin'Total / Colivit AM+ / Vitamino /Lobamin layer");
                          $traitements['traitement'][]=$traitement;
                         break;
 
