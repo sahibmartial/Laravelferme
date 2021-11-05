@@ -67,6 +67,7 @@ class Vaccin extends Model
         if (!empty($date_arrivePoussins)) {
         
           foreach ( $date_arrivePoussins as $key => $camp) {
+            
 
             if ($campagne[0]['id'] == $camp["campagne_id"]) {
           //    dump( $camp);

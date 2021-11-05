@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Transport;
 use App\Http\Controllers\CampagneController;
-class TransportController extends Controller
+use App\Http\Classe\TransportAction;
+class TransportController extends Controller implements TransportAction
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +17,8 @@ class TransportController extends Controller
      */
     public function index()
     {
-       // $transports=Transport::all();
-         try {
+        // $transports=Transport::all();
+        try {
             $transports= DB::table('campagnes')
             ->join('transports', function ($join) {
                 $join->on('transports.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
@@ -25,14 +26,39 @@ class TransportController extends Controller
             ->orderByDesc('transports.id')
             ->SimplePaginate(10);
     
-          //  dd($transports);
+            //  dd($transports);
     
-            return view('transports.index',compact('transports'));
+            return view('transports.index', compact('transports'));
              
-         } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
              throw $th;
-         }
+        }
         
+    }
+    
+    /**
+     * SearchTransport
+     *
+     * @return $result
+     */
+    public function searchTransport() 
+    {   
+        $_REQUEST['searchcampagne'];
+        try {
+            $transports= DB::table('campagnes')
+            ->join('transports', function ($join) {
+                $join->on('transports.campagne_id', '=', 'campagnes.id')->whereIntitule(['intitule'=>$_REQUEST['searchcampagne']]);
+            })
+            ->orderByDesc('transports.id')
+            ->SimplePaginate(10);
+    
+            return view('transports.index', compact('transports'));
+             
+        } catch (\Throwable $th) {
+             return "Campagne not found : ".$_REQUEST['searchcampagne'];
+        }
+        return view('transports.index', compact('transports'));
+
     }
 
     /**

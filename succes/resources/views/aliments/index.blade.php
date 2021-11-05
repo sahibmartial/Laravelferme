@@ -5,6 +5,18 @@
 
 @section('content')
 <div class="text-center mt-4">
+    <div class="text-right mb-2">
+	 
+        <form  name="myForm" action="{{route('searchaliment')}}" onsubmit="return validateForm()" method="post">
+            @csrf
+		     <p>Rechercher aliment  par campagne </p>
+			 
+			<input type="text" name="searchcampagne"   id="searchcampagne" placeholder="Search">
+              
+		     <input type="submit" value="Recherchez">
+
+        </form>
+   </div>
 	
 	<ul>
 	@if($aliments->count()>0)
@@ -32,4 +44,17 @@
 </div>
 
 @stop
+<script>
+	function validateForm() 
+	{
+        let x = document.forms["myForm"]["searchcampagne"].value;
+        if (x=="" ) {
+           alert("Champ ne peut être vide, merci de selectionner une campagne.");
+           return false;
+        } else {
+          
+          console.log(x)
+        }
+    } 
+ </script>
 

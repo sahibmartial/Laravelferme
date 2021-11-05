@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Aliment;
 use App\Http\Controllers\CampagneController;
-class AlimentController extends Controller
+use App\Http\Classe\AlimentAction;
+class AlimentController extends Controller  implements AlimentAction
 {
     /**
      * Display a listing of the resource.
@@ -18,19 +19,43 @@ class AlimentController extends Controller
         // dd('here');
          //$aliments=Aliment::all();
 
-         try {
+        try {
             $aliments= DB::table('campagnes')
-            ->join('aliments', function ($join) {
-                $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-            })
-            ->orderByDesc('aliments.id')
-            ->SimplePaginate(10);
-         } catch (\Throwable $th) {
-             throw $th;
-         }
+                    ->join('aliments', function ($join) {
+                        $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+                        } 
+                    )
+                    ->orderByDesc('aliments.id')
+                    ->SimplePaginate(10);
+        } catch (\Throwable $th) {
+            throw $th; 
+        }
         
 
-         return view('aliments.index',compact('aliments'));
+         return view('aliments.index', compact('aliments'));
+    }
+    
+    /**
+     * SearchAliment
+     *
+     * @return $result
+     */
+    public function searchAliment()
+    {
+        $_REQUEST['searchcampagne'];
+        try {
+            $aliments= DB::table('campagnes')
+                ->join('aliments', function ($join) {
+                    $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereIntitule(['intitule'=>$_REQUEST['searchcampagne']]); 
+                    }
+                )   
+            ->orderByDesc('aliments.id')  
+            ->SimplePaginate(10);
+             
+        } catch (\Throwable $th) {
+            return 'Campagne introuvable: '. $_REQUEST['searchcampagne'];
+        } 
+        return view('aliments.index', compact('aliments'));
     }
 
     /**
@@ -50,13 +75,14 @@ class AlimentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * 
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $campagne_id=0;
         $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
          $rules=[
         //'campagne_id'=>'bail|required',   
@@ -67,23 +93,27 @@ class AlimentController extends Controller
          'fournisseur'=>'required|min:4'
          //'obs'=>'required|min:3'
          ];
-        $this->validate($request,$rules);
-          try {
-            Aliment::create([
-                'campagne_id'=>$campagne_id,
-                'date_achat'=>$request->date_achat,
-                'campagne'=>Str::lower($request->campagne),
-               'libelle'=>$request->libelle,
-                'quantite'=>$request->quantite,
-                'priceUnitaire'=>$request->priceUnitaire,
-                'fournisseur'=>$request->fournisseur,
-                'obs'=>$request->obs]);
-    
+         $this->validate($request, $rules);
+         try 
+           {
+                Aliment::create(
+                    [
+                     'campagne_id'=>$campagne_id,
+                     'date_achat'=>$request->date_achat,
+                     'campagne'=>Str::lower($request->campagne),
+                     'libelle'=>$request->libelle,
+                      'quantite'=>$request->quantite,
+                     'priceUnitaire'=>$request->priceUnitaire,
+                     'fournisseur'=>$request->fournisseur,
+                     'obs'=>$request->obs
+                    ]
+                );
+        
           
-            return redirect()->route('campaliments');   
-          } catch (\Throwable $th) {
+               return redirect()->route('campaliments');   
+         } catch (\Throwable $th) {
               throw $th;
-          }
+         }
           
     }
 

@@ -47,37 +47,53 @@ Route::get('/capital
     return view('campagnes.comptable');
 });
 //compte
-Route::get('modifpasswd','PasswordController@getFormModifierPassword')->name('modifpasswd');
-Route::post('updatepasswd','PasswordController@modifier_password')->name('updatepasswd');
-Route::post('passwdoublie','PasswordController@motdePasseOublie')->name('passwdoublie');
+Route::get('modifpasswd', 'PasswordController@getFormModifierPassword')
+->name('modifpasswd');
+Route::post('updatepasswd', 'PasswordController@modifier_password')
+->name('updatepasswd');
+Route::post('passwdoublie', 'PasswordController@motdePasseOublie')
+->name('passwdoublie');
 
 
 
 //sendmail
-Route::get('sendbasicemail','MailController@basic_email');
-Route::get('sendhtmlemail','MailController@html_email');
-Route::get('sendattachmentemail','MailController@attachment_email');
+Route::get('sendbasicemail', 'MailController@basic_email');
+Route::get('sendhtmlemail', 'MailController@html_email');
+Route::get('sendattachmentemail', 'MailController@attachment_email');
 
 //accessoires
-Route::get("get_all_accesoires","AccessoireController@allAccessoires")->name('get_all_accesoires');
-Route::post("show_all_accesoires","AccessoireController@showallaccesoires")->name('show_all_accesoires');
+Route::get("get_all_accesoires", "AccessoireController@allAccessoires")
+->name('get_all_accesoires');
+Route::post("show_all_accesoires", "AccessoireController@showallaccesoires")
+->name('show_all_accesoires');
 
-Route::get("get_all_transports","TransportController@allTransports")->name('get_all_transports');
-Route::post("show_all_frais","TransportController@showallTransports")->name('show_all_frais');
+Route::get("get_all_transports", "TransportController@allTransports")
+->name('get_all_transports');
+Route::post("show_all_frais", "TransportController@showallTransports")
+->name('show_all_frais');
 
-Route::get("addmoreaccessoire","AccessoireController@addMore")->name('addmoreaccessoires');
-Route::post("addmoreaccessoire","AccessoireController@addMorePost")->name('addmorePostaccess');
+Route::get("addmoreaccessoire", "AccessoireController@addMore")
+->name('addmoreaccessoires');
+Route::post("addmoreaccessoire", "AccessoireController@addMorePost")
+->name('addmorePostaccess');
 Route::get('/listingaccessoireonecampagne', function () {
     return view('shared.accessoiresonecampagne');
 });
-Route::get('caccessoires', 'AccessoireController@index')->name('caccessoires');
+Route::get('caccessoires', 'AccessoireController@index')
+->name('caccessoires');
+Route::post('searchaccessoires', 'AccessoireController@searchAccessoires')
+->name('searchaccessoires');
 
 //aliments
-Route::get("getallAliments","AlimentController@getAllAliments")->name('getallAliments');
-Route::post("show_all_Aliments","AlimentController@showallAliments")->name('show_all_Aliments');
+Route::get("getallAliments", "AlimentController@getAllAliments")
+->name('getallAliments');
+Route::post("show_all_Aliments", "AlimentController@showallAliments")
+->name('show_all_Aliments');
 
-Route::get("addmore","AlimentAddMoreController@addMore")->name('addmorealiments');
-Route::post("addmore","AlimentAddMoreController@addMorePost")->name('addmorePost');
+Route::get("addmore", "AlimentAddMoreController@addMore")
+->name('addmorealiments');
+Route::post("addmore", "AlimentAddMoreController@addMorePost")
+->name('addmorePost');
 
 Route::get('/listerallaliments', function () {
     return view('aliments.allalimentforthiscampagne');
@@ -85,13 +101,17 @@ Route::get('/listerallaliments', function () {
 
 Route::get('campaliments', 'AlimentController@index')->name('campaliments');
 
+Route::post('searchaliment', 'AlimentController@searchAliment')
+->name('searchaliment');
 //Transports
 
 Route::get('/listerallfrais', function () {
-    return view('transports.allfraisforthiscampagne');
-});
+      return view('transports.allfraisforthiscampagne');
+    });
 Route::get('transport', 'TransportController@index')->name('transport');
 //Route::post('cloturecampagne', 'CampagneController@clotureCampagne')->name('cloturecampagne');
+Route::post('searchtransport', 'TransportController@searchTransport')
+->name('searchtransport');
 
 //Poussins
 Route::get('head', 'PoussinController@index')->name('head');
@@ -107,16 +127,22 @@ Route::get('/cloturer', 'CampagneController@cloturerCampagne')->name('cloturer')
 *pertes
 */
 
-Route::get("getallAll_losing","PerteController@getAll_losing")->name('getallAll_losing');
-Route::post("show_all_losing","PerteController@showAll_losing")->name('show_all_losing');
+Route::get("getallAll_losing", "PerteController@getAll_losing")
+->name('getallAll_losing');
+Route::post("show_all_losing", "PerteController@showAll_losing")
+->name('show_all_losing');
  /*
  *Bilan
  */
 Route::get('/bilan', 'BilanController@index')->name('bilan');
-Route::get('/bilan_achats', 'BilanController@bilan_achats_campagne_en_cours')->name('bilan_achats');
-Route::post('get_billan_achats_enCours','BilanController@getBilan_achats_campagne_en_cours')->name('get_billan_achats_enCours');
-Route::get('get_billandetaille','BilanController@getBilan_detaille')->name('get_billandetaille');
-Route::post('download_billandetaille','BilanController@downloadBilan_detaille')->name('download_billandetaille');
+Route::get('/bilan_achats', 'BilanController@bilan_achats_campagne_en_cours')
+->name('bilan_achats');
+Route::post('get_billan_achats_enCours', 'BilanController@getBilan_achats_campagne_en_cours')
+->name('get_billan_achats_enCours');
+Route::get('get_billandetaille', 'BilanController@getBilan_detaille')
+->name('get_billandetaille');
+Route::post('download_billandetaille', 'BilanController@downloadBilan_detaille')
+->name('download_billandetaille');
 
 /**
  * Statistique

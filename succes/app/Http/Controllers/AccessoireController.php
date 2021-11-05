@@ -6,10 +6,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Model\Accessoire;
- use App\Http\Controllers\CampagneController;
- 
+use App\Http\Controllers\CampagneController;
+use App\Http\Classe\AccessoireAction;
 
-class AccessoireController extends Controller
+class AccessoireController extends Controller implements AccessoireAction
 {
     /**
      * Display a listing of the resource.
@@ -32,6 +32,32 @@ class AccessoireController extends Controller
        }
        //dd($accessoires);
         return view('accessoires.index', compact('accessoires'));
+    }
+    
+    /**
+     * searchAccessoires
+     *
+     * @param  mixed $campagne
+     * @return $results
+     */
+    public function searchAccessoires()
+    {
+        //dd($_REQUEST['searchcampagne']);
+        try 
+            {
+                $accessoires= DB::table('campagnes')
+              
+                    ->join('accessoires', function ($join) {
+                       $join->on('accessoires.campagne', '=', 'campagnes.intitule')->whereIntitule(['intitule'=>$_REQUEST['searchcampagne']]);
+                    }
+                )
+                ->orderByDesc('accessoires.id')
+                ->SimplePaginate(5);
+            } catch (\Throwable $th) {
+               throw $th;
+            }
+            return view('accessoires.index', compact('accessoires'));
+          //  dd($accessoires);
     }
 
     /**
