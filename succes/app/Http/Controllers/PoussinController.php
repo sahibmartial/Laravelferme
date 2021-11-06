@@ -11,66 +11,60 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+/**
+ * ClientController short of the class
+ * 
+ * @category CategoryName
+ * @package  PackageName
+ * @author   Original Author <author@example.com>
+ * @license  http://www.php.net/license/3_01.txt  PHP License 3.01
+ * @link     http://pear.php.net/package/PackageName
+ */
+class PoussinController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        // $arraypoussins = array();
+        // dd('poussins');
+        //  $poussins= Poussin::all();
+        // dump($poussins);
+        // $poussins= Poussin::simplePaginate(1);
+        // dd($poussins);
+        $poussins = DB::table('campagnes')
+            ->join('poussins', function ($join) {
+                $join->on('poussins.campagne_id', '=', 'campagnes.id')->whereStatus(['status' => 'EN COURS']);
+            })
+            ->orderByDesc('poussins.id')
+            ->SimplePaginate(2);
+            // dd($poussins);
+           //dump($poussins);
+          // dump($arraypoussins[0]);
+         return view('poussins.index', compact('poussins'));
+    }
 
-class PoussinController extends Controller {
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //dd('poussins');
+         return view('poussins.create');
+    }
 
-    
-
-     //$test = new Poussin();
-
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index() {
-		// $arraypoussins = array();
-		// dd('poussins');
-		//  $poussins= Poussin::all();
-		// dump($poussins);
-		// $poussins= Poussin::simplePaginate(1);
-		// dd($poussins);
-		$poussins = DB::table('campagnes')
-			->join('poussins', function ($join) {
-				$join->on('poussins.campagne_id', '=', 'campagnes.id')->whereStatus(['status' => 'EN COURS']);
-			})
-			->orderByDesc('poussins.id')
-			->SimplePaginate(2);
-		// dd($poussins);
-		///dump($poussins);
-		// dump($arraypoussins[0]);
-
-		/*foreach ($arraypoussins as $key => $value) {
-		echo $value->campagne."\n";
-		}*/
-
-		/*for ($i=0; $i <count($poussins) ; $i++) {
-		$arraypoussins[]=$poussins[$i];
-		}*/
-
-		//dd($poussins[0]->id);
-		// $poussins=$poussins[0];
-
-		//$poussins= Poussin::whereCampagne_id();
-		return view('poussins.index', compact('poussins'));
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create() {
-		//dd('poussins');
-		return view('poussins.create');
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @return \Illuminate\Http\Response
-	 */
+    /**
+     *  Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * 
+     * @return \Illuminate\Http\Response 
+     */
     public function store(Request $request) 
     {
         $campagne_id = 0;
@@ -135,7 +129,7 @@ class PoussinController extends Controller {
                     ]
                 );
 
-                dd("campagne upde and vaccin create");
+                //dd("campagne upde and vaccin create");
                 $content="Nous sommes le ".$now.", jour 1 de la ".$campagne."<br> <br>";
                 $content.="A) <b> Preventions sanitaire </b>:<br/>";
                 $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>"; 
@@ -167,169 +161,182 @@ class PoussinController extends Controller {
         
     }
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id) {
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id) 
+    {
 
-		try {
-			$lists = Poussin::findOrFail($id);
-		return view('poussins.show', compact('lists'));
-			
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-		
+        try {
+            $lists = Poussin::findOrFail($id);
+ 
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        return view('poussins.show', compact('lists'));
+    }
 
-	}
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id) {
+        try {
+            $poussin = Poussin::findOrFail($id);
+           
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        return view('poussins.edit', compact('poussin'));
+    }
 
-		try {
-			$poussin = Poussin::findOrFail($id);
-		return view('poussins.edit', compact('poussin'));
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-		
-	}
+     
+    /**
+     * Update
+     *
+     * @param  mixed $request
+     * 
+     * @param  mixed $id
+     * 
+     * @return void
+     */
+    public function update(Request $request, $id) 
+    {
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function update(Request $request, $id) {
-		
+        $rules = [
+          'campagne_id'   => 'bail|required',
+          'campagne'      => 'bail|required|min:9',
+          'quantite'      => 'bail|required',
+          'priceUnitaire' => 'bail|required'
+          //  'fournisseur'=>'required|min:4',
+         //  'obs'=>'required|min:3'
+        ];
+        $this->validate($request, $rules);
+        try {
+            $poussin = Poussin::findOrFail($id);
+            $poussin->update(
+                [
+                'campagne_id'   => $request->campagne_id,
+                'date_achat'    => $request->date_achat,
+                'campagne'      => Str::lower($request->campagne),
+                'quantite'      => $request->quantite,
+                'priceUnitaire' => $request->priceUnitaire,
+                'fournisseur'   => $request->fournisseur,
+                'obs'           => $request->obs
+                ]
+            );
+            return redirect()->route('poussins.show', $id);
 
-		$rules = [
-			'campagne_id'   => 'bail|required',
-			'campagne'      => 'bail|required|min:9',
-			'quantite'      => 'bail|required',
-			'priceUnitaire' => 'bail|required'
-			//  'fournisseur'=>'required|min:4',
-			//  'obs'=>'required|min:3'
-		];
-		$this->validate($request, $rules);
-		try {
-			$poussin = Poussin::findOrFail($id);
-			$poussin->update([
-				'campagne_id'   => $request->campagne_id,
-				'date_achat'    => $request->date_achat,
-				'campagne'      => Str::lower($request->campagne),
-				'quantite'      => $request->quantite,
-				'priceUnitaire' => $request->priceUnitaire,
-				'fournisseur'   => $request->fournisseur,
-				'obs'           => $request->obs
-			]);
-			return redirect()->route('poussins.show', $id);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
-		} catch (\Throwable $th) {
-			throw $th;
-		}
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id) 
+    {
 
-		
+        try {
+            $user=Auth()->user();
+            $folder="PoussinRemove/";
+            $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
+            $filename=$name."."."txt";
+            $filebackup= new BackUpFermeController();
+            $value=Poussin::findorfail($id);
+            $filebackup->backupfile($folder, $filename, $value);
 
-		
-	}
+            Poussin::destroy($id);
+            
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        return redirect()->route('head');
+    }
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function destroy($id) {
+       
+    /**
+     * SelectAllheadForOneCampagne
+     *
+     * @param  mixed $id
+     * 
+     * @return void
+     */
+    public function selectAllheadForOneCampagne($id) 
+    {
+        $poussin= new Poussin();
+    
+        $result=$poussin-> selectAllheadForOneCampagne($id);
 
-		try {
-		$user=Auth()->user();
-		$folder="PoussinRemove/";
-        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
-        $filename=$name."."."txt";
-        $filebackup= new BackUpFermeController();
-		$value=Poussin::findorfail($id);
-		$filebackup->backupfile($folder,$filename,$value);
+         return $result;
+    }
 
-			Poussin::destroy($id);
-		    return redirect()->route('head');
-		} catch (\Throwable $th) {
-			throw $th;
-		}
-		
-	}
 
-	/**
-	 *
-	 */
-
-	public function selectAllheadForOneCampagne($id) {
-		$poussin= new Poussin();
-      //  dd($id);
-		$result=$poussin-> selectAllheadForOneCampagne($id);
-	//	 dd($result);
-		return $result;
-	}
-
-	/**
-	 *
-	 */
-
-	public function calculateAchatHeadOfThisCampagne($id) {
-
-		$poussin= new Poussin();
-
-		$som =$poussin->calculateAchatHeadOfThisCampagne($id);
-
-		
-		return $som;
-	}
-
-	/**
-	 *
-	 */
-
-	public function selectheadForOneCampagne($id) 
-	{
-		 $poussin= new Poussin();
-		 $result = $poussin->selectheadForOneCampagne($id);	
-		 return $result;	
-
-	}
-
-    public function getQte_Priceof_AchatsPoussins_ForThisCampagne($id) {
+    public function calculateAchatHeadOfThisCampagne($id) 
+    {
 
         $poussin= new Poussin();
 
-      $result = $poussin->getQte_Priceof_AchatsPoussins_ForThisCampagne($id);
+        $som =$poussin->calculateAchatHeadOfThisCampagne($id);
+        return $som;
+    }
 
-      //dd($result);
-      return $result;
+    public function selectheadForOneCampagne($id) 
+    {
+        $poussin= new Poussin();
+        $result = $poussin->selectheadForOneCampagne($id);
+        return $result;
+
+    }
+    
+    /**
+     * GetQte_Priceof_AchatsPoussins_ForThisCampagne
+     *
+     * @param  mixed $id
+     * 
+     * @return void
+     */
+    public function getQte_Priceof_AchatsPoussins_ForThisCampagne($id) 
+    {
+
+        $poussin= new Poussin();
+
+        $result = $poussin->getQte_Priceof_AchatsPoussins_ForThisCampagne($id);
+
+        //dd($result);
+        return $result;
 
     }
 
-	/**
-	 *cette fonction recupere les infos sur une campagnes pour le pdf 
-	 */
+      
+    /**
+     * DownloadRecapPoussin
+     *
+     * @param  mixed $data
+     * 
+     * @return void
+     */
+    public function downloadRecapPoussin($data)
+    {
 
-     public function downloadRecapPoussin($data)
-   {
-
-   	$poussin= new Poussin();
-    $results=$poussin->downloadRecapPoussin($data);
-   // dd($results);
-    return $results;
-
-   }
-
+        $poussin= new Poussin();
+        $results=$poussin->downloadRecapPoussin($data);
+        // dd($results);
+        return $results;
+ 
+    }
 }

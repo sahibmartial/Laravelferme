@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\GeneratePdfController;
 use PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 /**
  * ClientController short of the class
  * 
@@ -26,23 +28,21 @@ class VaccinController extends Controller
      */
     public function index()
     {
-        $vaccin= new Vaccin();         
-        
-        //  $vaccin->alertMailingSuivi();
-        $resultscampa=$vaccin->infosCampagneStatus("EN COURS");
-        dd($resultscampa);
-
-        if (count($resultscampa)>0) {
-            $vaccins= Vaccin::whereCampagneId($resultscampa[0]['id'])
-                ->orderByDesc('vaccins.id')
-                ->SimplePaginate(10);
-            // dump($vaccins);
-            dd('campagne e cours');
-            return view('vaccins.index', compact('vaccins'));
+        try {
+            $vaccins =DB::table('campagnes')
+            ->join('vaccins', function ($join) {
+                $join->on('vaccins.campagne_id', '=', 'campagnes.id')->whereStatus(['status' => 'EN COURS']);
+            })
+            ->orderByDesc('vaccins.id')
+            ->SimplePaginate(5);
+        } catch (\Throwable $th) {
+            return "Erreur dans la requete SQL";
         }
-       
-           return back()->with('success', 'Aucun suivi de vaccin en cours actuellement');
-
+        if (!empty($vaccins->items())) {
+            return view('vaccins.index', compact('vaccins'));   
+        } else {
+            return back()->with('success', 'Aucun suivi de vaccin en cours actuellement');
+        }       
 
     }
 
@@ -165,9 +165,9 @@ class VaccinController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param\Illuminate\Http\Request $request
      * 
-     * @param \App\Model\Vaccin  $id
+     * @param\App\Model\Vaccin $id
      * 
      * @return \Illuminate\Http\Response
      */
@@ -212,7 +212,7 @@ class VaccinController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Model\Vaccin  $id
+     * @param\App\Model\Vaccin $id
      * 
      * @return \Illuminate\Http\Response
      */
@@ -239,6 +239,8 @@ class VaccinController extends Controller
     }
     /**
      * Form to download recap traitement
+     * 
+     * @return void
      */
     public function recapVaccin()
     {
@@ -246,6 +248,8 @@ class VaccinController extends Controller
     }
     /**
      * Listing traitement vaccin pdf generation du fichier pdf
+     * 
+     * @return $request
      */
     public function getRecap(Request $request)
     {   
