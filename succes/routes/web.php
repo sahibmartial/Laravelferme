@@ -170,11 +170,22 @@ Route::get('/mean_masse', 'MasseController@index')->name('mean_masse');
 
 Route::get('vaccin', 'VaccinController@index')->name('vaccin');
 Route::get('vaccinform', 'VaccinController@create')->name('vaccinform');
-Route::post('vaccinformvalidation', 'VaccinController@store')->name('vaccinformvalidation');
+Route::post('vaccinformvalidation', 'VaccinController@store')
+->name('vaccinformvalidation');
 Route::get('recap_vaccin', 'VaccinController@recapVaccin')->name('recap_vaccin');
-Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')->name('downloadrecap_vaccin');
-Route::get('traitement_listing/{id}', 'VaccinController@traitement_pdf')->name('traitement_listing');
-Route::get('campagnetreat', 'VaccinController@treatmentCampagneEnCours')->name('campagnetreat');
+Route::post('downloadrecap_vaccin', 'VaccinController@getRecap')
+->name('downloadrecap_vaccin');
+Route::get('traitement_listing/{id}', 'VaccinController@traitement_pdf')
+->name('traitement_listing');
+Route::get('campagnetreat', 'VaccinController@treatmentCampagneEnCours')
+->name('campagnetreat');
+/**
+ * Maladies
+ * 
+ */
+
+Route::get('maladies', 'MaladieController@index')->name('maladies');
+
 /**
  *PDF 
  */
@@ -244,6 +255,8 @@ Route::resource('employes', 'EmployeController');
 Route::resource('apports', 'ApportController');
 Route::resource('vaccins', 'VaccinController');
 Route::resource('travaux', 'TravauxConstructionController');
+Route::resource('maladies', 'MaladieController');
+
 
 Auth::routes();
 

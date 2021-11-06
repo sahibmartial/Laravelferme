@@ -16,8 +16,8 @@ class CreatePoussinsTable extends Migration
         Schema::create('poussins', function (Blueprint $table) {
             //$table->foreignId('poussins_id')->constrained('campagnes');
             $table->id();
-             $table->unsignedBigInteger('campagne_id');
-             $table->foreign('campagne_id')->references('id')->on('campagnes') ->onDelete('cascade');
+            $table->unsignedBigInteger('campagne_id');
+            $table->foreign('campagne_id')->references('id')->on('campagnes') ->onDelete('cascade');
             $table->string('campagne')->unique();
             $table->Integer('quantite');
             $table->string('fournisseur');

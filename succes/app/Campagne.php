@@ -52,6 +52,14 @@ class Campagne extends Model
 
     }
 
+    /**
+     *  Maladie of this campagne
+     */
+    public function maladie()
+    {
+        return $this->hasMany('App\Model\Maladie');
+    }
+
 
    
     /**

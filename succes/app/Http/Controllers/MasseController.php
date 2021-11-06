@@ -45,7 +45,7 @@ class MasseController extends Controller
            throw $th;
        }
 
-       return view ("masses.index",compact('masses'));
+       return view ("masses.index", compact('masses'));
 
        
     }
@@ -86,7 +86,7 @@ class MasseController extends Controller
          //'fournisseur'=>'required|min:4',
          //'obs'=>'required|min:3'
      ];
-        $this->validate($request,$rules);
+        $this->validate($request, $rules);
 
         try {
             $campagne=Campagne::findorfail($campagne_id);

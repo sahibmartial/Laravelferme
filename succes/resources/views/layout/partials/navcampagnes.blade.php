@@ -22,6 +22,7 @@
 	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'vaccins';" target="_blink" value="Vaccin"/>
 	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'pertes';" target="_blink" value="Pertes"/>
 	      <input type="button" class="btn btn-primary" onclick="window.location.href = 'ventes';" target="_blink" value="Vente"/>
+         <input type="button" class="btn btn-primary" onclick="window.location.href = 'maladies';" target="_blink" value="Maladies"/>
 	       
       </fieldset>
    </nav>

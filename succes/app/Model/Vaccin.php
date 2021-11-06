@@ -9,88 +9,131 @@ use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+use Illuminate\Support\Facades\DB;
 
 class Vaccin extends Model
 {
     protected $fillable=[
-    	'campagne_id',
-    	'campagne',
-        'datedevaccination', 	
-    	'intitulevaccin',	
-   	 	'obs'
-    ];
+      'campagne_id',
+      'campagne',
+      'datedevaccination',
+      'intitulevaccin',
+      'obs'];
   
 
+    
+    /**
+     * Campagne
+     *
+     * @return void
+     */
+    public function campagne()
+    {
+        return $this->belongsTo('App\Campagne');
+    } 
 
-  public function campagne()
-   {
-     return $this->belongsTo('App\Campagne');
-   } 
+    
+    /**
+     * InfosCampagne
+     *
+     * @param  mixed $id
+     * 
+     * @return void
+     */
+    public function infosCampagne($id)
+    {
+        return Campagne::whereId($id)->get();
+    }
 
-
-   public function infosCampagne($id)
-   {
-   	 return Campagne::whereId($id)->get();
-   }
-
-   public function infosCampagneStatus($tatut)
-   {
-   	 return Campagne::whereStatus($tatut)->get();
-   }
+    public function infosCampagneStatus($tatut)
+    {
+        return Campagne::whereStatus($tatut)->get();
+    }
    
-   /**
-    * alert suivi vaccin campagne
+    /**
+     * Alert suivi vaccin campagne
     */
-   public function  alertMailingSuivi()
-   {
-       // dd('alerte');
+    public function  alertMailingSuivi()
+    {
+        //dd('alerte');
         $email=$subject=$content=null;
         $mail= new MailController;
-       //recuperation date du jour
-       $now = Carbon::now();
-       //get infos campgne
-       $campagne= $this->infosCampagneStatus("EN COURS");//un seule campagne en cours mais on peut avoir deux dans ce cas il faut revoir le traitement
-    //  dd( $campagne);
-       // demarrage  partie alerte mail
-       if (isset($campagne[0]['id'])) {
-       // $date_arrivePoussins=[];
-      //  dd($campagne[0]['id']);
-          //recuperation date arrivé poussins une et une seule campagne en cour pour le currently
-          try {
-           $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")->get();
-          //  dd( $date_arrivePoussins);
-          } catch (\Throwable $th) {
-            throw $th;
-          }
-            
-        //Check 
-        if (!empty($date_arrivePoussins)) {
+        //recuperation date du jour
+        $now = Carbon::now();
+        //get infos campgne
+         $campagnes= $this->infosCampagneStatus("EN COURS");//recup campagne en cours
+         //dd($campagnes);
+
+        // demarrage  partie alerte mail
+
+        foreach ($campagnes as $key => $campagne) {
+
+            if (isset($campagne['id'])) {
+                 dump($campagne['id']);
+                 //recuperation date arrivé poussins
+                   
+                try {
+                 
+                     $date_arrivePoussins=Vaccin::whereIntitulevaccin("Arrivée des poussins")
+                     ->get();
+                     $datearrives=DB::table('vaccins')
+                         ->where('campagne_id', '=', $campagne['id'])
+                         ->where('intitulevaccin', '=', "Arrivée des poussins" )
+                         ->get();
+                    dd($datearrives);         
+                } catch (\Throwable $th) {
+                     return " Date arrivé poussin not found for this campagne ".$campagne['id'];
+                }
+                
+                dd("OUT"); 
+                 
         
-          foreach ( $date_arrivePoussins as $key => $camp) {
+            } else {
+                return "Impossible de trouvé  campagne ";
+            }
+             
+            
+        }
+        die;
+
+        if (isset($campagne[0]['id'])) {
+            // $date_arrivePoussins=[];
+             //  dd($campagne[0]['id']);
+            //recuperation date arrivé poussins une et une seule campagne en cour pour le currently
+            try {
+               
+                // dd( $date_arrivePoussins);
+            } catch (\Throwable $th) {
+                 throw $th;
+            }
+            
+            //Check 
+            if (!empty($date_arrivePoussins)) { 
+        
+                foreach ( $date_arrivePoussins as $key => $camp) {
             
 
-            if ($campagne[0]['id'] == $camp["campagne_id"]) {
-          //    dump( $camp);
-             
-              try {
-                 $updatecampgne=Campagne::findOrFail($campagne[0]['id']);
-              } catch (\Throwable $th) {
-                  throw $th;
-              }
-              //convertir date  format carbon
-               $datepoussins = new Carbon($camp['datedevaccination']);
-                //calcule date  et envoi mail selon use case
-               $diff = $datepoussins->diffInDays($now);
-               // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
-               $diff=$diff+1;
-               //use case pour envoi de mail:
-              $users = User::all();
-              $mail= new MailController;
-            //dd($users[0]['email']);
-              $subject=" Suivi des Traitements de la campagne en cours";
-              $content="Nous sommes le ".$now. ", jour ".$diff."  de la ".$camp['campagne']."<br>";
-              $content.="<b>TRAITEMENTS <b>:<br> <br>";  
-              $today = date("Y-m-d H:i:s"); 
+                    if ($campagne[0]['id'] == $camp["campagne_id"]) {
+                         
+                        try {
+                              $updatecampgne=Campagne::findOrFail($campagne[0]['id']);
+                        } catch (\Throwable $th) {
+                               throw $th;
+                        }
+                        //convertir date  format carbon
+                         $datepoussins = new Carbon($camp['datedevaccination']);
+                         //calcule date  et envoi mail selon use case
+                        $diff = $datepoussins->diffInDays($now);
+                         // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
+                        $diff=$diff+1;
+                        //use case pour envoi de mail:
+                        $users = User::all();
+                        $mail= new MailController;
+                        //dd($users[0]['email']);
+                        $subject=" Suivi des Traitements de la campagne en cours";
+                        $content="Nous sommes le ".$now. ", jour ".$diff."  de la ".$camp['campagne']."<br>";
+                        $content.="<b>TRAITEMENTS <b>:<br> <br>";  
+                        $today = date("Y-m-d H:i:s"); 
 
               switch ($diff) {
 
