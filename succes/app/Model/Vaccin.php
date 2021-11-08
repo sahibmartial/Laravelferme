@@ -85,8 +85,8 @@ class Vaccin extends Model
         foreach ($campagnes as $key => $campagne) {
 
             if (isset($campagne['id'])) {
-                dump($campagne['id']);
-                dump($campagne['intitule']);
+                //  dump($campagne['id']);
+                //  dump($campagne['intitule']);
                  //recuperation date arrivé poussins
                 try {
                     $datearrives=DB::table('vaccins')
@@ -101,7 +101,7 @@ class Vaccin extends Model
                 // dd(!empty($datearrives));
                 if (!empty($datearrives)) {
                     $datearrives=$datearrives[0]->datedevaccination;
-                    dump("campagne et arrive", $datearrives, $campagne['duree']);
+                    // dump("campagne et arrive", $datearrives, $campagne['duree']);
                     //convertir date  format carbon
                     $datepoussins = new Carbon($datearrives);
                     //calcule date  et envoi mail selon use case
@@ -109,7 +109,7 @@ class Vaccin extends Model
                      // diff plus 1 pour correspondre au compteur car 1er jour correspond jour1
                     $diff=$diff+1;
                     // dump($diff);
-                    echo "##########\n";
+                    // echo "##########\n";
 
                     //use case pour envoi de mail:
                     $users = User::all();
