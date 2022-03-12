@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Campagne;
 use Illuminate\Support\Str;
 
 use Illuminate\Support\Facades\DB;
@@ -25,24 +27,24 @@ class TransportController extends Controller implements TransportAction
             })
             ->orderByDesc('transports.id')
             ->SimplePaginate(10);
-    
+
             //  dd($transports);
-    
+
             return view('transports.index', compact('transports'));
-             
+
         } catch (\Throwable $th) {
              throw $th;
         }
-        
+
     }
-    
+
     /**
      * SearchTransport
      *
      * @return $result
      */
-    public function searchTransport() 
-    {   
+    public function searchTransport()
+    {
         $_REQUEST['searchcampagne'];
         try {
             $transports= DB::table('campagnes')
@@ -51,9 +53,9 @@ class TransportController extends Controller implements TransportAction
             })
             ->orderByDesc('transports.id')
             ->SimplePaginate(10);
-    
+
             return view('transports.index', compact('transports'));
-             
+
         } catch (\Throwable $th) {
              return "Campagne not found : ".$_REQUEST['searchcampagne'];
         }
@@ -68,7 +70,18 @@ class TransportController extends Controller implements TransportAction
      */
     public function create()
     {
-        return view('transports.create');
+        try {
+            $campagnes=Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('success', 'Enregistrement  Achat pousssins impossible aucune campagne en cours  ,merci');
+        }
+        if ($campagnes) {
+            return view('transports.create', compact('campagnes'));
+        }
+
+        return back()->with('success', 'Enregistrement  Achat pousssins impossible aucune campagne en cours  ,merci');
+
     }
 
     /**
@@ -79,41 +92,45 @@ class TransportController extends Controller implements TransportAction
      */
     public function store(Request $request)
     {
-       // dump($request);
+        // dump($request);
 
         $campagne_id=0;
         $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
         //dd($campagne_id);
-         $rules=[
+        $rules=[
          'campagne'=>'bail|required|min:9',
          //'libelle'=>'bail|required|min:3',
          'montant'=>'bail|required',
          //'priceUnitaire'=>'bail|required',
         // 'fournisseur'=>'required|min:4'
          'obs'=>'required|min:3'
-         ];
-        $this->validate($request,$rules);
+        ];
+        $this->validate($request, $rules);
+
         try {
-            Transport::create([
+            Transport::create(
+                [
                 'campagne_id'=>$campagne_id,
                 'date_achat'=>$request->date_achat,
                 'campagne'=>Str::lower($request->campagne),
-               //'libelle'=>$request->libelle,
-                'montant'=>$request->montant,
-              //  'priceUnitaire'=>$request->priceUnitaire,
-               // 'fournisseur'=>$request->fournisseur,
-                'obs'=>$request->obs]);
-    
-          
-            //return redirect()->route('transport');  
+                 //'libelle'=>$request->libelle,
+                 'montant'=>$request->montant,
+                //  'priceUnitaire'=>$request->priceUnitaire,
+                 // 'fournisseur'=>$request->fournisseur,
+                 'obs'=>$request->obs
+                ]
+            );
+
+
+            //return redirect()->route('transport');
              return redirect()->route('transports.index')->with('success', 'Masse has been successfully added');
-            
+
         } catch (\Throwable $th) {
             throw $th;
         }
 
-          
+
     }
 
     /**
@@ -126,11 +143,11 @@ class TransportController extends Controller implements TransportAction
     {
         try {
             $transports=Transport::findOrFail($id);
-        return view('transports.show',compact('transports'));
+            return view('transports.show', compact('transports'));
         } catch (\Throwable $th) {
             throw $th;
         }
-        
+
     }
 
     /**
@@ -143,11 +160,11 @@ class TransportController extends Controller implements TransportAction
     {
         try {
             $transports=Transport::findOrFail($id);
-         return view('transports.edit',compact('transports'));
+            return view('transports.edit', compact('transports'));
         } catch (\Throwable $th) {
             throw $th;
         }
-         
+
     }
 
     /**
@@ -160,35 +177,37 @@ class TransportController extends Controller implements TransportAction
     public function update(Request $request, $id)
     {
         $rules=[
-            'campagne_id'=>'bail|required',  
+            'campagne_id'=>'bail|required',
             'campagne'=>'bail|required|min:9',
             //'libelle'=>'bail|required|min:3',
             'montant'=>'bail|required',
            // 'priceUnitaire'=>'bail|required',
            // 'fournisseur'=>'required|min:4'
             'obs'=>'required|min:3'
-            ];
-        $this->validate($request,$rules); 
+        ];
+        $this->validate($request, $rules);
 
         try {
             $transports=Transport::findOrFail($id);
-         $transports->update([
-            'campagne_id'=>$request->campagne_id,
-            'date_achat'=>$request->date_achat,
-            'campagne'=>Str::lower($request->campagne),
-         //  'libelle'=>$request->libelle,
-            'montant'=>$request->montant,
-          //  'priceUnitaire'=>$request->priceUnitaire,
-            //'fournisseur'=>$request->fournisseur,
-            'obs'=>$request->obs
-        ]);
-        return redirect()->route('transports.show',$id);
-            
+            $transports->update(
+                [
+                'campagne_id'=>$request->campagne_id,
+                'date_achat'=>$request->date_achat,
+                 'campagne'=>Str::lower($request->campagne),
+                 //  'libelle'=>$request->libelle,
+                  'montant'=>$request->montant,
+                  //  'priceUnitaire'=>$request->priceUnitaire,
+                  //'fournisseur'=>$request->fournisseur,
+                  'obs'=>$request->obs
+                ]
+            );
+            return redirect()->route('transports.show', $id);
+
         } catch (\Throwable $th) {
             throw $th;
         }
-           
-       
+
+
     }
 
     /**
@@ -198,7 +217,7 @@ class TransportController extends Controller implements TransportAction
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    { 
+    {
         $user=Auth()->user();
         $folder="TransportsRemove/";
         $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
@@ -207,88 +226,93 @@ class TransportController extends Controller implements TransportAction
 
         try {
             $value=Transport::findorfail($id);
-        
-           $filebackup->backupfile($folder,$filename,$value);
-        
+
+            $filebackup->backupfile($folder, $filename, $value);
+
             Transport::destroy($id);
             return redirect()->route('transports.index');
 
         } catch (\Throwable $th) {
             throw $th;
-        } 
+        }
     }
-    
 
-    /**
+
+
+
+   /**
+    * SelectAllFraisTrasnportForOneCampagne
     *
+    * @param  mixed $id
+    * @return void
     */
+    public function selectAllFraisTrasnportForOneCampagne($id)
+    {
 
-   public function selectAllFraisTrasnportForOneCampagne($id){
-
-   $result=array(); 
-       $collections=DB::table('transports')->whereCampagneId($id)->get();
+        $result=array();
+        $collections=DB::table('transports')->whereCampagneId($id)->get();
 
         $result=$collections->toArray();
-       // $result = json_decode($result, true);
+         // $result = json_decode($result, true);
         // dd($result);
-       return  $result;
+        return  $result;
     }
 
-    /**
-     *
-    */
 
-    public function calculateFraisTotalOfCampagne($id){
+    /**
+     * CalculateFraisTotalOfCampagne
+     *
+     * @param  mixed $id
+     * @return $result
+     */
+    public function calculateFraisTotalOfCampagne($id)
+    {
         $som=0;
 
         $result=$this->selectAllFraisTrasnportForOneCampagne($id);
 
-        for ($i=0; $i <count($result); $i++) { 
+        for ($i=0; $i <count($result); $i++) {
 
             $som+=$result[$i]->montant;
             //dd($som);
-           // $som++;
-     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
-     }
-    // dd($som);
-     return $som;
- }
+            // $som++;
+            // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
+        }
+        // dd($som);
+        return $som;
+    }
 
-  /*
-    * form to get all accessoires of this campagne 
-    */
 
-    public function allTransports(){
+    public function allTransports()
+    {
+        $campagnes = Campagne::all();
+        //dd($campagnes);
 
-        return view("transports.allTransports_of_one_campagne");
+        return view("transports.allTransports_of_one_campagne", compact('campagnes'));
 
     }
     /*
-    *show all accessoires of this campagne select 
+    *Show all accessoires of this campagne select
     */
-    
-    public function showallTransports(){
+
+    public function showallTransports()
+    {
 
         //dd('here');
-    
-       return view("transports.showallTransports_of_one_campagne");
+
+        return view("transports.showallTransports_of_one_campagne");
 
     }
 
 
+    public function downloadRecapFrais($data)
+    {
+         $transport= new Transport();
+        $results=$transport->downloadRecapFrais($data);
+        return $results;
 
-    /**
-* generation du pdf frais de transport d'une campagne
-*/
-    
- public function downloadRecapFrais($data)
- {
-    $transport= new Transport();
-    $results=$transport->downloadRecapFrais($data);
-    return $results;
-    
- }
+    }
 
- 
+
 
 }

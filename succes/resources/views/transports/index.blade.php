@@ -16,24 +16,24 @@ $result=$vente->calculateFraisTotalOfCampagne(1);*/
       </div>
     @endif
 
-	<div class="text-right mb-2">
-	 
+	<div class="text-left mp-3 mb-2">
+
         <form  name="myForm" action="{{route('searchtransport')}}" onsubmit="return validateForm()" method="post">
             @csrf
 		     <p>Rechercher transport  par campagne </p>
-			 
+
 			<input type="text" name="searchcampagne"   id="searchcampagne" placeholder="Search">
-              
+
 		     <input type="submit" value="Recherchez">
 
         </form>
    </div>
-	
+
     <ul>
 	    @if($transports->count()>0)
 	        @foreach($transports as $transport)
 	            <!--utilisation des routes -->
-	            <li><a href="{{ 
+	            <li><a href="{{
 		       route('transports.show',
 		      $transport->id)}}">{{ $transport->campagne}}-{{ $transport->obs}}</a></li>
 	        @endforeach
@@ -58,15 +58,15 @@ $result=$vente->calculateFraisTotalOfCampagne(1);*/
 </div>
 @stop
 <script>
-	function validateForm() 
+	function validateForm()
 	{
         let x = document.forms["myForm"]["searchcampagne"].value;
         if (x=="" ) {
            alert("Champ ne peut être vide, merci de selectionner une campagne.");
            return false;
         } else {
-          
+
           console.log(x)
         }
-    } 
+    }
  </script>

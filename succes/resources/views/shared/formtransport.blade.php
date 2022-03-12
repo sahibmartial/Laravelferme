@@ -8,20 +8,28 @@
 <div class="form-group">
    {{ Form::label('Date', 'Date:') }}
     <input type="date" name="date_achat" placeholder=""
-        @error('date_achat') is-invalid @enderror" name="date_achat" 
+        @error('date_achat') is-invalid @enderror" name="date_achat"
         value="{{ old('date_achat') }}" required class="form-control">
             @error('date_achat')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                           </span>
             @enderror
-                            
+
   </div>
   <div class="form-group">
-  {{ Form::label('Campagne', 'Campagne:') }}
-  <input type="text" name="campagne" placeholder="Campagne" 
+  <!-- {{ Form::label('Campagne', 'Campagne:') }}
+  <input type="text" name="campagne" placeholder="Campagne"
   value="{{old('campagne') }}" class="form-control">
-    {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
+    {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}-->
+     <select class="form-select" aria-label="Default select example" name="campagne" id="campagne">
+            <option selected>CampagneX</option>
+               @foreach ($campagnes as $campagne)
+                   <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+               @endforeach
+
+           </select>
+
   </div>
 	<div class="form-group">
   {{ Form::label('Montant', 'Montant:') }}
@@ -51,15 +59,15 @@ let montant = document.forms["myForm"]["montant"].value;
 
 
 if (!date_achat.length >0) {
-	
+
 	errors.push('Date manquante.\n');
 }
-if (!nom.length >0) {
-	
+if (nom=='CampagneX') {
+
 	errors.push('Campagne manquante.\n');
 }
 if (!montant.length >0) {
-	
+
 	errors.push('Montant manquante.\n');
 }
 
@@ -68,7 +76,7 @@ if (errors.length>0) {
 	event.preventDefault();
 	alert(errors)
 }
-//console.log("hello")	
+//console.log("hello")
  /* let x = document.forms["myForm"]["fname"].value;
   if (x == "") {
     alert("Name must be filled out");
