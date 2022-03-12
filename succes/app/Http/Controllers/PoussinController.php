@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 /**
  * ClientController short of the class
- * 
+ *
  * @category CategoryName
  * @package  PackageName
  * @author   Original Author <author@example.com>
@@ -54,28 +54,46 @@ class PoussinController extends Controller
      */
     public function create()
     {
-        //dd('poussins');
-         return view('poussins.create');
+        try {
+            $campagnes=Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('success', 'Enregistrement  Achat pousssins impossible aucune campagne en cours  ,merci');
+        }
+        //dd($campagnes);
+        if ($campagnes) {
+            return view('poussins.create', compact('campagnes'));
+        }
+
+        return back()->with('success', 'Enregistrement  Achat pousssins impossible aucune campagne en cours  ,merci');
+
     }
 
     /**
      *  Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
-     * @return \Illuminate\Http\Response 
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
+
+
         $campagne_id = 0;
         $cam= new CampagneController();
         try {
             $campagne_id = $cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+
             $updateCampagne=Campagne::findorfail($campagne_id);
+            //dd($updateCampagne);
         } catch (\Throwable $th) {
             throw $th;
-        } 
+        }
+
+
         if (empty($campagne_id)) {
+
             return back()->with('success', 'Enregistrement  Achat pousssins impossible, '.$request->campagne.' introuvable ,merci');
         } else {
             $errobd="Error database insert thank you";
@@ -92,7 +110,7 @@ class PoussinController extends Controller
 
                   $this->validate($request, $rules);
 
-                 //  dd($request); 
+                 //  dd($request);
                     Poussin::create(
                         [
                          'campagne_id'=> $campagne_id,
@@ -112,7 +130,7 @@ class PoussinController extends Controller
                         'duree'=>1
                         ]
                     );
-              
+
                   //step insertion   dans la table vaccin et envoi de mail notification
                  $now=now();
                  //  dd($now);
@@ -125,16 +143,16 @@ class PoussinController extends Controller
                      'campagne'=>Str::lower($request->campagne),
                     'datedevaccination'=>$now,
                     'intitulevaccin'=>$traitement,
-                    'obs'=>$obs   
+                    'obs'=>$obs
                     ]
                 );
 
                 //dd("campagne upde and vaccin create");
                 $content="Nous sommes le ".$now.", jour 1 de la ".$campagne."<br> <br>";
                 $content.="A) <b> Preventions sanitaire </b>:<br/>";
-                $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>"; 
-                $content.="B) <b>Traitements </b>: <br>"; 
-                $content.="2) EAu sucré /Mixtral /BetaSpro-C <br>"; 
+                $content.="1) Pulverisations quotidien tous les 3 jours :<br> <br>";
+                $content.="B) <b>Traitements </b>: <br>";
+                $content.="2) EAu sucré /Mixtral /BetaSpro-C <br>";
 
                 $vaccin= new Vaccin;
                 $vaccin->alertMailingArrivePoussins($content);
@@ -149,7 +167,7 @@ class PoussinController extends Controller
                 //envoi email debut vente
                 $contentVente="<br> Le ".$date_enter_production.", la ".$campagne." rentre en production.<br> <br>";
                 $contentVente.="Merci de faire le necessaire en contactant tous nos clients. <br>";
-                $contentVente.="Force et Courage à nous, Dieu est au contrôle <br> <br>"; 
+                $contentVente.="Force et Courage à nous, Dieu est au contrôle <br> <br>";
                  $vaccin->alertEmailProduction($campagne, $contentVente);
             } catch (\Throwable $errobd) {
                 // dd($th->getMessage());
@@ -158,22 +176,22 @@ class PoussinController extends Controller
             //return redirect()->route('head');
             return redirect()->route('poussins.index')->with('success', 'Poussins declarés avec success');
         }
-        
+
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function show($id) 
+    public function show($id)
     {
 
         try {
             $lists = Poussin::findOrFail($id);
- 
+
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -184,7 +202,7 @@ class PoussinController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -192,24 +210,24 @@ class PoussinController extends Controller
 
         try {
             $poussin = Poussin::findOrFail($id);
-           
+
         } catch (\Throwable $th) {
             throw $th;
         }
         return view('poussins.edit', compact('poussin'));
     }
 
-     
+
     /**
      * Update
      *
      * @param  mixed $request
-     * 
+     *
      * @param  mixed $id
-     * 
+     *
      * @return void
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
 
         $rules = [
@@ -245,10 +263,10 @@ class PoussinController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) 
+    public function destroy($id)
     {
 
         try {
@@ -261,32 +279,32 @@ class PoussinController extends Controller
             $filebackup->backupfile($folder, $filename, $value);
 
             Poussin::destroy($id);
-            
+
         } catch (\Throwable $th) {
             throw $th;
         }
         return redirect()->route('head');
     }
 
-       
+
     /**
      * SelectAllheadForOneCampagne
      *
      * @param  mixed $id
-     * 
+     *
      * @return void
      */
-    public function selectAllheadForOneCampagne($id) 
+    public function selectAllheadForOneCampagne($id)
     {
         $poussin= new Poussin();
-    
+
         $result=$poussin-> selectAllheadForOneCampagne($id);
 
          return $result;
     }
 
 
-    public function calculateAchatHeadOfThisCampagne($id) 
+    public function calculateAchatHeadOfThisCampagne($id)
     {
 
         $poussin= new Poussin();
@@ -295,22 +313,22 @@ class PoussinController extends Controller
         return $som;
     }
 
-    public function selectheadForOneCampagne($id) 
+    public function selectheadForOneCampagne($id)
     {
         $poussin= new Poussin();
         $result = $poussin->selectheadForOneCampagne($id);
         return $result;
 
     }
-    
+
     /**
      * GetQte_Priceof_AchatsPoussins_ForThisCampagne
      *
      * @param  mixed $id
-     * 
+     *
      * @return void
      */
-    public function getQte_Priceof_AchatsPoussins_ForThisCampagne($id) 
+    public function getQte_Priceof_AchatsPoussins_ForThisCampagne($id)
     {
 
         $poussin= new Poussin();
@@ -322,12 +340,12 @@ class PoussinController extends Controller
 
     }
 
-      
+
     /**
      * DownloadRecapPoussin
      *
      * @param  mixed $data
-     * 
+     *
      * @return void
      */
     public function downloadRecapPoussin($data)
@@ -337,6 +355,6 @@ class PoussinController extends Controller
         $results=$poussin->downloadRecapPoussin($data);
         // dd($results);
         return $results;
- 
+
     }
 }

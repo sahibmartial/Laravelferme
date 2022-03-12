@@ -4,7 +4,7 @@
 
      <div class="form-group">
 	 {{  Form::label('Campagne', 'Campagne: ')  }}
-	 <input type="text" name="title" placeholder="Entrez nom campagne " 
+	 <input type="text" name="title" placeholder="Entrez nom campagne: campagneX "
 	 value="{{ old('title') }}" class="form-control">
 	{!! $errors->first('title','<span class="error-msg">:message</span>') !!}
 	 </div>
@@ -25,7 +25,7 @@
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
    </div>
 	<input type="submit" value="Créer Campagne" class="btn btn-success">
-	
+
 </form>
 
 <script>
@@ -39,15 +39,15 @@ let statut = document.forms["myForm"]["status"].value;
 
 
 if(!campagne.length >0){
-	
+
 	errors.push('Campagne manquante.\n');
 }
 if (!budget.length >0) {
-	
+
 	errors.push('Budget manquante.\n');
 }
 if (!statut.length >0) {
-	
+
 	errors.push('Statut manquant.\n');
 }
 
@@ -56,7 +56,7 @@ if (errors.length>0) {
 	event.preventDefault();
 	alert(errors)
 }
-//console.log(errors)	
+//console.log(errors)
  /* let x = document.forms["myForm"]["fname"].value;
   if (x == "") {
     alert("Name must be filled out");

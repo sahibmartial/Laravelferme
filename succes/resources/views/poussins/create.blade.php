@@ -1,5 +1,5 @@
 @extends('base')
-<?php 
+<?php
   $result = array();
  use App\Http\Controllers\CampagneController;
 //echo "string";
@@ -7,7 +7,7 @@ $cam= new CampagneController();
  $id=$cam->getCampagneenCours();
   //$var= $id->toJson();
  // dump($id);
- for ($i=0; $i <$id->count(); $i++) { 
+ for ($i=0; $i <$id->count(); $i++) {
  	//dump($id[$i]->id);
  	 $result[]=$id[$i]->intitule;
  }
@@ -19,17 +19,18 @@ $cam= new CampagneController();
 @section('content')
   <div class="text-center mt-4 mb-4">
     <h3>Achat de poussins</h3>
-
     @if ($message = Session::get('success'))
-<div class="alert alert-success">
-    <p>{{ $message }}</p>
-</div>
-@endif
+       <div class="alert alert-success">
+          <p>{{ $message }}</p>
+       </div>
+    @endif
+
 <form name="myForm" action="{{route('poussins.store')}}"  method="POST">
   {{ csrf_field() }}
   {{--<input type="text" name="campagne_id"  placeholder="Entrez ID " value={{ old('campagne_id') }} >
      {!! $errors->first('campagne_id','<span class="error-msg">:message</span>') !!}
     <br>--}}
+
       <div class="form-group">
          {{ Form::label('Date', 'Date:') }}
                            <input type="date" name="date_achat" placeholder="" class="form-control"
@@ -41,14 +42,21 @@ $cam= new CampagneController();
                                 @enderror
        </div>
        <div class="form-group">
-       {{ Form::label('Campagne', 'Campagne:') }}
-       <input type="text" name="campagne" id="campagne" placeholder="Entrez nom campagne " class="form-control" >
+       <!-- {{ Form::label('Campagne', 'Campagne:') }}
+      <input type="text" name="campagne" id="campagne" placeholder="Entrez nom campagne " class="form-control" >-->
        {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
+       <select class="form-select" aria-label="Default select example" name="campagne" id="campagne">
+            <option selected>CampagneX</option>
+               @foreach ($campagnes as $campagne)
+                   <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+               @endforeach
+
+           </select>
        </div>
-       
+
        <div class="form-group">
        {{ Form::label('Quantite', 'Quantite:') }}
-        <input type="number" name="quantite" placeholder="Entrez la quantite " class="form-control" value={{ old('quantite') }}> 
+        <input type="number" name="quantite" placeholder="Entrez la quantite " class="form-control" value={{ old('quantite') }}>
         {!! $errors->first('quantite','<span class="error-msg">:message</span>') !!}
        </div>
        <div class="form-group">
@@ -56,7 +64,7 @@ $cam= new CampagneController();
        <input type="number" name="priceUnitaire" placeholder="Prix Unitaire " class="form-control" value="">
        {!! $errors->first('priceUnitaire','<span class="error-msg">:message</span>') !!}
        </div>
-       
+
        <div class="form-group">
        {{ Form::label('Fournisseur', 'Fournisseur:') }}
        <input type="text" name="fournisseur" placeholder="Fournisseur" class="form-control">
@@ -73,7 +81,7 @@ $cam= new CampagneController();
        {{ Form::label('Observations', 'Observations:') }}
        <textarea name="obs" placeholder="RAS" class="form-control"></textarea>
         {!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
-       
+
        </div>
       <button type="submit"  onclick="validateForm()" class="btn btn-success" >Enregister</button>
     <!-- <input type="submit"  onclick="text()" value="Enregister quantite" id="bouton_envoi">-->
@@ -82,7 +90,7 @@ $cam= new CampagneController();
 <p><a href="{{route('poussins.index')}}">Lister achats poussins</a></p>
 
 <p><a href="/achats"> Retour Achats</a></p>
-    
+
   </div>
 <script>
 function validateForm() {
@@ -99,24 +107,24 @@ function validateForm() {
               errors.push('Date  maquante.\n');
 
               }
-          if(!campagne.length >0){
-            
+          if(campagne=='CampagneX'){
+
             errors.push('Campagne manquante.\n');
           }
           if (!qte.length >0) {
-            
+
             errors.push('Quantite manquante.\n');
           }
           if (!pu.length >0) {
-            
+
             errors.push('Prix Unitaire manquant.\n');
           }
           if (!fournisseur.length >0) {
-            
+
             errors.push(' Fournisseur manquant.\n');
           }
           if (!contact.length >0) {
-            
+
             errors.push('Contact Fournisseur  manquant.\n');
           }
 
@@ -124,8 +132,8 @@ function validateForm() {
             event.preventDefault();
             alert(errors)
           }
-         // console.log(errors)	
-         
+         // console.log(errors)
+
 }
 
 </script>

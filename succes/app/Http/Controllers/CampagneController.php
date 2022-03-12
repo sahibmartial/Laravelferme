@@ -27,7 +27,7 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 /**
  * ClientController short of the class
- * 
+ *
  * @category CategoryName
  * @package  PackageName
  * @author   Original Author <author@example.com>
@@ -43,12 +43,12 @@ class CampagneController extends Controller
      */
     public function index()
     {
-     
+
         $value= date('d-m-Y', strtotime('+40 days'));
         //dd($value);
         $cam = new Campagne();
         $campagne_id=null;
-        
+
         //dd('index');
         //$campagnes= Campagne::all();
         try
@@ -56,7 +56,7 @@ class CampagneController extends Controller
             $campagnes= Campagne::whereStatus(['status'=>'EN COURS'])
                 ->orderBy('id', 'desc')
                 ->simplePaginate(2);
-           
+
         } catch (\Throwable $th) {
               throw $th;
         }
@@ -70,9 +70,9 @@ class CampagneController extends Controller
             $som=$cam->sumApportsOfcampagne($campagne_id);
             return view('campagnes.index', compact(['campagnes','som']));
         } else {
-             
+
         }   */
-         
+
     }
 
     /**
@@ -89,13 +89,13 @@ class CampagneController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request  $request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {  
+    {
         //dd($request);
-     
+
         if (Auth::check()) {
 
             $tarted=date("Y-m-d ");
@@ -104,7 +104,7 @@ class CampagneController extends Controller
               'title'=>'required|min:9',
              'budget'=>'bail|required',
              'status'=>'required|min:7'];
-        
+
             $this->validate($request, $rules);
             // dd($request);
 
@@ -119,7 +119,7 @@ class CampagneController extends Controller
                     ]
                 );
                 //notification email get current user
-        
+
                 $to_name= auth()->user()['name'];
                 $to_email=auth()->user()['email'];
                 $users = User::all();
@@ -128,33 +128,33 @@ class CampagneController extends Controller
                 $content="Une nouvelle campagne viens d'être crée avec succes, restons focus.<br> Force et Courage à tous, excellente campagne Amen.";
                 foreach ( $users as $key => $user) {
                      $mail->send($user['email'], $user['name'], $subject, $content);
-                } 
-       
-                return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');     
+                }
+
+                return redirect()->route('campagnes.index')->with('success', 'Campagne a été crée avec sucess');
 
             } catch (\Throwable $th) {
                   return 'Erreur lors insertion Campgane';
             }
-       
+
         }
-         
+
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //  dd('show'); 
+        //  dd('show');
         $cam = new Campagne();
         try {
              $campagnes=Campagne::findOrFail($id);
              $som=$cam->sumApportsOfcampagne($id);
-                   
+
         } catch (\Throwable $th) {
              return " Impossible de trouver campagne ";
         }
@@ -165,29 +165,29 @@ class CampagneController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         try {
             $campagnes=Campagne::findOrFail($id);
-        
+
         } catch (\Throwable $th) {
-            return " Impossible edition campagne "; 
+            return " Impossible edition campagne ";
         }
 
         return view('campagnes.edit', compact('campagnes'));
-         
+
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @param int $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -213,19 +213,19 @@ class CampagneController extends Controller
                 'obs'=>$request->obs
                 ]
             );
-           
+
         } catch (\Throwable $th) {
             return redirect()->route('errorbd')->with('success', $th->getMessage());
         }
           return redirect()->route('campagnes.show', $id);
-      
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -237,9 +237,9 @@ class CampagneController extends Controller
         $filebackup= new BackUpFermeController();
         //  dd("yes");
         try {
-            $value=Campagne::findorfail($id);   
+            $value=Campagne::findorfail($id);
 
-            $Poussins=Poussin::whereCampagne_id($id)->get(); 
+            $Poussins=Poussin::whereCampagne_id($id)->get();
             $ventes=Vente::whereCampagne_id($id)->get();
             $vaccins=Vaccin::whereCampagne_id($id)->get();
             $pertes=Perte::whereCampagne_id($id)->get();
@@ -251,23 +251,23 @@ class CampagneController extends Controller
               ." Transports: \n".$tansports;
             $filebackup->backupfile($folder, $filename, $contents);
             // dd($Poussins, $ventes,$vaccins, $pertes, $aliments,$tansports,$accessoires);
-           
+
              Campagne::destroy($id);
 
              return back()->with('success', 'La campagne a bien été supprimée dans la base de données.');
-          
+
         } catch (\Throwable $th) {
              return "Impossible de suuprimer Campagne";
         }
-       
+
     }
-    
-    
+
+
     /**
      * SelectDateStartCampagne
      *
      * @param  mixed $id
-     * 
+     *
      * @return void
      */
     public function selectDateStartCampagne($id)
@@ -283,14 +283,14 @@ class CampagneController extends Controller
         return $result;
 
     }
-        
+
     /**
      * CalculeDureVie
      *
      * @param  mixed $date1
-     * 
+     *
      * @param mixed $date2
-     * 
+     *
      * @return $duree
      */
     public function calculeDureVie($date1,$date2)
@@ -300,7 +300,7 @@ class CampagneController extends Controller
 
         $diff = abs($date1 - $date2); // abs pour avoir la valeur absolute, ainsi éviter d'avoir une différence négative
         $retour = array();
- 
+
         $tmp = $diff;
         $retour['second'] = $tmp % 60;
 
@@ -316,12 +316,12 @@ class CampagneController extends Controller
         return $retour['day'] ;
     }
 
-      
+
     /**
      * SelectYearcreate
      *
      * @param  mixed $id
-     * 
+     *
      * @return $year
      */
     public function selectYearcreate($id)
@@ -331,7 +331,7 @@ class CampagneController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('errorbd')->with('success', $th->getMessage());
         }
-         
+
 
         foreach ($collections as $collection) {
             $result=$collection->start;
@@ -339,19 +339,19 @@ class CampagneController extends Controller
 
         $value = preg_split('/-/', $result, -1, PREG_SPLIT_OFFSET_CAPTURE);
 
-         // dd($value[0][0]);  
-     
+         // dd($value[0][0]);
+
         return $value[0][0];
 
     }
-       
+
     /**
      * CloturerCampagne
      *
      * @return void
      */
     public function cloturerCampagne()
-    {   
+    {
          $id=($_GET["id"]);//id campagne
          //dd($id);
          $apportVente=$apportPersonnel=$poussins=$poussinsPriceUnit=$budget=null;
@@ -362,18 +362,18 @@ class CampagneController extends Controller
          $dureeCampagne=$cam->getDureeCampagne($id);
 
          $apports=$cam->getApport($id);
-         
+
         if (!empty($apports)) {
             foreach ($apports as $key => $apport) {
                 if ($apport['obs']=='Apport issu des Ventes') {
                     $apportVente+=$apport['apport'];
                 } else {
                    $apportPersonnel+=$apport['apport'];
-                }     
+                }
             }
         }
         //dd(auth()->user());
-       
+
         $charges_salaire=20000;
         $reserve=10000;
         $partenaire=0;
@@ -381,7 +381,7 @@ class CampagneController extends Controller
         $updated_at=date("Y-m-d H:i:s");
 
         $ended=date("Y-m-d ");
-  
+
         // dd($year);
         $statut="TERMINE";
         try {
@@ -397,8 +397,8 @@ class CampagneController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('errorbd')->with('success', $th->getMessage());
         }
-     
-        //appel bilan 
+
+        //appel bilan
         //  $year = date('Y', strtotime($ended));
         $year = preg_split('/-/', $ended);
         //    dd("Annee : ".$year[0]);
@@ -407,7 +407,7 @@ class CampagneController extends Controller
         $obs="";
         $fonction=new FonctionController();
         $head= new PoussinController();
-     
+
         //select poussins lié a la campagne
         $poussinsresult = Campagne::find($id)->poussins;
 
@@ -421,26 +421,26 @@ class CampagneController extends Controller
             return back()->with('success', "Impossible de cloturer la campagne aucune quantite de poussins trouvés");
         }
 
-   
+
         $achatshead=$poussins*$poussinsPriceUnit;
          // dump(" achat poussins :".$achatshead);
-         
+
         $access= new AccessoireController();
         $achataccessoire=$access->calculateDepenseAccessoireofthiscampagne($id);
          // dump("accessoire :".$achataccessoire);
-          
+
         $aliment= new AlimentController();
         $achataliment=$aliment->calculateDepenseAlimentofthiscampagne($id);
         //  dump("Achat aliment : ".$achataliment);
-          
+
         $frais= new TransportController();
         $transport=$frais->calculateFraisTotalOfCampagne($id);
         //  dump(" Frais transport : ".$transport);
-         
+
         $perte= new PerteController();
         $perdus=$perte->calculateTotalLossofthiscampagne($id);
         //  dump(" quantite perdus ".$perdus);
-          
+
         $vente=new VenteController();
         $vendus= $vente->calculateVenteOfCampagne($id);
          // dump(" Total vente : ".$vendus);
@@ -461,14 +461,14 @@ class CampagneController extends Controller
         } else {
              return back()->with('success', "Impossible de cloturer la ".$nomcampagne.", Budget non detecté");
         }
-        //insertion bd 
+        //insertion bd
         try {
             if ($totalvente < $totalachats) {
                  $obs= $nomcampagne." deficitaire";
                  $ben=$totalvente-($totalachats+$apportVente);
                 DB::table('bilans')->insert(
                     [
-                           'campagne_id' =>$id, 
+                           'campagne_id' =>$id,
                            'campagne' =>$nomcampagne,
                            'startcampagne'=>$startcampagne,
                             'budget'=>$budget,
@@ -485,7 +485,7 @@ class CampagneController extends Controller
                            'obs'=>$obs,
                            'created_at'=>$created_at,
                             'updated_at'=>$updated_at
-        
+
                     ]
                 );
                  //dd('isertion reussit');
@@ -498,7 +498,7 @@ class CampagneController extends Controller
                 //insertion table bilan
                 DB::table('bilans')->insert(
                     [
-                       'campagne_id' =>$id, 
+                       'campagne_id' =>$id,
                     'campagne' =>$nomcampagne,
                     'startcampagne'=>$startcampagne,
                     'budget'=>$budget,
@@ -511,20 +511,20 @@ class CampagneController extends Controller
                     'charges_salariale'=>$charges_salaire,
                     'annee'=>$year[0],
                     'dureeCampagne'=>$dureeCampagne,
-                    'meanMasse'=>$meanMasse,   
+                    'meanMasse'=>$meanMasse,
                     'obs'=>$obs,
                     'created_at'=>$created_at,
                     'updated_at'=>$updated_at
-            
+
                     ]
                 );
             } else {
                 throw new \Throwable("RAS");
-            }     
-      
+            }
+
         } catch (\Throwable $th) {
              //dd('redirect route');
-            return redirect()->route('errorbd')->with('success', $th->getMessage());//A revoir 
+            return redirect()->route('errorbd')->with('success', $th->getMessage());//A revoir
         }
 
          //send mail cloture campagne
@@ -556,7 +556,7 @@ class CampagneController extends Controller
           " FCFA <br>  <b>Chges Salariales</b>: ".$bilans[0]['charges_salariale'].
           " FCFA <br>  <b>Observations </b>: ".$bilans[0]['obs'].
           "<br><br/> <b>Date_debut </b>: ".$startcampagne.
-          "<br/> <b>Durée </b>:".$dureeCampagne. 
+          "<br/> <b>Durée </b>:".$dureeCampagne.
           "<br/> <b>Moyenne massse</b> :".$meanMasse.
            "<br /> <b>Date_fin </b>:".$bilans[0]['updated_at']."<br>";
 
@@ -565,17 +565,17 @@ class CampagneController extends Controller
              //  dump($user->email);
              $mail->send($user->email, $to_name, $subject, $content);
         }
-        
-       
+
+
          // dump("observation: ".$obs);
 
         //  dd("Total achat: ".$totalachats);
 
 
         return redirect()->route('bilans.index')->with('success', 'Campagne a été cloturée avec sucess, vous recevrez un mail avec le detail de la campagne'); ;
-        
+
     }
-    
+
     /**
      * GetCampagneenCours
      *
@@ -588,27 +588,27 @@ class CampagneController extends Controller
          return $campagnes;
     }
 
-    
+
     /**
      * GetIntituleCampagneenCours
      *
      * @param  mixed $campagne
-     * 
-     * @return $result
+     *
+     * @return $result campagne en cours
      */
     public function getIntituleCampagneenCours($campagne)
     {
 
          $result=$this->getCampagneenCours();
-        // dd($result);
-        for ($i=0; $i < $result->count(); $i++) { 
-            //dd($id);
+         //dd($result);
+        for ($i=0; $i < $result->count(); $i++) {
             $resultid[]=$result[$i]->id;
             $resultname[]=$result[$i]->intitule;
 
             if ($campagne == $result[$i]->intitule) {
                 $campagne_id=$result[$i]->id;
-           }
+
+            }
 
         }
 
@@ -620,19 +620,19 @@ class CampagneController extends Controller
                 //dd('not found');
                 throw new \Exception("Error campagne saisir introuvable, verifier votre saisir !!!\n");
             }
-       
+
         } catch (Exception $e) {
             //echo $e->getMessage();
         }
-         
+
     }
-  
-       
+
+
     /**
      * GetInfosOneCampagneEnCours
      *
      * @param  mixed $campagne
-     * 
+     *
      * @return $result
      */
     public function getInfosOneCampagneEnCours($campagne)
@@ -640,7 +640,7 @@ class CampagneController extends Controller
         //$resultcampagne = array('id'=>'','intitule'=>'','status'=>'','date-creation'=>'');
 
         $resultcampagne_encours=$this->getCampagneenCours();
-  
+
         foreach ($resultcampagne_encours as $key => $value) {
 
             try {
@@ -658,29 +658,29 @@ class CampagneController extends Controller
                 //echo $e->getMessage();
             }
         }
-    }   
+    }
 
-     
+
     /**
      * GetInfosCampagne
      *
      * @param  mixed $intitule
-     * 
+     *
      * @return void
      */
     public function getInfosCampagne($intitule)
-    { 
+    {
          $camp= new Campagne();
          $result=$camp->getInfosCampagne($intitule);
           //  dd($result);
           return $result;
     }
-    
+
     /**
      * RecapBilan
      *
      * @param  mixed $id
-     * 
+     *
      * @return void
      */
     public function recapBilan($id)
@@ -690,9 +690,9 @@ class CampagneController extends Controller
         $infos=$bilan->recapBilan($id);
         //dd($infos);
         return $infos;
-    } 
+    }
 
-    
+
     /**
      * GetCapital
      *
@@ -702,8 +702,8 @@ class CampagneController extends Controller
     {
          //  dd("form");
         return view('campagnes.comptable');
-    } 
-    
+    }
+
     /**
      * Apports
      *
@@ -714,11 +714,11 @@ class CampagneController extends Controller
          $camp = new Campagne();
         $result= $camp->apports();
         //  dd($result);
-     
-    } 
+
+    }
 
 
 
 
-    
+
 }
