@@ -1,4 +1,4 @@
-<?php 
+<?php
 //use App\Campagne;
 use App\Http\Controllers\CampagneController;
 //echo "string";
@@ -12,7 +12,7 @@ $duredevie=0;
 @endsection
 @section('content')
 <div class="text-center mt-4">
-<h2>Declarer une Vente</h2>
+<h6>Vente Poulet</h6>
 @if ($message = Session::get('success'))
 <div class="alert alert-success">
     <p>{{ $message }}</p>
@@ -31,12 +31,21 @@ $duredevie=0;
 	 {!! $errors->first('date','<span class="error-msg">:message</span>') !!}
 	 </div>
     <div class="form-group">
-	{{  Form::label('Camp', 'Campagne: ')  }}
-	<input type="text" name="campagne" placeholder="Entrez nom campagne " 
+	<!--{{  Form::label('Camp', 'Campagne: ')  }}
+	<input type="text" name="campagne" placeholder="Entrez nom campagne "
 	value="{{ old('campagne') }}" class="form-control">
-     {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
+     {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!} -->
+
+     <select class="form-select mb-2" aria-label="Default select example" name="campagne" id="campagne">
+        <option selected>CampagneX</option>
+        @foreach ($campagnes as $campagne)
+        <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+    @endforeach
+
+   </select>
+
 	</div>
-	
+
     <div class="form-group">
 	{{  Form::label('Qte', 'Quantite: ')  }}
 	<input type="number" name="quantite" placeholder="Entrez la quantite vendue "
@@ -47,18 +56,18 @@ $duredevie=0;
 
     <div class="form-group">
 	{{  Form::label('PU', 'Prix U: ')  }}
-    <input type="number" name="priceUnitaire" placeholder="Prix Unitaire " 
+    <input type="number" name="priceUnitaire" placeholder="Prix Unitaire "
 	value="{{ old('priceUnitaire') }}"class="form-control">
 	{!! $errors->first('priceUnitaire','<span class="error-msg">:message</span>') !!}
 	</div>
-    
+
 	<div class="form-group">
 	 {{  Form::label('acheteur', 'Acheteur: ')  }}
      {{ Form::select('acheteur', array('Particulier' => 'Particulier', 'Grossiste' => 'Grossiste','Restaurant'=>'Restaurant'), 'Particulier')}}
      {{--<input type="text" name="acheteur" placeholder="Acheteur">--}}
 	{!! $errors->first('acheteur','<span class="error-msg">:message</span>') !!}
 	</div>
- 
+
 	 <div class="form-group">
 	 {{  Form::label('contact', 'Contact: ')  }}
 	 <input type="text" name="contact" placeholder="01-02-03-04-05" class="form-control">
@@ -72,13 +81,13 @@ $duredevie=0;
 	{!! $errors->first('events','<span class="error-msg">:message</span>') !!}
 
 	</div>
-	
+
 	<div class="form-group">
 	{{  Form::label('avance', 'Avance: ')  }}
 	<input type="number" name="avance" step="any" placeholder="Avance" value="" class="form-control">
 	{!! $errors->first('avance','<span class="error-msg">:message</span>') !!}
 	</div>
-	 
+
 	 <div class="form-group">
 	 {{  Form::label('impaye', 'Impaye: ')  }}
 	<input type="number" name="impaye" step="any" placeholder="Impaye" value="" class="form-control">
@@ -94,7 +103,7 @@ $duredevie=0;
    {{  Form::label('obs', 'Obs: ')  }}
    <textarea name="obs" placeholder="Observations" class="form-control" ></textarea>
 	{!! $errors->first('obs','<span class="error-msg">:message</span>') !!}
-   
+
    </div>
 	<input type="submit" value="Enregister vente"  class="btn btn-success">
 </form>
@@ -102,7 +111,7 @@ $duredevie=0;
 <p><a href="{{route('ventes.index')}}">Liste ventes</a></p>
 
 <hr>
-<p><a href="/vente"> Retour menu principal </a></p>
+<p><a href="/vente"> Retour listing ventes </a></p>
 </div>
 
 <script>
@@ -119,16 +128,16 @@ if (!datecreate.length >0) {
     errors.push('Date  manquante.\n');
 
     }
-if(!campagne.length >0){
-	
+if(campagne=='CampagneX'){
+
 	errors.push('Campagne manquante.\n');
 }
 if (!qte.length >0) {
-	
+
 	errors.push('Quantite manquante.\n');
 }
 if (!pu.length >0) {
-	
+
 	errors.push('Prix Unitaire manquant.\n');
 }
 
@@ -137,7 +146,7 @@ if (errors.length>0) {
 	event.preventDefault();
 	alert(errors)
 }
-//console.log(errors)	
+//console.log(errors)
  /* let x = document.forms["myForm"]["fname"].value;
   if (x == "") {
     alert("Name must be filled out");

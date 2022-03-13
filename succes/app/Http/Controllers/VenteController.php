@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Campagne;
 use App\Http\Controllers\Form;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -22,19 +24,19 @@ class VenteController extends Controller
 
         try {
             $ventes= DB::table('campagnes')
-        ->join('ventes', function ($join) {
-            $join->on('ventes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-        })
-        ->orderByDesc('ventes.id')
-        ->SimplePaginate(10);
-       
+            ->join('ventes', function ($join) {
+                $join->on('ventes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+            })
+            ->orderByDesc('ventes.id')
+            ->SimplePaginate(10);
+
         } catch (\Throwable $th) {
             throw $th;
         }
-        
-       // dd($this->handle());
 
-       return view('ventes.index',compact('ventes'));
+         // dd($this->handle());
+
+         return view('ventes.index', compact('ventes'));
     }
 
     /**
@@ -44,8 +46,16 @@ class VenteController extends Controller
      */
     public function create()
     {
-       // echo Form::select('size', array('L' => 'Large', 'S' => 'Small'), 'S');
-        return view('ventes.create');
+        // echo Form::select('size', array('L' => 'Large', 'S' => 'Small'), 'S');
+        try {
+            $campagnes = Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        if ($campagnes) {
+            return view('ventes.create', compact('campagnes'));
+        }
+
     }
 
     /**
@@ -61,92 +71,95 @@ class VenteController extends Controller
           //dump($request->acheteur);
          // dd($request);
         $cam= new CampagneController();
-       try {
-        $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
-        if($campagne_id==null)
-        {
-            //dd('camapgne found '.$campagne_id);
- 
-            return back()->with('success', $request->campagne.'introuvable, Enregistrement de la vente impossible, revoyer vos champs');
-        }
+        try{
+            $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+            if ($campagne_id==null) {
+                //dd('camapgne found '.$campagne_id);
 
-        $rules=[
-            'date'=>'bail|required',  
+                return back()->with('success', $request->campagne.'introuvable, Enregistrement de la vente impossible, revoyer vos champs');
+            }
+
+            $rules=[
+              'date'=>'bail|required',
             'campagne'=>'bail|required|min:9',
             'quantite'=>'bail|required',
             'priceUnitaire'=>'bail|required',
             'acheteur'=>'required|min:4',
             'events'=>'required|min:4',
             //'obs'=>'required|min:3'
-        ];
-      
-           $this->validate($request,$rules);
+            ];
 
-          
-           if ( ($request->avance==null || $request->avance==0 ) && ($request->impaye==null || $request->impaye==0)) {
-            $regler="OK";
-          //  dd("OK");
-            Vente::create([
-               'campagne_id'=>$campagne_id,
-               'date'=>$request->date,
-               'campagne'=>Str::lower($request->campagne),
-               'quantite'=>$request->quantite,
-               'priceUnitaire'=>$request->priceUnitaire,
-               'acheteur'=>$request->acheteur,
-               'contact'=>$request->contact,
-               'events'=>$request->events,
-               'avance'=>$request->avance,
-               'impaye'=>$request->impaye,
-                'regler'=>$regler,
-               'obs'=>$request->obs
-               ]);
-           // dd( $regler);
-           return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
-           } else {
-           // dd("Nok");
-               $regler="NOK";
-              // dd( $regler);
-              $netapayer=($request->quantite * $request->priceUnitaire);
-   
-              //cehck if a_payer  == avance + impayer
-   
-              if ( $netapayer==($request->avance + $request->impaye)) {
-                // dd($request);
-                try {
-                   Vente::create([
-                       'campagne_id'=>$campagne_id,
-                       'date'=>$request->date,
-                       'campagne'=>Str::lower($request->campagne),
-                       'quantite'=>$request->quantite,
-                       'priceUnitaire'=>$request->priceUnitaire,
-                       'acheteur'=>$request->acheteur,
-                       'contact'=>$request->contact,
-                       'events'=>$request->events,
-                       'avance'=>$request->avance,
-                       'impaye'=>$request->impaye,
-                       'regler'=>$regler,
-                       'obs'=>$request->obs
-                   ]); 
+            $this->validate($request, $rules);
 
-                   return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
-                    
-                } catch (\Throwable $th) {
-                    throw $th;
+
+            if (($request->avance==null || $request->avance==0 ) && ($request->impaye==null || $request->impaye==0)) {
+                 $regler="OK";
+                 //  dd("OK");
+                Vente::create(
+                    [
+                     'campagne_id'=>$campagne_id,
+                     'date'=>$request->date,
+                    'campagne'=>Str::lower($request->campagne),
+                    'quantite'=>$request->quantite,
+                    'priceUnitaire'=>$request->priceUnitaire,
+                    'acheteur'=>$request->acheteur,
+                    'contact'=>$request->contact,
+                    'events'=>$request->events,
+                    'avance'=>$request->avance,
+                    'impaye'=>$request->impaye,
+                    'regler'=>$regler,
+                    'obs'=>$request->obs
+                    ]
+                );
+                // dd( $regler);
+               return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
+            } else {
+                 // dd("Nok");
+                $regler="NOK";
+                // dd( $regler);
+                $netapayer=($request->quantite * $request->priceUnitaire);
+
+                 //cehck if a_payer  == avance + impayer
+
+                if ($netapayer==($request->avance + $request->impaye)) {
+                     // dd($request);
+                    try {
+                        Vente::create(
+                            [
+                            'campagne_id'=>$campagne_id,
+                            'date'=>$request->date,
+                             'campagne'=>Str::lower($request->campagne),
+                            'quantite'=>$request->quantite,
+                            'priceUnitaire'=>$request->priceUnitaire,
+                            'acheteur'=>$request->acheteur,
+                            'contact'=>$request->contact,
+                            'events'=>$request->events,
+                            'avance'=>$request->avance,
+                            'impaye'=>$request->impaye,
+                             'regler'=>$regler,
+                            'obs'=>$request->obs
+                            ]
+                        );
+
+                        return redirect()->route('ventes.index')->with('success', 'vente été enregistrée avec success, merci ');
+
+                    } catch (\Throwable $th) {
+                        throw $th;
+                    }
+
+                } else {
+
+                        return back()->with('success',  'Enregistrement Impossible, montant net à payer: '.$netapayer
+                        .' est different de montant  avance: '.$request->avance.' + , montant impaye: '.$request->impaye);
                 }
-                
-              }else {
-   
-                  return back()->with('success', 'Enregistrement Impossible, montant net à payer: '.$netapayer
-                  .' est different de montant  avance: '.$request->avance.' + , montant impaye: '.$request->impaye);
-              }      
-   
-           } 
-           
-       } catch (\Throwable $th) {
-           throw $th;
-       }
-     
-        
+
+            }
+
+        } catch (\Throwable $th) {
+              throw $th;
+        }
+
+
     }
 
     /**
@@ -159,11 +172,11 @@ class VenteController extends Controller
     {
         try {
             $ventes=Vente::findOrFail($id);
-            return view('ventes.show',compact('ventes'));
+            return view('ventes.show', compact('ventes'));
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
     /**
@@ -176,11 +189,11 @@ class VenteController extends Controller
     {
         try {
             $ventes=Vente::findOrFail($id);
-            return view('ventes.edit',compact('ventes'));
+            return view('ventes.edit', compact('ventes'));
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
     /**
@@ -192,10 +205,10 @@ class VenteController extends Controller
      */
     public function update(Request $request, $id)
     {
-     //   dd($request);
+
         $regler="";
         $rules=[
-            'campagne_id'=>'bail|required',  
+            'campagne_id'=>'bail|required',
             'campagne'=>'bail|required|min:9',
             'quantite'=>'bail|required',
             'priceUnitaire'=>'bail|required',
@@ -203,16 +216,16 @@ class VenteController extends Controller
             'events'=>'required|min:4',
             //'obs'=>'required|min:3'
         ];
-        $this->validate($request,$rules);
+        $this->validate($request, $rules);
         $netapayer=($request->quantite * $request->priceUnitaire);
 
         try {
             $ventes=Vente::findOrFail($id);
-           
+
             if ($request->avance==0 && $request->impaye==0) {
                 $regler="OK";
-             //  dd($request);
-                $ventes->update([
+                $ventes->update(
+                    [
                     'date'=>$request->date_vente,
                     'campagne_id'=>$request->campagne_id,
                     'campagne'=>Str::lower($request->campagne),
@@ -225,12 +238,14 @@ class VenteController extends Controller
                     'impaye'=>$request->impaye,
                     'regler'=>$regler,
                     'obs'=>$request->obs
-               ]);
-               return redirect()->route('ventes.show',$id)->with('success','Modification reussie avec success'); 
-                
-            }elseif(($netapayer==$request->avance) && $request->impaye==0){
+                    ]
+                );
+                return redirect()->route('ventes.show', $id)->with('success', 'Modification reussie avec success');
+
+            } elseif (($netapayer==$request->avance) && $request->impaye==0) {
                 $regler="OK";
-                $ventes->update([
+                $ventes->update(
+                    [
                     'date'=>$request->date_vente,
                     'campagne_id'=>$request->campagne_id,
                     'campagne'=>Str::lower($request->campagne),
@@ -243,14 +258,16 @@ class VenteController extends Controller
                     'impaye'=>$request->impaye,
                     'regler'=>$regler,
                     'obs'=>$request->obs
-               ]);
-                return redirect()->route('ventes.show',$id)->with('success','Modification reussie avec success'); 
-            }else {
+                    ]
+                );
+                  return redirect()->route('ventes.show', $id)->with('success', 'Modification reussie avec success');
+            } else {
                 $regler="NOK";
 
                 if ($netapayer == ($request->avance + $request->impaye)) {
 
-                    $ventes->update([
+                    $ventes->update(
+                        [
                         'date'=>$request->date_vente,
                         'campagne_id'=>$request->campagne_id,
                         'campagne'=>Str::lower($request->campagne),
@@ -263,24 +280,25 @@ class VenteController extends Controller
                         'impaye'=>$request->impaye,
                         'regler'=>$regler,
                         'obs'=>$request->obs
-                   ]);
-                   return redirect()->route('ventes.show',$id)->with('success','Modification reussie avec success'); 
-                    
+                        ]
+                    );
+                    return redirect()->route('ventes.show', $id)->with('success', 'Modification reussie avec success');
+
                 } else {
                     return back()->with('success', 'Modification Impossible, montant net à payer: '.$netapayer
-                  .' et somme avance: '.$request->avance.' plus, impaye: '.$request->impaye. ' different');
-                }           
-                
-            }    
-            
+                    .' et somme avance: '.$request->avance.' plus, impaye: '.$request->impaye. ' different');
+                }
+
+            }
+
         } catch (\Throwable $th) {
             throw $th;
         }
 
-        
-      
-      
-      
+
+
+
+
 
     }
 
@@ -297,179 +315,191 @@ class VenteController extends Controller
         $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
         $filename=$name."."."txt";
         $filebackup= new BackUpFermeController();
-       
-        try {
-        $value=Vente::findorfail($id);     
-        $filebackup->backupfile($folder,$filename,$value);
-        Vente::destroy($id);
-        //dd($value);  
-        return redirect()->route('vente');
+
+        try{
+            $value=Vente::findorfail($id);
+            $filebackup->backupfile($folder, $filename, $value);
+            Vente::destroy($id);
+
+            return redirect()->route('vente');
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
     public function selectAllSaleForOneCampagne($id)
     {
 
-     $result=array(); 
-     try {
-        $collections=DB::table('ventes')->whereCampagneId($id)->get();
-        $result=$collections->toArray();
-        // $result = json_decode($result, true);
- 
-        return  $result;
+          $result=array();
+        try{
+             $collections=DB::table('ventes')->whereCampagneId($id)->get();
+            $result=$collections->toArray();
+            // $result = json_decode($result, true);
 
-     } catch (\Throwable $th) {
-         throw $th;
-     }
-     
-       
+            return  $result;
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+
     }
 
-    public function calculateVenteOfCampagne($id){
+    public function calculateVenteOfCampagne($id)
+    {
         $som=0;
 
         $result=$this->selectAllSaleForOneCampagne($id);
 
-        for ($i=0; $i <count($result); $i++) { 
+        for ($i=0; $i <count($result); $i++) {
 
             $som+=$result[$i]->quantite*$result[$i]->priceUnitaire;
             //dd($som);
            // $som++;
-     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
-     }
-     //dd($som);
-     return $som;
- }
+           // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
+        }
+        //dd($som);
+        return $som;
+    }
 
- public function info($var)
- {
-    return $var ;
- }
+    public function info($var)
+    {
+         return $var ;
+    }
 
-   public function handle()
-{
-    /*$name = $this->anticipate(
-        'What is your name?',
-        ['Jim', 'Conchita']
-    );*/
-    $name="sahib";
+    public function handle()
+    {
 
-    $this->info($name);
+        $name="sahib";
 
-   /* $source = $this->choice(
+        $this->info($name);
+
+        /* $source = $this->choice(
         'Which source would you like to use?',
         ['master', 'develop']
-    );*/
+          );*/
 
-    //$this->info("Source chosen is $source");
-}
+         //$this->info("Source chosen is $source");
+    }
 
-public function getRecap()
-{
-    $recap = new Vente();
-    
-
-    return view('ventes.recap');
-    
-}
-
-public function getRecapShow(Request $request)
-{
-    $campagne=$request->campagne;
-    $recap = new Vente();
-   $result= $recap->getRecapShow($request->campagne);
-   if (!empty($result)) {
-   // dd($result);
-     return view('ventes.recapShow',compact('result','campagne'));
-      
-   }else{
-   
-    $result=[];
-    return view('ventes.recap',compact('result'));
-    //return redirect()->route('recap_vente')->with('Result', 'Not found for this campagne');
-   }    
-    
-}
-
-public function calculRecapvente($request)
-{
-     $recap = new Vente();
-     $result= $recap->calculRecapvente($request);
-
-     return  $result;
-}
+    public function getRecap()
+    {
 
 
-/**
-* generation du pdf du detail des ventes d'une vcampagne
-*/
-    
- public function downloadRecapVente($data)
- {
-    $vente= new Vente();
-    $results=$vente->downloadRecapVente($data);
-    return $results;
-    
- }
- 
+        try {
+             $campagnes = Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+             //throw $th;
+             return $th->getMessage();
+        }
+
+        if ($campagnes) {
+            return view('ventes.recap', compact('campagnes'));
+        }
+
+
+
+
+    }
+
+    public function getRecapShow(Request $request)
+    {
+
+          $campagne=$request->campagne;
+         // dd($campagne);
+          $recap = new Vente();
+         $result= $recap->getRecapShow($request->campagne);
+
+        if (!empty($result)) {
+            // dd($result);
+            return view('ventes.recapShow', compact('result', 'campagne'));
+
+        } else {
+            return back()->with('success', $request->campagne.' aucune vente disponible pour cette campagne selectionnée');
+           // $result=[];
+           // return view('ventes.recap', compact('result'));
+            //return redirect()->route('recap_vente')->with('Result', 'Not found for this campagne');
+        }
+
+    }
+
+    public function calculRecapvente($request)
+    {
+         $recap = new Vente();
+        $result= $recap->calculRecapvente($request);
+
+        return  $result;
+    }
+
+
+  /**
+  * generation du pdf du detail des ventes d'une vcampagne
+  */
+    public function downloadRecapVente($data)
+    {
+         $vente= new Vente();
+        $results=$vente->downloadRecapVente($data);
+        return $results;
+
+    }
+
 
  /**
   * recup data vente campagne en cours
   */
 
-  public function ventes_campagne_en_cours()
-  {
-     
-    $resultqte=array();
-    $resultdate=array();
-    $campagne='';
-    $vente= new Vente();
-    $resultsVentes=$vente->ventes_campagne_en_cours();
-    
-    if ( $resultsVentes !=='Campagne introuvable') {
-      // dd($resultsVentes);
-        if (isset($resultsVentes[0]['campagne'])) {
-            $campagne=$resultsVentes[0]['campagne'];
-            foreach ($resultsVentes as $key => $value) {
-               // dd($value);
-                $resultqte[]=$value['quantite'];
-                $resultdate[]=$value['date'];
-               }           
+    public function ventes_campagne_en_cours()
+    {
 
-        } 
-     
+         $resultqte=array();
+        $resultdate=array();
+        $campagne='';
+        $vente= new Vente();
+        $resultsVentes=$vente->ventes_campagne_en_cours();
+
+        if ($resultsVentes !=='Campagne introuvable') {
+            // dd($resultsVentes);
+            if (isset($resultsVentes[0]['campagne'])) {
+                   $campagne=$resultsVentes[0]['campagne'];
+                foreach ($resultsVentes as $key => $value) {
+                    // dd($value);
+                    $resultqte[]=$value['quantite'];
+                    $resultdate[]=$value['date'];
+                }
+
+            }
+
+        }
+
+        return array('campagne'=> $campagne, 'qte'=>$resultqte, 'dateVente'=> $resultdate);
     }
-   
-    return array('campagne'=> $campagne,'qte'=>$resultqte,'dateVente'=> $resultdate);
-  }
-  /**
-   * get ventes impayés
-   * futur prendra  id car o peut avoir deux campagnes en cours 
-   */
-  public function ventes_impayes($id)
-  {
-     // dd($id);
-      $vente = new Vente();
-      $venteimpayes=$vente->ventes_impayes($id);
-     // dd($venteimpayes);
-      return view('ventes.recapVentesImpayes',compact('venteimpayes'));
-  }
- 
+    /**
+     * Get ventes impayés
+     * futur prendra  id car o peut avoir deux campagnes en cours
+     */
+    public function ventes_impayes()
+    {
+
+        $vente = new Vente();
+         $venteimpayes=$vente->ventes_impayes();
+         //dd($venteimpayes);
+
+        return view('ventes.recapVentesImpayes', compact('venteimpayes'));
+    }
+
 
 /**
- * get Ventes inmpayés de la campagne en cours 
+ * get Ventes inmpayés de la campagne en cours
 */
-public function ventes_regler($id)
- {
-   //  dd($id);
-    $vente = new Vente();
-    $ventepayes=$vente->ventes_regler($id);
-    return $ventepayes;
-   
- }
-  
- 
+    public function ventes_regler($id)
+    {
+        //  dd($id);
+        $vente = new Vente();
+        $ventepayes=$vente->ventes_regler($id);
+        return $ventepayes;
+
+    }
+
+
 }

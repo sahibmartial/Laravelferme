@@ -13,7 +13,7 @@
     @endif
 
     @if($venteimpayes->count()>0)
-     
+
       @include('shared.ventesImpayes')
     @else
     <div class="alert alert-success">
@@ -23,6 +23,6 @@
     @endif
 
     <br>
-    <p><a href="/OutilsCampagne">Menu Campagne</a></p>
+    <p><a href="/ventes">Menu Ventes</a></p>
 </div>
 @stop
