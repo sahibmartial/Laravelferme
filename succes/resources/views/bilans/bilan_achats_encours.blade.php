@@ -1,5 +1,5 @@
 @extends('base')
-<?php 
+<?php
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
   $result = array();
@@ -8,7 +8,7 @@ $cam= new CampagneController();
  $id=$cam->getCampagneenCours();
   //$var= $id->toJson();
  // dump($id);
- for ($i=0; $i <$id->count(); $i++) { 
+ for ($i=0; $i <$id->count(); $i++) {
  	//dump($id[$i]->id);
  	 $result[]=$id[$i]->intitule;
  }
@@ -26,7 +26,7 @@ $cam= new Campagne();
 	<p><a href="/ferme"> Retour Menu</a></p>
 </div>
 <div class="text-center mt-2">
-	<h3> Bilan campagne en cours </h3>
+	<h6> Bilan campagne</h6>
 @include('shared.infos_one_campagne_form')
 </div>
 @stop

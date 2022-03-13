@@ -67,10 +67,7 @@ Route::get("get_all_accesoires", "AccessoireController@allAccessoires")
 Route::post("show_all_accesoires", "AccessoireController@showallaccesoires")
 ->name('show_all_accesoires');
 
-Route::get("get_all_transports", "TransportController@allTransports")
-->name('get_all_transports');
-Route::post("show_all_frais", "TransportController@showallTransports")
-->name('show_all_frais');
+
 
 Route::get("addmoreaccessoire", "AccessoireController@addMore")
 ->name('addmoreaccessoires');
@@ -104,6 +101,10 @@ Route::get('campaliments', 'AlimentController@index')->name('campaliments');
 Route::post('searchaliment', 'AlimentController@searchAliment')
 ->name('searchaliment');
 //Transports
+Route::get("get_all_transports", "TransportController@allTransports")
+->name('get_all_transports');
+Route::post("show_all_frais", "TransportController@showallTransports")
+->name('show_all_frais');
 
 Route::get('/listerallfrais', function () {
       return view('transports.allfraisforthiscampagne');
@@ -181,13 +182,13 @@ Route::get('campagnetreat', 'VaccinController@treatmentCampagneEnCours')
 ->name('campagnetreat');
 /**
  * Maladies
- * 
+ *
  */
 
 Route::get('maladies', 'MaladieController@index')->name('maladies');
 
 /**
- *PDF 
+ *PDF
  */
 
  Route::get('pdf_form', 'GeneratePdfController@pdfForm')->name('pdf_form');

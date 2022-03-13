@@ -5,16 +5,16 @@
 	<div class="col-lg-0 mt-2">
             <a class="btn btn-info ml-3" href="/achats">retour Achats</a>
 
-            <a class="btn btn-success" href="{{route('bilan_achats')}}">Show</a>
+            <a class="btn btn-success" href="{{route('bilan_achats')}}">Retour bilan</a>
         </div>
-  <hr>  
+  <hr>
     </div>
 
   <div class="text-center">
                 <h2>Detail Provisoire <b>{{$campagne}}</b> </h2>
     </div>
-      
-   
+
+
    <div class="text-center">
     <table class="table table-bordered ">
         <tr>
@@ -42,15 +42,15 @@
                 <a href="{{route('apports.index')}}"><center>{{ 'Ventes : '.$apportVente }} </a> FCFA</center>
                 <hr>
                 <a href="{{route('apports.index')}}"><center>{{'Personnel : '.$apportpersonel }}</a> FCFA</center>
-                      
+
                 </td>
                 <td colspan="1">
                 <center>{{ 'qte : '.$resultbilan['qtePoussins'] }} | {{'price_U : '.$resultbilan['PousPUAchat'] }} FCFA</center>
                 <hr>
-                <b><center>{{ $total=$resultbilan['qtePoussins'] * $resultbilan['PousPUAchat'] }} FCFA</center></b>   
+                <b><center>{{ $total=$resultbilan['qtePoussins'] * $resultbilan['PousPUAchat'] }} FCFA</center></b>
                 </td>
                 <td colspan="1">
-                <center>{{'Pertes : ' .$resultbilan['resultat_pertes']['T_qte']}} </center> 
+                <center>{{'Pertes : ' .$resultbilan['resultat_pertes']['T_qte']}} </center>
                     <hr>
                 <b><center>{{'Restant : '. ($resultbilan['qtePoussins'] - ($resultbilan['resultat_pertes']['T_qte']+ $resultbilan['resulat_vente']['T_qte']))}}</center></b>
                 </td>
@@ -63,13 +63,13 @@
                     <center><b>{{'En caisse: '.($vente_impaye['Regler'])}}</b> FCFA</center>
                     <center><b>{{'Crédit: '.($vente_impaye['Credit'])}}</b> FCFA</center>
                     <hr>
-                    <small>Brut obtenu après déduction apport vente :</small> 
+                    <small>Brut obtenu après déduction apport vente :</small>
                     <center><b>{{'Recette net: '.($resultbilan['resulat_vente']['T_vente'] - $apportVente)}}</b> FCFA</center>
                      <hr>
                      <small style="color: rgb(214, 122, 127);"><b>Cout de revient Poussin:</b> <b> {{ $resultbilan['Cout_Revient'] }}</b> FCFA
-                    </small> 
+                    </small>
                      <br>
-                     <small>Net obtenu après déduction des apports:</small> 
+                     <small>Net obtenu après déduction des apports:</small>
                     <center><b>{{'Gain: '.( ($campagneInfos[0]['budget']+ $apportVente + $apportpersonel) - ($total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']) )}}</b> FCFA</center>
                 </td>
 
@@ -77,7 +77,7 @@
                 <td><b>  {{ $resultbilan['totalfood'] }} FCFA</b></td>
                 <td><b> {{ $resultbilan['totalfrais'] }} FCFA</b></td>
                  <td><b> {{ $total+$resultbilan['totalacces']+ $resultbilan['totalfood'] + $resultbilan['totalfrais']}} FCFA</b></td>
-               
+
             </tr>
     </table>
 </div>

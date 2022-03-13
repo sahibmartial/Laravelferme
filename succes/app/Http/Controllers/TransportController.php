@@ -285,10 +285,17 @@ class TransportController extends Controller implements TransportAction
 
     public function allTransports()
     {
-        $campagnes = Campagne::all();
-        //dd($campagnes);
+        try {
+            $campagnes = Campagne::all();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
-        return view("transports.allTransports_of_one_campagne", compact('campagnes'));
+        if ($campagnes) {
+            return view("transports.allTransports_of_one_campagne", compact('campagnes'));
+        }
+
+
 
     }
     /*
