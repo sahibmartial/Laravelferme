@@ -1,4 +1,4 @@
-<?php 
+<?php
 //use App\Campagne;
 use App\Http\Controllers\CampagneController;
 //echo "string";
@@ -16,7 +16,7 @@ $duredevie=0;
 <form  name="myForm" action="{{route('pertes.store')}}"  method="POST">
 	{{ csrf_field() }}
   <div class="form-group">
-      {{ Form::label('Date', 'Date:') }}      
+      {{ Form::label('Date', 'Date:') }}
      <input type="date" name="date_die" placeholder="" class="form-control"
       @error('date_die') is-invalid @enderror"
        name="date_die" value="{{ old('date_die') }}" required autocomplete="date_die" autofocus >
@@ -31,18 +31,27 @@ $duredevie=0;
     <br>--}}
 
     <div class="form-group">
-    {{ Form::label('Campagne', 'Campagne:') }}
-    <input type="text" name="campagne" placeholder="Entrez nom campagne " 
+    <!-- {{ Form::label('Campagne', 'Campagne:') }}
+    <input type="text" name="campagne" placeholder="Entrez nom campagne "
     value="{{ old('campagne') }}" class="form-control">
      {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
+    -->
+     <select class="form-select mb-2" aria-label="Default select example" name="campagne" id="campagne">
+        <option selected>CampagneX</option>
+           @foreach ($campagnes as $campagne)
+               <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+           @endforeach
+
+   </select>
+
     </div>
     <div class="form-group">
     {{ Form::label('Quantite', 'Quantite:') }}
-    <input type="number" name="quantite" 
+    <input type="number" name="quantite"
     placeholder="Entrez la quantite de pertes " value="{{old('quantite')}}"  class="form-control" >
    	{!! $errors->first('quantite','<span class="error-msg">:message</span>') !!}
     </div>
-  
+
   <div class="form-group">
   {{  Form::label('Observations', 'Observations: ')  }}
 	<textarea name="cause" placeholder="Causes de la mort" class="form-control"></textarea>
@@ -75,15 +84,15 @@ let qte = document.forms["myForm"]["quantite"].value;
 
 
 if(!date_die.length >0){
-	
+
 	errors.push('Date manquante.\n');
 }
 if (!nom.length >0) {
-	
+
 	errors.push('Campagne manquante.\n');
 }
 if (!qte.length >0) {
-	
+
 	errors.push('Quantite manquant.\n');
 }
 
@@ -92,7 +101,7 @@ if (errors.length>0) {
 	event.preventDefault();
 	alert(errors)
 }
-//console.log("hello")	
+//console.log("hello")
  /* let x = document.forms["myForm"]["fname"].value;
   if (x == "") {
     alert("Name must be filled out");

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Campagne;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -17,19 +19,19 @@ class PerteController extends Controller
      */
     public function index()
     {
-    
+
         //dd('here');
         //$pertes=Perte::all();
 
          $pertes= DB::table('campagnes')
-        ->join('pertes', function ($join) {
-            $join->on('pertes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-        })
-        ->orderByDesc('pertes.id')
-        ->SimplePaginate(10);
+            ->join('pertes', function ($join) {
+                $join->on('pertes.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
+            })
+          ->orderByDesc('pertes.id')
+         ->SimplePaginate(10);
 
 
-        return view('pertes.index',compact('pertes'));
+          return view('pertes.index', compact('pertes'));
 
     }
 
@@ -40,8 +42,19 @@ class PerteController extends Controller
      */
     public function create()
     {
-        //dd('here');
-        return view('pertes.create');
+
+
+        try {
+            $campagnes = Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $th->getMessage();
+        }
+
+        if ($campagnes) {
+            return view('pertes.create', compact('campagnes'));
+        }
+
     }
 
     /**
@@ -52,66 +65,68 @@ class PerteController extends Controller
      */
     public function store(Request $request)
     {
-      //  dd('here');
+         //  dd('here');
         //$date="";
-        $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
-       //dd($campagne_id);
+         $cam= new CampagneController();
+         $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+        //dd($campagne_id);
         $rules=[
-        // 'campagne_id'=>'bail|required',   
-         'campagne'=>'bail|required|min:9',
-         'quantite'=>'bail|required',
-         'cause'=>'required|min:3',
+        // 'campagne_id'=>'bail|required',
+           'campagne'=>'bail|required|min:9',
+           'quantite'=>'bail|required',
+           'cause'=>'required|min:3',
          //'priceUnitaire'=>'bail|required',
-        //'fournisseur'=>'required|min:4',
-       //  'obs'=>'required|min:3'
-     ];
-        $this->validate($request,$rules);
+          //'fournisseur'=>'required|min:4',
+         //  'obs'=>'required|min:3'
+        ];
+           $this->validate($request, $rules);
 
-    $perte= new CampagneController();
-    //dd($campagne_id);
-    try {
-        $poussins=Poussin::whereCampagneId($campagne_id)->get('date_achat');
-    } catch (\Throwable $th) {
-        return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-    }
-   
-   // dd($poussins[0]['date_achat']);
-    $collections=$perte->selectDateStartCampagne($campagne_id);
-     //dd($collections);
-    foreach ($collections as $collection) {
-   $date=$collection->start;
-     }
+        $perte= new CampagneController();
+        //dd($campagne_id);
+        try {
+            $poussins=Poussin::whereCampagneId($campagne_id)->get('date_achat');
+        } catch (\Throwable $th) {
+            return redirect()->route('errors.bdInsert')->with('success', $th->getMessage());
+        }
 
-    $date1=strtotime(date("Y-m-d"));
-   // dd($date1);
-    $date_die=strtotime($request->date_die);
-  
-    $date2 = strtotime($poussins[0]['date_achat']);
-   // dd($date2);
-     $year=$perte->selectYearcreate($campagne_id);
-    //dump($year);
-    $duredevie=$perte->calculeDureVie($date_die,$date2);
-  // dd($duredevie) ;
-//appel de ma fonction pour calculer le dure devie
-  try {
-    Perte::create([
-        'campagne_id'=>$campagne_id,
-        'date_die'=>$request->date_die,
-        'campagne'=>Str::lower($request->campagne),
-        'quantite'=>$request->quantite,
-        'cause'=>$request->cause,
-        //'priceUnitaire'=>$request->priceUnitaire,
-       // 'fournisseur'=>$request->fournisseur,
-        'obs'=>$request->obs,
-        'duredevie'=>$duredevie,
-        'year'=>$year
-    ]);
-  } catch (\Throwable $th) {
-    return redirect()->route('errors.bdInsert')->with('success',$th->getMessage());
-  }
-      
-       //return redirect()->route('perte');   
+         // dd($poussins[0]['date_achat']);
+        $collections=$perte->selectDateStartCampagne($campagne_id);
+        //dd($collections);
+        foreach ($collections as $collection) {
+              $date=$collection->start;
+        }
+
+        $date1=strtotime(date("Y-m-d"));
+        // dd($date1);
+        $date_die=strtotime($request->date_die);
+
+        $date2 = strtotime($poussins[0]['date_achat']);
+        // dd($date2);
+        $year=$perte->selectYearcreate($campagne_id);
+        //dump($year);
+        $duredevie=$perte->calculeDureVie($date_die, $date2);
+         // dd($duredevie) ;
+        //appel de ma fonction pour calculer le dure devie
+        try {
+             Perte::create(
+                 [
+                 'campagne_id'=>$campagne_id,
+                 'date_die'=>$request->date_die,
+                 'campagne'=>Str::lower($request->campagne),
+                 'quantite'=>$request->quantite,
+                  'cause'=>$request->cause,
+                  //'priceUnitaire'=>$request->priceUnitaire,
+                 // 'fournisseur'=>$request->fournisseur,
+                 'obs'=>$request->obs,
+                  'duredevie'=>$duredevie,
+                 'year'=>$year
+                 ]
+             );
+        } catch (\Throwable $th) {
+            return redirect()->route('errors.bdInsert')->with('success', $th->getMessage());
+        }
+
+        //return redirect()->route('perte');
          return redirect()->route('pertes.index')->with('success', 'Perte has been successfully added');
     }
 
@@ -124,7 +139,7 @@ class PerteController extends Controller
     public function show($id)
     {
          $lists=Perte::findOrFail($id);
-        
+
          return view('pertes.show', compact('lists'));
     }
 
@@ -138,8 +153,8 @@ class PerteController extends Controller
     {
         $pertes=Perte::findOrFail($id);
 
-        return view('pertes.edit',compact('pertes'));
-        
+          return view('pertes.edit', compact('pertes'));
+
     }
 
     /**
@@ -151,46 +166,49 @@ class PerteController extends Controller
      */
     public function update(Request $request, $id)
     {
-     
-     // dd($request);
+
+         // dd($request);
         $cam= new CampagneController();
-       $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
-      
-       $rules=[
-        'campagne_id'=>'bail|required',  
-        'campagne'=>'bail|required|min:9',
-        'quantite'=>'bail|required'
-       // 'priceUnitaire'=>'bail|required',
-      //  'fournisseur'=>'required|min:4',
-      //  'obs'=>'required|min:3'
+         $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
+
+         $rules=[
+            'campagne_id'=>'bail|required',
+            'campagne'=>'bail|required|min:9',
+            'quantite'=>'bail|required'
+            // 'priceUnitaire'=>'bail|required',
+            //  'fournisseur'=>'required|min:4',
+             //  'obs'=>'required|min:3'
             ];
-       $this->validate($request,$rules);
-       $collections=$cam->selectDateStartCampagne($campagne_id);
-       foreach ($collections as $collection) {
-        $date=$collection->start;
-        }
+           $this->validate($request, $rules);
+           $collections=$cam->selectDateStartCampagne($campagne_id);
 
-       $date_die=strtotime($request->date_die);
- 
-      $date2 = strtotime($collection->start);
-      $duredevie=$cam->calculeDureVie($date_die,$date2);
+         foreach ($collections as $collection) {
+               $date=$collection->start;
+         }
 
-       try {
-        $pertes=Perte::findOrFail($id);
-        $pertes->update([
-          'campagne_id'=>$request->campagne_id,
-          'date_die'=>$request->date_die,
-          'campagne'=>Str::lower($request->campagne),
-          'quantite'=>$request->quantite,
-          'duredevie'=>$duredevie,
-      //     'fournisseur'=>$request->fournisseur,
-          'suggestion'=>$request->suggest
-        ]);
-      return redirect()->route('pertes.show',$id); 
+         $date_die=strtotime($request->date_die);
 
-       } catch (\Throwable $th) {
-         throw $th;
-       }
+         $date2 = strtotime($collection->start);
+         $duredevie=$cam->calculeDureVie($date_die, $date2);
+
+         try{
+             $pertes=Perte::findOrFail($id);
+             $pertes->update(
+                 [
+                 'campagne_id'=>$request->campagne_id,
+                 'date_die'=>$request->date_die,
+                 'campagne'=>Str::lower($request->campagne),
+                 'quantite'=>$request->quantite,
+                 'duredevie'=>$duredevie,
+                  //'fournisseur'=>$request->fournisseur,
+                 'suggestion'=>$request->suggest
+                 ]
+             );
+             return redirect()->route('pertes.show', $id);
+
+         } catch (\Throwable $th) {
+              throw $th;
+         }
 
 
     }
@@ -202,78 +220,76 @@ class PerteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {  
-      $user=Auth()->user();
-      $folder="PerteRemove/";
-      $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
-      $filename=$name."."."txt";
-      $filebackup= new BackUpFermeController();
+    {
+        $user=Auth()->user();
+        $folder="PerteRemove/";
+        $name=uniqid().'-'.date("Y-m-d H:i:s").'-'.$user->name;
+        $filename=$name."."."txt";
+        $filebackup= new BackUpFermeController();
         try {
 
-         $value=Perte::findorfail($id); 
-         $filebackup->backupfile($folder,$filename,$value);
-         Perte::destroy($id);
-        return redirect()->route('perte');
-    
+             $value=Perte::findorfail($id);
+            $filebackup->backupfile($folder, $filename,$value);
+            Perte::destroy($id);
+            return redirect()->route('perte');
+
         } catch (\Throwable $th) {
-         throw $th;
-       }
-        
+            throw $th;
+        }
+
+    }
+
+    public function selectAllLossOfThisCampagne($id)
+    {
+          $result=array();
+
+        try {
+              $collections=DB::table('pertes')->whereCampagneId($id)->get();
+            $result=$collections->toArray();
+            return  $result;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+
+
     }
 
 
-    /**
-    *
-    */
-     
-     public function selectAllLossOfThisCampagne($id)
-     {  
-       $result=array(); 
 
-       try {
-        $collections=DB::table('pertes')->whereCampagneId($id)->get();
-        $result=$collections->toArray();
-        return  $result;       
-       } catch (\Throwable $th) {
-         throw $th;
-       }
-          
-       // $result = json_decode($result, true);
-        // dd($result);
-     
-     }
-
-
-     /**
-     *
-     *
-     */
-
-     public function calculateTotalLossofthiscampagne($id){
+    public function calculateTotalLossofthiscampagne($id)
+    {
         $som=0;
 
         $result=$this->selectAllLossOfThisCampagne($id);
 
-        for ($i=0; $i <count($result); $i++) { 
+        for ($i=0; $i <count($result); $i++) {
 
             $som+=$result[$i]->quantite;
             //dd($som);
-           // $som++;
-     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
-     }
-    // dd($som);
-     return $som;
+             // $som++;
 
-     }
+        }
 
- 
+        return $som;
+
+    }
+
+
     /**
-     *get form to select all losing of this campaign
+     *Get form to select all losing of this campaign
      *
      */
-    public function getAll_losing(){
+    public function getAll_losing()
+    {
 
-        return view("pertes.getAll_losing");
+        try {
+            $campagnes=Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+        return view("pertes.getAll_losing", compact('campagnes'));
 
     }
 
@@ -286,7 +302,7 @@ class PerteController extends Controller
 
          // dd('show losing !!!!');
          return view("pertes.showAll_losing");
-        
+
     }
 
 
@@ -301,12 +317,12 @@ class PerteController extends Controller
         $result =$perte->pertesOfthisCampagne($value);
 
          return $result;
-        
+
     }
 /**
 * generation du pdf des pertes d'une campagne
 */
-    
+
  public function downloadRecapPerte($data)
  {
     $pertes= new Perte();
@@ -315,9 +331,9 @@ class PerteController extends Controller
  }
 
 /**
- * get perstes campagne en cours 
+ * get perstes campagne en cours
  */
- 
+
  public function pertes_campagne_en_cours()
  {
    $resultqte=array();
@@ -336,7 +352,7 @@ class PerteController extends Controller
         $resultqte[]=$value['quantite'];
         $resultdate[]=$value['date_die'];
         }
-      } 
+      }
    }
  //  dd(   $resultqte,$resultdate);
    return array('campagne'=> $campagne,'qte'=>$resultqte,'dateDie'=> $resultdate);

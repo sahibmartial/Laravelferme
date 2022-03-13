@@ -1,5 +1,5 @@
 
-<?php 
+<?php
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
 use App\Http\Controllers\PerteController;
@@ -9,7 +9,7 @@ use App\Http\Controllers\PerteController;
  $id=$cam->getCampagneenCours();
   //$var= $id->toJson();
  // dump($id);
- for ($i=0; $i <$id->count(); $i++) { 
+ for ($i=0; $i <$id->count(); $i++) {
   //dump($id[$i]->id);
    $result[]=$id[$i]->intitule;
  }
@@ -59,10 +59,10 @@ $cam= new Campagne();
 
    <?php
 
-    for ($i=0; $i <count($results) ; $i++) { 
+    for ($i=0; $i <count($results) ; $i++) {
     ?>
   <tr>
-     
+
     <td>{{ $results[$i]->campagne_id}}</td>
     <td>{{ $results[$i]->date_die}}</td>
     <td>{{ $results[$i]->campagne}}</td>
@@ -73,14 +73,14 @@ $cam= new Campagne();
   <?php
   }
     ?>
-    <tr><th colspan="5">Total :</th> 
+    <tr><th colspan="5">Total :</th>
       <td>{{$total}}</td>
     </tr>
   </tbody>
-</table> 
+</table>
 @else
 	<div class="alert alert-success">
-	<p class="text-center">Aucune quantite de pertes Enregistres pour la campagne !!! </p>
+	<p class="text-center">Aucune pertes Enregistrées pour la campagne !!! </p>
 	</div>
 @endif
 

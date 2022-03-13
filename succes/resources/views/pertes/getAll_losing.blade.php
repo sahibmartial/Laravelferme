@@ -3,24 +3,30 @@
 <title>Pertes-Campagne</title>
 @endsection
 @section('content')
-<h2 class="text-center"></h2>
-<form class="text-center" action=" {{route('show_all_losing')}}" method="POST">
-	{{ csrf_field() }}
-   <div>
-                            {{ Form::label('campagne', 'Saisir Nom campagne:') }}
-                            <br>
-                           <input type="text" name="campagne" placeholder="campagne1"
-                           @error('campagne') is-invalid @enderror" name="campagne" value="{{ old('campagne') }}" required autocomplete="campagne" autofocus>
-                           @error('campagne')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            
-                        </div>
-	<br>
-	<input type="submit" value="Soumettre">
-</form>
+<div class="container">
+    <h6 class="text-center"> Déclaration pertes poulets</h6>
+    <form class="text-center" action=" {{route('show_all_losing')}}" method="POST">
+        {{ csrf_field() }}
+        <div class="form-group">
+            <select class="form-select mb-2" aria-label="Default select example" name="campagne" id="campagne">
+                <option selected>CampagneX</option>
+                   @foreach ($campagnes as $campagne)
+                       <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+                   @endforeach
+
+           </select>
+
+        </div>
+        <input type="submit" value="Soumettre">
+    </form>
+
+</div>
+
+
+
+
+
+
 <hr>
 <p class="text-center"><a href="/achats"> Retour Achats</a></p>
 {{--$request->campagne--}}
