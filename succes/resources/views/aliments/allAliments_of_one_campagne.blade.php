@@ -1,5 +1,5 @@
 @extends('base')
-<?php 
+<?php
 use App\Campagne;
 use App\Http\Controllers\CampagneController;
   $result = array();
@@ -8,7 +8,7 @@ $cam= new CampagneController();
  $id=$cam->getCampagneenCours();
   //$var= $id->toJson();
  // dump($id);
- for ($i=0; $i <$id->count(); $i++) { 
+ for ($i=0; $i <$id->count(); $i++) {
  	//dump($id[$i]->id);
  	 $result[]=$id[$i]->intitule;
  }
@@ -23,11 +23,12 @@ $cam= new Campagne();
 @endsection
 @section('content')
 <div class="text-center mt-4">
-  <h2> Get All Aliments</h2>
+  <h6> Get All Aliments</h6>
+<div class="container">
 <form action=" {{route('show_all_Aliments')}}" method="POST">
   {{ csrf_field() }}
    <div>
-                            {{ Form::label('campagne', 'Name Campagne:') }}
+                          <!--  {{ Form::label('campagne', 'Name Campagne:') }}
                             <br>
                            <input type="text" name="campagne" placeholder="campagne1"
                            @error('campagne') is-invalid @enderror" name="campagne" value="{{ old('campagne') }}" required autocomplete="campagne" autofocus>
@@ -35,10 +36,17 @@ $cam= new Campagne();
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            
+                                @enderror-->
+
+                                <select class="form-select mb-2" aria-label="Default select example" name="campagne" id="campagne">
+                                     <option selected>CampagneX</option>
+                                        @foreach ($campagnes as $campagne)
+                                            <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+                                        @endforeach
+
+                                </select>
+
                         </div>
-  <br>
   <input type="submit" value="Soumettre">
 </form>
 {{--$request->campagne--}}
@@ -46,8 +54,8 @@ $cam= new Campagne();
 {{--<p><a href="{{route('aliments.index')}}">Lister Aliments</a></p>--}}
 <hr>
 <p><a href="/achats"> Retour Achats</a></p>
-  
 
+</div>
 </div>
 
 

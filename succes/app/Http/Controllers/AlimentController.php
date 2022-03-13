@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Campagne;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -23,18 +25,18 @@ class AlimentController extends Controller  implements AlimentAction
             $aliments= DB::table('campagnes')
                     ->join('aliments', function ($join) {
                         $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereStatus(['status'=>'EN COURS']);
-                        } 
+                        }
                     )
                     ->orderByDesc('aliments.id')
                     ->SimplePaginate(10);
         } catch (\Throwable $th) {
-            throw $th; 
+            throw $th;
         }
-        
+
 
          return view('aliments.index', compact('aliments'));
     }
-    
+
     /**
      * SearchAliment
      *
@@ -46,15 +48,15 @@ class AlimentController extends Controller  implements AlimentAction
         try {
             $aliments= DB::table('campagnes')
                 ->join('aliments', function ($join) {
-                    $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereIntitule(['intitule'=>$_REQUEST['searchcampagne']]); 
+                    $join->on('aliments.campagne_id', '=', 'campagnes.id')->whereIntitule(['intitule'=>$_REQUEST['searchcampagne']]);
                     }
-                )   
-            ->orderByDesc('aliments.id')  
+                )
+            ->orderByDesc('aliments.id')
             ->SimplePaginate(10);
-             
+
         } catch (\Throwable $th) {
             return 'Campagne introuvable: '. $_REQUEST['searchcampagne'];
-        } 
+        }
         return view('aliments.index', compact('aliments'));
     }
 
@@ -65,9 +67,21 @@ class AlimentController extends Controller  implements AlimentAction
      */
     public function create()
     {
-        //dd('here');
-       // return view('aliments.create');
-         return view('aliments.addMore');
+         //dd('here');
+         // return view('aliments.create');
+        try {
+            $campagnes= Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+             //throw $th;
+             return $th->getMessage();
+        }
+
+         //dd($campagnes);
+
+        if ($campagnes) {
+            return view('aliments.addMore', compact('campagnes'));
+        }
+
 
     }
 
@@ -75,7 +89,7 @@ class AlimentController extends Controller  implements AlimentAction
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -85,7 +99,7 @@ class AlimentController extends Controller  implements AlimentAction
         $campagne_id=$cam->getIntituleCampagneenCours(Str::lower($request->campagne));
 
          $rules=[
-        //'campagne_id'=>'bail|required',   
+        //'campagne_id'=>'bail|required',
          'campagne'=>'bail|required|min:9',
          'libelle'=>'bail|required|min:3',
          'quantite'=>'bail|required',
@@ -94,7 +108,7 @@ class AlimentController extends Controller  implements AlimentAction
          //'obs'=>'required|min:3'
          ];
          $this->validate($request, $rules);
-         try 
+         try
            {
                 Aliment::create(
                     [
@@ -108,13 +122,13 @@ class AlimentController extends Controller  implements AlimentAction
                      'obs'=>$request->obs
                     ]
                 );
-        
-          
-               return redirect()->route('campaliments');   
+
+
+               return redirect()->route('campaliments');
          } catch (\Throwable $th) {
               throw $th;
          }
-          
+
     }
 
     /**
@@ -130,7 +144,7 @@ class AlimentController extends Controller  implements AlimentAction
     } catch (\Throwable $th) {
         throw $th;
     }
-         
+
     }
 
     /**
@@ -148,7 +162,7 @@ class AlimentController extends Controller  implements AlimentAction
         } catch (\Throwable $th) {
             throw $th;
         }
-        
+
     }
 
     /**
@@ -164,7 +178,7 @@ class AlimentController extends Controller  implements AlimentAction
         $aliments=Aliment::findOrFail($id);
 
          $rules=[
-         'campagne_id'=>'bail|required',   
+         'campagne_id'=>'bail|required',
          'campagne'=>'bail|required|min:9',
          'libelle'=>'bail|required|min:3',
          'quantite'=>'bail|required',
@@ -185,13 +199,13 @@ class AlimentController extends Controller  implements AlimentAction
                 'fournisseur'=>$request->fournisseur,
                 'obs'=>$request->obs
             ]);
-    
-          
+
+
             return redirect()->route('aliments.show',$id);
          } catch (\Throwable $th) {
              throw $th;
          }
-           
+
     }
 
     /**
@@ -209,14 +223,14 @@ class AlimentController extends Controller  implements AlimentAction
         $filebackup= new BackUpFermeController();
 
         try {
-            $value=Aliment::findorfail($id);     
+            $value=Aliment::findorfail($id);
            $filebackup->backupfile($folder,$filename,$value);
             Aliment::destroy($id);
             return redirect()->route('aliments.index');
         } catch (\Throwable $th) {
             throw $th;
         }
-       
+
     }
 
 
@@ -224,7 +238,7 @@ class AlimentController extends Controller  implements AlimentAction
    *
    */
    public function selectAllAlimentforthisCampagne($id){
-       $result=array(); 
+       $result=array();
        try {
         $collections=DB::table('aliments')->whereCampagneId($id)->get();
         $result=$collections->toArray();
@@ -234,66 +248,77 @@ class AlimentController extends Controller  implements AlimentAction
        } catch (\Throwable $th) {
            throw $th;
        }
-    
+
    }
 
-/*** 
-* 
+/***
+*
 *
 */
 
-public function calculateDepenseAlimentofthiscampagne($id){
+    public function calculateDepenseAlimentofthiscampagne($id)
+    {
         $som=0;
 
         $result=$this->selectAllAlimentforthisCampagne($id);
 
-        for ($i=0; $i <count($result); $i++) { 
+        for ($i=0; $i <count($result); $i++) {
 
             $som+=$result[$i]->quantite*$result[$i]->priceUnitaire;
             //dd($som);
            // $som++;
-     // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
-     }
-    // dd($som);
-     return $som;
+            // dump($result[$i]->quantite." :".$result[$i]->priceUnitaire) ;
+        }
+        // dd($som);
+        return $som;
 
-     }
+    }
 
-      /*
-    * form to get form to select all aliments  of this campagne 
-    */
+    /**
+     * Form to get form to select all aliments  of this campagne
+     */
+    public function getAllAliments()
+    {
+        try {
+             $campagnes = Campagne::whereStatus('EN COURS')->get('intitule');
+        } catch (\Throwable $th) {
+             //throw $th;
+             return $th->getMessage();
+        }
+        //dd($campagnes);
+        if ($campagnes) {
+            return view("aliments.allAliments_of_one_campagne", compact('campagnes'));
+        }
 
-    public function getAllAliments(){
-
-        return view("aliments.allAliments_of_one_campagne");
 
     }
     /*
-    *show all aliments  of this campagne 
+    *show all aliments  of this campagne
     */
-    
-    public function showallAliments(){
+
+    public function showallAliments()
+    {
 
         //dd('here');
 
-    
-       return view("aliments.showallAliments_of_one_campagne");
+
+         return view("aliments.showallAliments_of_one_campagne");
 
     }
 
-    /*
-    *generation pdf of this campagne
-    */
+    /**
+     * Generation pdf of this campagne
+     */
 
     public function downloadRecapAliments($data)
     {
-       
-        $aliments= new Aliment();
-       $results= $aliments->downloadRecapAliments($data);
-    //dd($results);
 
-    return $results;
-       
+         $aliments= new Aliment();
+         $results= $aliments->downloadRecapAliments($data);
+        //dd($results);
+
+        return $results;
+
     }
 
 

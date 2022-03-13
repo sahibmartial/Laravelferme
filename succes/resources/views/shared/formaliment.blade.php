@@ -13,10 +13,17 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            
+
                         </div>
-	<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
-     {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}
+	<!--<input type="text" name="campagne" placeholder="Entrez nom campagne " value={{ old('campagne') }}>
+     {!! $errors->first('campagne','<span class="error-msg">:message</span>') !!}-->
+      <select class="form-select" aria-label="Default select example" name="campagne" id="campagne">
+            <option selected>CampagneX</option>
+               @foreach ($campagnes as $campagne)
+                   <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+               @endforeach
+
+           </select>
     <br>
 	<input type="text" name="libelle" placeholder="Entrez libelle " value={{ old('libelle') }}>
 	{!! $errors->first('libelle','<span class="error-msg">:message</span>') !!}

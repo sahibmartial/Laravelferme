@@ -16,7 +16,6 @@ class AlimentAddMoreController extends Controller
      */
 
     public function addMore()
-
     {
 
         return view("aliments.addMore");
@@ -30,109 +29,88 @@ class AlimentAddMoreController extends Controller
      */
 
     public function addMorePost(Request $request)
-
     {
-    	$campagne_id=0;
-    	$campagne="";
+        //dd($request);
+        $campagne_id=0;
+        $campagne="";
         $cam= new CampagneController();
         $aliment= new FonctionController();
 
         foreach ($request->addmore as $key => $value) {
-        	 
-             $campagne=$value['campagne'];
+
+            $campagne=$value['campagne'];
         }
-       
-       $campagne_id=$cam->getIntituleCampagneenCours($campagne);
-       $arrayName =array('campagne_id'=> $campagne_id);
-      
-      if (isset($arrayName['campagne_id'])) {
-        
-      //  dd($arrayName['campagne_id']);
 
-       $campagne=Campagne::findorfail($arrayName['campagne_id']);
-     // dd($campagne);
-       $qteAlimentdemarrage=$campagne['alimentDemaDispo'];
-       $qteAlimentcroissance=$campagne['alimentCroisDispo'];
-        $collection=$request->addmore;
-        $result=$aliment->addmorealiments($collection,$arrayName);
-        $request->validate([
-          'addmore.*.date_achat' => 'bail|required',
+        $campagne_id=$cam->getIntituleCampagneenCours($campagne);
+        $arrayName =array('campagne_id'=> $campagne_id);
 
-            'addmore.*.campagne' => 'bail|required',
+        if (isset($arrayName['campagne_id'])) {
 
-            'addmore.*.libelle' => 'bail|required',
 
-            'addmore.*.quantite' => 'bail|required',
+            $campagne=Campagne::findorfail($arrayName['campagne_id']);
+            // dd($campagne);
+            $qteAlimentdemarrage=$campagne['alimentDemaDispo'];
+            $qteAlimentcroissance=$campagne['alimentCroisDispo'];
+            $collection=$request->addmore;
+            $result=$aliment->addmorealiments($collection, $arrayName);
+            $request->validate(
+                [
+                 'addmore.*.date_achat' => 'bail|required',
 
-            'addmore.*.priceUnitaire' => 'bail|required',
+                 'addmore.*.campagne' => 'bail|required',
 
-            'addmore.*.fournisseur' => 'bail|required',
-            'addmore.*.contact' => 'bail|required',
+                  'addmore.*.libelle' => 'bail|required',
 
-            'addmore.*.obs' => 'bail|required',   
-        ]); 
-        foreach ($result as $key => $value) {
-        //	dd($value);
-          try {
-          Aliment::create($value);
+                  'addmore.*.quantite' => 'bail|required',
 
-            //update alimentDema or croisssance campagne selon type aliment 
+                  'addmore.*.priceUnitaire' => 'bail|required',
 
-            if ($value ['libelle']=='ALIMENT DÉMARRAGE') {
-              $newvalue=$value['quantite']+$qteAlimentdemarrage;
-            // dd($newvalue);
-              $campagne->update([
-                'alimentDemaDispo'=>$newvalue
-              ]);
-              
-            }elseif($value ['libelle']=='ALIMENT CROISSANCE') {
-              $newvalue=$value['quantite']+$qteAlimentcroissance;
-            // dd($newvalue);
+                 'addmore.*.fournisseur' => 'bail|required',
+                 'addmore.*.contact' => 'bail|required',
 
-              $campagne->update([
-                'alimentCroisDispo'=>$newvalue
-              ]);
-      
+                'addmore.*.obs' => 'bail|required',
+                ]
+            );
+            foreach ($result as $key => $value) {
+                //dd($value);
+                try {
+                    Aliment::create($value);
+
+                    //update alimentDema or croisssance campagne selon type aliment
+
+                    if ($value ['libelle']=='ALIMENT DÉMARRAGE') {
+                         $newvalue=$value['quantite']+$qteAlimentdemarrage;
+                        // dd($newvalue);
+                        $campagne->update(
+                            [
+                              'alimentDemaDispo'=>$newvalue
+                            ]
+                        );
+
+                    } elseif ($value ['libelle']=='ALIMENT CROISSANCE') {
+                            $newvalue=$value['quantite']+$qteAlimentcroissance;
+                           // dd($newvalue);
+
+                            $campagne->update(
+                                [
+                                  'alimentCroisDispo'=>$newvalue
+                                ]
+                            );
+
+                    }
+
+
+                } catch (\Throwable $th) {
+                     throw $th;
+                }
+
             }
-            
+               return back()->with('success', 'Achat Aliment enregistré avec  Success.');
 
-          } catch (\Throwable $th) {
-            throw $th;
-          }
-          
+        } else {
+            return back()->with('success', 'Enregistrement Impossible, '.$campagne.' introuvable,merci');
+
         }
-        return back()->with('success', 'Achat Aliment enregistré avec  Success.');
-        
-      } else {
-        return back()->with('success','Enregistrement Impossible, '.$campagne.' introuvable,merci');
-      
-      }
-      
-      	//$result = array_merge($arrayName,$collection);
-      	//$collection[0][0]=$arrayName['campagne_id'];
-      	/*$arrayName2= array('campagne_id' => $arrayName['campagne_id'], "campagne" => "campagne2",
-      		"libelle" => "aliments croissance",
-      		"quantite" => "3",
-           "priceUnitaire" => "5000",
-         "fournisseur" => "sahib"
-         );
 
-      	for ($i=0; $i <count($collection); $i++) { 
-      	$result[]=$arrayName2= array('campagne_id' => $arrayName['campagne_id'],
-      	 "campagne" => $collection[$i]['campagne'],
-      		"libelle" => $collection[$i]['libelle'],
-      		"quantite" =>$collection[$i]['quantite'],
-           "priceUnitaire" =>$collection[$i]['priceUnitaire'],
-         "fournisseur" => $collection[$i]['fournisseur']
-         );
-      	}*/
-
-      	//dd($result);     
-        
-         //dd($request->addmore);
-      
-     // $tab['campagne_id'] = $campagne_id;
-      // dd($request);
-    
-     }
+    }
 }
