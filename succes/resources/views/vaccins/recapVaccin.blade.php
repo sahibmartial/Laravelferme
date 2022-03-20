@@ -13,7 +13,8 @@
 <h2 class="text-center">Suivi Traitements </h2>
 <form class="text-center" action="{{route('downloadrecap_vaccin')}}" method="POST">
 	{{ csrf_field() }}
-   <div>
+   <div class="form-group">
+       <!--
                             {{ Form::label('campagne', 'Nom Campagne:') }}
                             <br>
                            <input type="text" name="campagne" placeholder="campagnex"
@@ -22,9 +23,17 @@
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                @enderror
-                            
-                        </div>
+                                @enderror -->
+                                <select class="form-select mb-2" aria-label="Default select example" name="campagne" id="campagne">
+                                    <option selected>CampagneX</option>
+                                       @foreach ($campagnes as $campagne)
+                                           <option value="{{ $campagne->intitule }}">{{ $campagne->intitule }}</option>
+                                       @endforeach
+
+                               </select>
+
+
+   </div>
 	<br>
 	<input type="submit" value="Soumettre" class="btn btn-lg btn-success">
 </form>

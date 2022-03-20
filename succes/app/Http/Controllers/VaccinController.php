@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * ClientController short of the class
- * 
+ *
  * @category CategoryName
  * @package  PackageName
  * @author   Original Author <author@example.com>
@@ -39,10 +39,10 @@ class VaccinController extends Controller
             return "Erreur dans la requete SQL";
         }
         if (!empty($vaccins->items())) {
-            return view('vaccins.index', compact('vaccins'));   
+            return view('vaccins.index', compact('vaccins'));
         } else {
             return back()->with('success', 'Aucun suivi de vaccin en cours actuellement');
-        }       
+        }
 
     }
 
@@ -60,37 +60,37 @@ class VaccinController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function store( Vaccin $vaccin,Request $request)
-    { 
+    {
         $id=null;
         $suivi= $vaccin->infosCampagneStatus("EN COURS");
         //  dump($suivi);
         $id=$suivi[0]['id'];
         //  dd($id);
-         
+
         $arrayIntervention=[];
-        //preparez un array ou je parcours les select et jes ordonne dans une ligne unique pour insertion plus simple 
-        
+        //preparez un array ou je parcours les select et jes ordonne dans une ligne unique pour insertion plus simple
+
          $select=$request->intitulevaccin;
         //dd($select[0]);
-        
+
         if (count($select)>1) {
-            for ($i=0; $i <count($select); $i++) { 
-                $arrayIntervention[]= array('id_camp'=>$id,'campagne'=>$request->campagne,'date'=>$request->datevaccination,'intitulevaccin'=>$select[$i],'obs'=>$request->obs); 
-            } 
+            for ($i=0; $i <count($select); $i++) {
+                $arrayIntervention[]= array('id_camp'=>$id,'campagne'=>$request->campagne,'date'=>$request->datevaccination,'intitulevaccin'=>$select[$i],'obs'=>$request->obs);
+            }
                //  dd($arrayIntervention);
         } else {
              //  dd('here');
-            $arrayIntervention[]= array('id_camp' =>$id,'campagne'=>$request->campagne,'date'=>$request->datevaccination,'intitulevaccin'=>$select[0],'obs'=>$request->obs); 
+            $arrayIntervention[]= array('id_camp' =>$id,'campagne'=>$request->campagne,'date'=>$request->datevaccination,'intitulevaccin'=>$select[0],'obs'=>$request->obs);
              // dd($arrayIntervention);
         }
         //dd($arrayIntervention);
-       
+
         foreach ($arrayIntervention as $key => $suivi) {
-         
+
             try {
                 $rules=[
                   'campagne'=>'required|min:9',
@@ -111,7 +111,7 @@ class VaccinController extends Controller
 
                         ]
                     );
-            
+
                 } else {
                     throw new \Throwable("Enregistrement vaccin impossible");
                 }
@@ -120,7 +120,7 @@ class VaccinController extends Controller
                 // dd($th->getMessage());
                  return redirect()->route('errors.bdInsert')->with('success', $th->getMessage());
             }
-         
+
         }
            //  die();
            return redirect()->route('vaccins.index')->with('success', 'Vaccination  enregistré avec sucess');
@@ -130,7 +130,7 @@ class VaccinController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Model\Vaccin  $vaccin
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function show( $id )
@@ -143,22 +143,22 @@ class VaccinController extends Controller
         } catch (\Throwable $th) {
              throw $th;
         }
-       
-     
-      
+
+
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Model\Vaccin  $vaccin
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $suivi=Vaccin::findOrFail($id);
-  
+
         return view('vaccins.edit', compact('suivi'));
     }
 
@@ -166,19 +166,19 @@ class VaccinController extends Controller
      * Update the specified resource in storage.
      *
      * @param\Illuminate\Http\Request $request
-     * 
+     *
      * @param\App\Model\Vaccin $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$id)
     {
-      
+
         try {
             $suivi=Vaccin::findOrFail($id);
             //   dd($suivi);
             if ($id) {
-              
+
                 $rules=[
                     'campagne'=>'required|min:9',
                      'datevaccination'=>'bail|required',
@@ -195,9 +195,9 @@ class VaccinController extends Controller
                         'obs'=>$request->obs
 
                         ]
-                    ); 
-                      
-            
+                    );
+
+
             } else {
                 throw new \Throwable("Modification vaccin impossible");
             }
@@ -213,7 +213,7 @@ class VaccinController extends Controller
      * Remove the specified resource from storage.
      *
      * @param\App\Model\Vaccin $id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -225,51 +225,69 @@ class VaccinController extends Controller
         $filebackup= new BackUpFermeController();
         try {
             $value=Vaccin::findorfail($id);
-        
+
             $filebackup->backupfile($folder, $filename, $value);
 
             Vaccin::destroy($id);
             return redirect()->route('vaccin')->with('success', 'Vaccin  supprimé avec sucess');
-        
+
         } catch (\Throwable $th) {
             //  throw $th;
             return "Vaccin not found";
         }
-       
+
     }
     /**
      * Form to download recap traitement
-     * 
+     *
      * @return void
      */
     public function recapVaccin()
     {
-        return view('vaccins.recapVaccin');
+        try {
+
+            $campagnes=  DB::table('campagnes')->orderBy('id', 'desc')->get();
+
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $th->getMessage();
+        }
+        //dd($campagnes);
+        return view('vaccins.recapVaccin', compact('campagnes'));
     }
     /**
      * Listing traitement vaccin pdf generation du fichier pdf
-     * 
+     *
      * @return $request
      */
     public function getRecap(Request $request)
-    {   
+    {
          $pdf= new GeneratePdfController();
 
         $vaccin= new Vaccin();
         $data=$vaccin->getRecap($request->campagne);
-        //  dd();
+
+
         if (count($data)>0) {
+            //dd($data);
+
              $pdf = PDF::loadView('vaccins.pdf_suivivaccin', ['campagne'=>$request->campagne,'data'=>$data]);
-       
-    
+
+
             $reference=date('d/m/Y')."-"."RecapTraitement".$request->campagne."-".uniqid();
-              // dd( $reference);
-              return $pdf->download($reference.'.pdf');  
+             // dd( $reference);
+             $filepdf=$reference.'.pdf';
+             //dd($filepdf);
+
+
+              return $pdf->download($filepdf);
+
         }
         return back()->with('success', 'Impossible de télécharger pdf, aucun suivi trouvé pour cette campagne');
-          
 
-    }    
+
+    }
     /**
      * TreatmentCampagneEnCours
      *
@@ -285,28 +303,28 @@ class VaccinController extends Controller
         } catch (\Throwable $th) {
             return 'Error Staut not found';
         }
-         // dd($campagnes); 
+         // dd($campagnes);
         return view('vaccins.treatCampagne', compact('campagnes'));
     }
-   
+
     /**
      * Generation Pdf suivi des traitements pour chaque campagne
-     * 
+     *
      * @return $response
      */
     public function traitement_pdf($id)
-    {  
+    {
          //dd($id);
         $traitements=[];
         try {
             $campagnes=Campagne::whereId($id)->get('intitule');
             $datearrivePousin=Campagne::find($id)
                 ->poussins()->where('campagne_id', $id)
-                ->get('date_achat'); 
+                ->get('date_achat');
         } catch (\Throwable $th) {
             return " ID Campagne introuvable: ".$id;
         }
-        
+
         if ($datearrivePousin->isNotEmpty()) {
              //step Mise en production
             $datepoussins = new Carbon($datearrivePousin[0]['date_achat']);
@@ -316,8 +334,8 @@ class VaccinController extends Controller
             $traitements['production']=$production;
 
             //Step Traitements
-            for ($i=0; $i < 40; $i++) { 
-                
+            for ($i=0; $i < 40; $i++) {
+
                 $datepoussins = new Carbon($datearrivePousin[0]['date_achat']);
                 $jour=$datepoussins->add($i, 'day');
                  $value=$i+1;
@@ -326,7 +344,7 @@ class VaccinController extends Controller
 
                 case ($value==1):
                     $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'), 'Actions'=>' Pulverisations quotidien tous les 3 jours | Au sucré /Mixtral /BetaSpro-C');
-                    $traitements['traitement'][]=$traitement;   
+                    $traitements['traitement'][]=$traitement;
                     break;
                 case ($value==2):
                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
@@ -336,7 +354,7 @@ class VaccinController extends Controller
                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Alfaceril');
                         $traitements['traitement'][]=$traitement;
                     break;
-                    
+
                 case  ($value==4):
                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>'ANTISTRESS : Supervitassol / Panthéryl / Imuneo');
                         $traitements['traitement'][]=$traitement;
@@ -505,7 +523,7 @@ class VaccinController extends Controller
                         $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                          $traitements['traitement'][]=$traitement;
                     break;
-                    
+
                 case ($value==38):
                          $traitement=array('jour'=>$day,'Date'=>date_format($jour, 'd-m-Y'),'Actions'=>"Eau simple");
                           $traitements['traitement'][]=$traitement;
@@ -520,7 +538,7 @@ class VaccinController extends Controller
                         # code...
                     break;
                 }
-               
+
             }
            // echo(date_format( $jour2, 'Y-m-d') );
         }else{
@@ -528,15 +546,14 @@ class VaccinController extends Controller
             return back()->with('success', 'Date arrivée poussin '.$campagnes[0]['intitule']." introuvalbe");
         }
 
-         // dd( $traitements); 
-    
+         // dd( $traitements);
+
         $pdf = PDF::loadView('vaccins.traitement', ['data'=>$traitements]);
-      
+
         $reference=date('d/m/Y')."-"."Traitement"."-".uniqid();
         return $pdf->download($reference.'.pdf');
 
     }
-    
+
 
 }
-    

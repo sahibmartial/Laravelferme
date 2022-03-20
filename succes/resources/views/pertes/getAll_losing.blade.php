@@ -28,7 +28,7 @@
 
 
 <hr>
-<p class="text-center"><a href="/achats"> Retour Achats</a></p>
+<p class="text-center"><a href="/OutilsCampagne"> Retour </a></p>
 {{--$request->campagne--}}
 
 {{--<p><a href="{{route('pertes.index')}}">Listing pertes</a></p>--}}
