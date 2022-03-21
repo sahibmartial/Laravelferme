@@ -86,16 +86,17 @@ class BilanController extends Controller
            // 'start'=>'bail|required',
            // 'status'=>'required|min:7'
         ];
-        $this->validate($request,$rules);
+        $this->validate($request, $rules);
       //  dd('store');
         $bilans->update([
-           // 'title'=>$request->intitule,
-           // 'start'=>$tarted,
-          //  'status'=>$request->status,
+            // 'title'=>$request->intitule,
+             // 'start'=>$tarted,
+            //  'status'=>$request->status,
             'obs'=>$request->obs
-        ]);
+         ]
+        );
 
-       return redirect()->route('bilans.show',$id);
+       return redirect()->route('bilans.show', $id);
 
     }
 
@@ -114,13 +115,13 @@ class BilanController extends Controller
     {
 
         try {
-            $campagnes=Campagne::all();
+            $campagnes=Campagne::orderBy('id', 'desc')->get('intitule');
         } catch (\Throwable $th) {
             //throw $th;
         }
 
         if ($campagnes) {
-           // dd($campagnes);
+            // dd($campagnes);
             return view('bilans.bilan_achats_encours', compact('campagnes'));
         }
 
